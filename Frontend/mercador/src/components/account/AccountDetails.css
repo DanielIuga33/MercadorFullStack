@@ -1,0 +1,86 @@
+.account-details-container{
+    display: flex;
+    justify-content: center;
+    background-color: hsla(0, 0%, 0%, 0.897);
+    height: 91vh;
+}
+
+.account-details-container h2{
+    text-align: center;
+    border: 2px solid orangered;
+    color: white;
+    margin-top: 50px;
+    padding: 20px;
+    box-shadow: 10px 10px 10px  black;
+}
+
+.account-details-container .container-details{
+    text-align: center;
+    display: flex;
+    height: 60vh;
+    width: 100%;
+    border: 2px solid orangered;
+    box-shadow: 10px 20px 200px  rgb(243, 0, 0), 10px 10px 5px 8px black;
+    border-radius: 7px;
+}
+
+.container-details .first-row{
+    background-color: hsl(0, 0%, 15%);
+    width: 400px;
+    text-align: left;
+    border-right: 3px solid rgb(0, 0, 0);
+}
+.container-details .first-row label{
+    margin-top: 10px;
+    min-width: 110px; /* Setează o lățime fixă pentru etichetă */
+    font-size: medium;
+    margin-right: 20px;
+    margin-left: 20px;
+    color: hsl(0, 0%, 79%);
+    font-weight: 500;
+    margin-bottom: 10px;
+    padding: 7px;
+    border-radius: 5px;
+    background-color: hsl(2, 99%, 35%);
+}
+
+.container-details .first-row input{
+    background-color: hsl(0, 0%, 77%);
+}
+
+.container-details .first-row input[type="date"]{
+    width: 190px;
+    height: 30px;
+}
+
+.container-details .first-row .buttons{
+    border-top: 1px solid black;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+    display: inline-flex;
+    width: 100%;
+}
+
+.container-details .first-row .buttons button{
+    background-color: hsla(0, 0%, 35%, 0.897);
+    color: hsl(0, 0%, 79%);
+    font-weight: 500;
+    padding: 5px;
+    margin-left: 25px;
+    border-radius: 4px;
+    box-shadow: 1px 1px 2px black;
+    margin-top: 20px;
+    min-width: 60px;
+}
+.container-details .first-row .buttons button:hover{
+    background-color: hsla(0, 0%, 30%, 0.897);
+    transition: 1s ease;
+}
+
+.container-details .second-row{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.2rem;
+}
