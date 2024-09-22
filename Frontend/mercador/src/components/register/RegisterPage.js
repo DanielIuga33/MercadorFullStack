@@ -9,7 +9,6 @@ const API_URL = 'http://localhost:8080/api/users';
 
 const RegisterPage = ({ setUserData, returning}) => {
   const [formData, setFormData] = useState({
-    id: '',
     name: '',
     surname: '',
     email: '',
@@ -47,6 +46,7 @@ const RegisterPage = ({ setUserData, returning}) => {
 
   const finalStep = async () => {
     try {
+      console.log(formData);
       await sendData(formData); // Trimite datele la server
       setUserData(formData); // Actualizează starea cu datele utilizatorului
      // Navighează către pagina home

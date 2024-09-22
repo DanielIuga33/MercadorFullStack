@@ -3,24 +3,13 @@ import {useState, useEffect} from 'react';
 import './SearchBar.css';
 
 const SearchBar = () => {
+    const [selectedBrand, setSelectedBrand] = useState('');
+    const [filteredModels, setFilteredModels] = useState([]);
+    
     const handleSubmit = (event) => {
         event.preventDefault();
         // Aici poți prelua datele din formular și le poți trimite către backend sau le poți folosi local
     };
-    const brands = [
-        "Abart", "Acura", "Aixam", "Alfa Romeo", "Aro", "Aston Martin", "Audi", "Austin", "Baic", "Bentley", "BMW",
-        "Bugatti", "Buick", "Cadillac", "Chevrolet", "Chrysler", "Citroen", "Comarth", "Dacia", "Daewoo", "Daihatsu",
-        "DFSK", "Dodge", "Ferrari", "Fiat", "Fisker", "Ford", "Minibus", "Honda", "Hummer", "Hyundai", "Ineos",
-        "Infiniti", "Isuzu", "Jaguar", "Jeep", "KG Mobility", "Kia", "Lada", "Lamborghini", "Lancia", "Land Rover",
-        "Lexus", "Ligier", "Lincoln", "Lotus", "Lucid", "Lynk&Co", "Maserati", "Mazda", "McLaren", "Maybach", "Merceds-Benz",
-        "MG", "Microlinio", "Mini", "Mitsubishi", "Microcar", "Morgan", "Nissan","Opel","Peugeot","Plymouth","Pontiac",
-        "Porsche","Renault","Rolls-Royce","Rover","Saab","Seat","Skoda","Smart","SsangYong","Skywell","Subaru","Suzuki",
-        "Tesla","Tata","Tazzari","Toyota","Trabant","Triumph","Vauxhall","Volkswagen","Volvo","Weismann","Alte marci",
-        "JAC","SWM","Forthing","XEV"
-      ];
-
-    const [selectedBrand, setSelectedBrand] = useState('');
-    const [filteredModels, setFilteredModels] = useState([]);
 
     useEffect(() => {
         if (selectedBrand && modelsByBrand[selectedBrand]) {
@@ -30,10 +19,6 @@ const SearchBar = () => {
         }
     }, [selectedBrand]);
     
-
-    const bodies = ["Cabrio", "Sedan", "Coupe", "Pickup", "HatchBack", "Break", "Off-road", "Minibus", "Monovolum", "SUV" ];
-    const colors = ["Red", "Blue", "Black", "White", "Silver", "Grey", "Green", "Yellow", "Brown", "Orange", "Purple"];
-
     return (
         <div className="sidebar">
             <h2>Search Filters</h2>
@@ -96,7 +81,7 @@ const SearchBar = () => {
                     <div>
                         <div id="fuel1" className="row">Fuel</div>
                         <select id="fuel" name="fuel">
-                            <option value="" selected>see all</option>
+                            <option value="" >see all</option>
                             <option value="Petrol">Petrol</option>
                             <option value="Diesel">Diesel</option>
                             <option value="GPL">GPL</option>
@@ -107,7 +92,7 @@ const SearchBar = () => {
                     <div>
                         <div id="gearBox1" className="row">Gearbox</div>
                         <select id="gearBox" name="gearBox">
-                            <option value="" selected>see all</option>
+                            <option value="" >see all</option>
                             <option value="Manual">Manual</option>
                             <option value="Automatic">Automatic</option>
                         </select>
@@ -118,7 +103,7 @@ const SearchBar = () => {
                     <div>
                         <div id="color1" className="row">Color</div>
                         <select id="color" name="color">
-                            <option value="" selected>choose</option>
+                            <option value="" >choose</option>
                             {colors.map((color) => (
                                 <option key={color} value={color}>{color}</option>
                             ))}
@@ -127,7 +112,7 @@ const SearchBar = () => {
                     <div>
                         <div id="steeringWheel1" className="row">Steeringwheel</div>
                         <select id="steeringWheel" name="steeringWheel">
-                            <option value="" selected>choose</option>
+                            <option value="" >choose</option>
                             <option value="Left">Left</option>
                             <option value="Right">Right</option>
                         </select>
@@ -138,7 +123,7 @@ const SearchBar = () => {
                     <div>
                         <div id="state1" className="row">State</div>
                         <select id="state" name="state">
-                            <option value="" selected>choose</option>
+                            <option value="" >choose</option>
                             <option value="New">New</option>
                             <option value="Used">Used</option>
                         </select>
@@ -155,6 +140,17 @@ const SearchBar = () => {
 
 export default SearchBar
 
+const brands = [
+    "Abart", "Acura", "Aixam", "Alfa Romeo", "Aro", "Aston Martin", "Audi", "Austin", "Baic", "Bentley", "BMW",
+    "Bugatti", "Buick", "Cadillac", "Chevrolet", "Chrysler", "Citroen", "Comarth", "Dacia", "Daewoo", "Daihatsu",
+    "DFSK", "Dodge", "Ferrari", "Fiat", "Fisker", "Ford", "Minibus", "Honda", "Hummer", "Hyundai", "Ineos",
+    "Infiniti", "Isuzu", "Jaguar", "Jeep", "KG Mobility", "Kia", "Lada", "Lamborghini", "Lancia", "Land Rover",
+    "Lexus", "Ligier", "Lincoln", "Lotus", "Lucid", "Lynk&Co", "Maserati", "Mazda", "McLaren", "Maybach", "Merceds-Benz",
+    "MG", "Microlinio", "Mini", "Mitsubishi", "Microcar", "Morgan", "Nissan","Opel","Peugeot","Plymouth","Pontiac",
+    "Porsche","Renault","Rolls-Royce","Rover","Saab","Seat","Skoda","Smart","SsangYong","Skywell","Subaru","Suzuki",
+    "Tesla","Tata","Tazzari","Toyota","Trabant","Triumph","Vauxhall","Volkswagen","Volvo","Weismann","Alte marci",
+    "JAC","SWM","Forthing","XEV"
+  ];
 const modelsByBrand = {
     Abart: ["500", "595", "124 Spider"],
     Acura: ["ILX", "MDX", "NSX", "RDX", "RLX", "TLX"],
@@ -247,3 +243,26 @@ const modelsByBrand = {
     Forthing: ["T5 EVO", "Thunder EV"],
     XEV: ["Yoyo"],
 };
+const bodies = ["Cabrio", "Sedan", "Coupe", "Pickup", "HatchBack", "Break", "Off-road", "Minibus", "Monovolum", "SUV" ];
+const colors = [
+    "Almond", "Alpine White", "Amethyst", "Anthracite", "Aqua", "Arctic White", "Azure", "Beige", "Black", 
+      "Black Cherry", "Black Diamond", "Black Pearl", "Black Sapphire", "Blue", "Blue Diamond", "Blue Metallic", 
+      "Brilliant Black", "Brilliant Blue", "Bronze", "Brown", "Burgundy", "Candy Apple Red", "Carbon Black", 
+      "Cavansite Blue", "Champagne", "Charcoal", "Cobalt Blue", "Copper", "Cream", "Crimson", "Crystal White", 
+      "Dark Blue", "Dark Green", "Dark Red", "Daytona Gray", "Deep Black Pearl", "Deep Blue", "Deep Green", 
+      "Desert Sand", "Designo Diamond White", "Designo Manufaktur", "Designo Selenite Gray Magno", 
+      "Diamond Silver", "Dove Gray", "Electric Blue", "Emerald Green", "Estoril Blue", "Floret Silver", 
+      "Forest Green", "Frozen Brilliant White", "Frozen Silver", "Frozen White", "Glacier Blue", "Glacier White", 
+      "Gold", "Graphite", "Gray", "Green", "Gunmetal", "Ice Blue", "Ibis White", "Indium Gray", "Iridium Silver", 
+      "Ivory", "Jet Black", "Lapis Blue", "Lava Orange", "Lavender", "Le Mans Blue", "Lime Green", 
+      "Limestone Gray", "Magenta", "Maroon", "Matte Black", "Melbourne Red", "Midnight Blue", "Mineral White", 
+      "Mint Green", "Misano Red", "Moonlight Silver", "Mojave Silver", "Mythos Black", "Nardo Gray", 
+      "Navarra Blue", "Navy Blue", "Night Blue", "Ocean Blue", "Olive Green", "Onyx Black", "Orange", 
+      "Oryx White Pearl", "Pale Blue", "Pearl White", "Phantom Black", "Pink", "Platinum", "Platinum Gray", 
+      "Polar White", "Pure White", "Purple", "Racing Green", "Raven Black", "Red", "Reflex Silver", 
+      "Riviera Blue", "Rose Gold", "Ruby Red", "Saffron", "San Marino Blue", "Sand", "Sapphire Black", 
+      "Sapphire Blue", "Sepang Blue", "Shadow Black", "Silver", "Sky Blue", "Slate Gray", "Slenite Gray", 
+      "Snow White", "Sophisto Gray", "Steel Blue", "Storm Gray", "Sunset Orange", "Super White", "Suzuka Gray", 
+      "Tan", "Tango Red", "Tanzanite Blue", "Teal", "Titanium", "Tornado Red", "Turquoise", "Vesuvius Gray", 
+      "Viper Green", "White", "Yellow"
+  ];

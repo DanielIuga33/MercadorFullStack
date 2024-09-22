@@ -29,9 +29,11 @@ function LoginPage({ setUserData, returning}) {
     } catch (error) {
         if (error.response && error.response.status === 401) {
             setError('Wrong email or password !');
+            return;
         } else {
             //console.log(error.response.status);
             setError('An error occurred. Please try again.');
+            return;
         }
     }
     try {

@@ -52,30 +52,14 @@ public class UserController {
         }
     }
 
-//    @PostMapping("/update")
-//    public ResponseEntity<User> updateUser(@RequestBody UpdateUserRequest updateUserRequest) {
-
-    @PostMapping("/test-add")
-    public ResponseEntity<User> addTestUser() {
-        User testUser = new User();
-        testUser.setName("Test");
-        testUser.setSurname("User");
-        testUser.setUsername("testuser");
-        testUser.setEmail("testuser@example.com");
-        testUser.setPassword("password123");  // Asigură-te că folosești hashing pentru parole în aplicația reală
-
-        // Creăm adresa pentru utilizator
-        testUser.setCountry("TestCountry");
-        testUser.setCity("TestCity");
-        testUser.setStreet("TestStreet");
-
-        testUser.setBirthDate(LocalDate.of(2000, 1, 1));
-        testUser.setRole(Role.USER);  // Asigură-te că Role este un enum valid
-        testUser.setCarIds(Collections.emptyList()); // Dacă ai o listă de ID-uri de mașini, poți adăuga ID-uri valide aici
-
-        // Salvăm utilizatorul în baza de date
-        User createdUser = userService.addUser(testUser);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    @PatchMapping("/{email}")
+    public ResponseEntity<User> updateUser(@PathVariable String email, @RequestBody User updatedUser) {
+        try {
+            User user = userService.updateUser(email, updatedUser);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
 

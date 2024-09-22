@@ -12,6 +12,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,21 +22,34 @@ public class Car {
     @Id
     private ObjectId id;
 
-    @NotBlank(message = "Make is mandatory")
-    private String make;
+    @NotBlank(message = "Title is mandatory")
+    private String title;
+
+    @NotBlank(message = "Brand is mandatory")
+    private String brand;
 
     @NotBlank(message = "Model is mandatory")
     private String model;
 
+    @NotBlank(message = "Body is mandatory")
+    private String body;
+
     @NotNull(message = "Year is mandatory")
     @Min(value = 1886, message = "Year must be no earlier than 1886") // First car was invented in 1886
     private int year;
+
+    private int cm3;
+
+    private int hp;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Mileage must be a positive number")
     private double mileage;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be a positive number")
     private double price;
+
+    @NotBlank(message = "Currency is mandatory")
+    private String currency;
 
     private String color;
 
@@ -54,12 +68,18 @@ public class Car {
 
     private String description;
 
+    private String steeringwheel;
+
     private ObjectId ownerId; // ID-ul utilizatorului care deține mașina
+
+    // O listă de imagini asociate cu mașina, sub formă de URL-uri
+    private List<byte[]> images;
 
     // Enum-uri pentru valori limitate
     public enum FuelType {
         PETROL,
         DIESEL,
+        GPL,
         ELECTRIC,
         HYBRID
     }

@@ -1,0 +1,109 @@
+.postCar-main-container{
+    display: flex;
+    height: 94vh;
+    /* background-color: #2B2B2B; */
+    background-color: hsl(0, 0%, 7%);
+    justify-content: center;
+    align-items: center;
+}
+.postCar-main-container .frame{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 90vh;
+    width: 90%;
+    border: 3px solid hsl(0, 0%, 0%);
+    border-radius: 5px;
+    background-color: hsl(0, 0%, 12%);
+    box-shadow: 10px 20px 200px  rgb(243, 0, 0), 10px 10px 5px 8px rgb(31, 31, 31);
+
+}
+.frame h1{
+    color: hsla(0, 4%, 92%, 0.788);
+    background-color: hsl(0, 0%, 11%);;
+    margin-top: 15px;
+    border: 4px dashed hsl(0, 100%, 28%);
+    border-radius: 5px;
+    padding: 15px;
+    padding-left: 50px;
+    padding-right: 50px;
+    box-shadow: 4px 4px 2px 5px rgba(0, 0, 0, 0.2);
+}
+.frame .table{
+    display: flex;
+    align-items: center;
+}
+.frame .col{
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    height: 70vh;
+    border: 2px solid black;
+    margin: 20px;
+    background-color: rgb(51, 18, 18);
+    border-radius: 5px;
+}
+.frame .row{
+    background-color: transparent;
+    margin-left: 35px;
+    display: flex;
+    flex-direction: column;
+}
+#title-label{
+    background-color: transparent;
+    color: hsla(0, 4%, 89%, 0.788);
+    width: 300px;
+    font-size: 1.6rem;
+    margin-bottom: -5px;
+}
+#title-input{
+    width: 300px;
+}
+.frame .row label{
+    background-color: transparent;
+    color: hsla(0, 4%, 89%, 0.788);
+    min-width: 150px;
+    max-width: 400px;
+    max-height: 50px;
+    font-size: 1.6rem;
+    margin-bottom: -3px;
+}
+.frame .row input{
+    height: 35px;
+    width: 180px;
+    background-color: hsl(0, 1%, 83%);
+}
+.frame .row input[type="radio"]{
+    height: 25px;
+    width: 25px;
+    background-color: hsl(0, 1%, 83%);
+}
+.frame .row select{
+    height: 35px;
+    width: 180px;
+    background-color: hsl(0, 1%, 83%);
+}
+
+.frame .packet{
+    display: flex;
+    flex-direction: row;
+    background-color: transparent;
+    margin-bottom: 10px;
+}
+.frame .col .packet .packet .row{
+    width: 70px;
+}
+.frame .col .packet .packet .row label{
+    margin-left: -20px;
+}
+.frame .col .packet .packet{
+    border: 1px solid whitesmoke;
+    margin-left: 10px;
+    border-radius: 8px;
+    height: 80px;
+}
+
+#desc{
+    width: 90%;
+    height: 400px;
+}

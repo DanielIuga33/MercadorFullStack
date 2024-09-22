@@ -16,10 +16,10 @@ const Account = ({userData}) => {
         </div>) ||
           <div className="account-container">
             <div className='display'>
-                <h1>Welcome {userData.username || userData.surname}</h1>
+                <h1>Welcome <em>{userData.username || userData.surname}</em> !</h1>
                 <span>
                   <div className='firstPart'>
-                    <button>Post a Car</button>
+                    <button onClick={() => navigate('/account/postACar')}>Post a Car</button>
                     <button>View your cars ({(userData.carIds).length > 0 || 'no'} cars posted)</button>
                   </div>
                   <div className='divider'></div>
