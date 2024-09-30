@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './MainPage.css';
 import axios from 'axios';
 
-const MainPage = () => {
+const MainPage = ({setCarData}) => {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true); // Stare pentru loading
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/cars');
-                console.log('Response from API:', response.data); // Log pentru debugging
-
                 // Verificăm dacă response.data există și este un array
                 if (response.data && Array.isArray(response.data)) {
                     setCars(response.data);
@@ -35,14 +35,35 @@ const MainPage = () => {
         );
     }
 
+    const accesCar = (e) => {
+        const carId = e.currentTarget.id;
+        console.log("Selected car ID:", carId);
+        
+        // Găsește mașina în listă după id
+        const carDetails = cars.find(car => car.id === carId); // Folosește ID-ul ca string
+    
+        if (carDetails) {
+            setCarData(carDetails);
+            navigate("/carDetails");
+        } else {
+            console.error('Car not found for the given ID');
+        }
+    };
+    
+
     return (
         <div className="grid-container">
             {cars.length > 0 ? (
                 cars.map((car) => (
-                    <div key={car.id} className='car-card'>
+                    <div 
+                        key={car.id}
+                        id={car.id} 
+                        className='car-card' 
+                        onClick={accesCar}
+                    >
                         {car.images && car.images.length > 0 && (
                             <img
-                                src={`data:image/jpeg;base64,${car.images[0]}`} // Folosim primul URL de imagine
+                                src={`data:image/jpeg;base64,${car.images[(car.images).length - 1]}`} // Folosim primul URL de imagine
                                 alt={`Car ${car.title}`} // Adăugăm un alt text descriptiv
                             />
                         )}

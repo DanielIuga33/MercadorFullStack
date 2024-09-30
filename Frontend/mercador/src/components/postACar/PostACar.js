@@ -10,6 +10,8 @@ const PostACar = ({userData}) => {
     const navigate = useNavigate();
     const [selectedBrand, setSelectedBrand] = useState('');
     const [filteredModels, setFilteredModels] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [done, setDone] = useState(false);
     const [images, setImages] = useState([]); // Stocăm URL-urile imaginilor
     const [carData, setCarData] = useState({
         title: '',
@@ -30,13 +32,12 @@ const PostACar = ({userData}) => {
         registrationDate: '',
         description: '',
         steeringwheel: '',
-        ownerEmail: userData.email,
+        ownerId: userData.id,
         images: []
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name + '  ' + value);
         setCarData({...carData, [name]: value});
     };
 
@@ -63,6 +64,7 @@ const PostACar = ({userData}) => {
     };
 
     const handleSubmit = async () => {
+        console.log(carData.ownerId);
         const formData = new FormData();
     
         // Adaugă toate datele din carData în formData
@@ -79,18 +81,35 @@ const PostACar = ({userData}) => {
         formData.append('registrationDate', new Date().toISOString());
     
         try {
-            const response = await axios.post(API_URL, formData, {
+            setLoading(true);
+            await axios.post(API_URL, formData,{
                 headers: {
                     'Content-Type': 'multipart/form-data', // Setează corect Content-Type
                 },
             });
-            navigate("/account");
-            console.log('Response:', response.data);
         } catch (error) {
             console.error('Error:', error.response ? error.response.data : error.message);
+        } finally{
+            setLoading(false);
+            setDone(true);
         }
     };
-    
+
+    if (loading) {
+        return (
+            <div className="loader"></div> // Afișăm spinner-ul
+        );
+    }
+    if (done){
+        console.log(images);
+        return (
+            <div className='finished-posting-car'>
+                <h1>Car successfully posted !</h1>
+                <img alt='No Car' src={URL.createObjectURL(images[images.length - 1])} />
+                <button onClick={() => navigate("/account")}>Click here to proceed</button>
+            </div>
+        )
+    }
 
     return (
         <div className='postCar-main-container'>

@@ -1,5 +1,7 @@
 package dev.danieliuga.Mercador.controller;
 
+import dev.danieliuga.Mercador.dto.CarDTO;
+import dev.danieliuga.Mercador.mapper.CarMapper;
 import dev.danieliuga.Mercador.model.Car;
 import dev.danieliuga.Mercador.service.CarService;
 import org.bson.types.ObjectId;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/cars")
@@ -24,18 +27,48 @@ public class CarController {
     @Autowired
     private CarService carService;
 
+    @Autowired
+    private CarMapper carMapper;
+
     @GetMapping
-    public ResponseEntity<List<Car>> getAllCars(){
-        return new ResponseEntity<List<Car>>(carService.allCars(),HttpStatus.OK);
+    public ResponseEntity<List<CarDTO>> getAllCars() {
+        List<Car> cars = carService.allCars();
+
+        // Convertim lista de Car în CarDTO
+        List<CarDTO> carDTOs = cars.stream()
+                .map(carMapper::convertToCarDTO)
+                .collect(Collectors.toList());
+
+        // Returnăm lista de CarDTO într-un ResponseEntity
+        return ResponseEntity.ok(carDTOs);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Car>> getSingleCar(@PathVariable ObjectId id){
         return new ResponseEntity<Optional<Car>>(carService.singleCar(id), HttpStatus.OK);
     }
+
+//    @GetMapping("/{id}")
+//    public ResponseEntity<CarDTO> getCarById(@PathVariable String id) {
+//        // Convertim String-ul în ObjectId
+//        ObjectId objectId;
+//        try {
+//            objectId = new ObjectId(id);
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(null); // Poate returna un mesaj de eroare personalizat
+//        }
+//
+//        Car car = carService.getCarById(objectId);
+//
+//        // Convertim Car în CarDTO
+//        CarDTO carDTO = carMapper.convertToCarDTO(car);
+//
+//        return ResponseEntity.ok(carDTO);
+//    }
+
     @PostMapping
     public ResponseEntity<Car> addCar(@RequestParam Map<String, String> carData,
-                                      @RequestParam("images") MultipartFile[] images) {
+                                      @RequestParam("images") MultipartFile[] images) throws Exception {
         Car car = new Car();
         // Populați obiectul car cu datele din carData
         car.setTitle(carData.get("title"));
@@ -60,6 +93,8 @@ public class CarController {
 
         car.setDescription(carData.get("description"));
         car.setSteeringwheel(carData.get("steeringwheel"));
+        ObjectId objectId = new ObjectId(carData.get("ownerId"));
+        car.setOwnerId(objectId);
         car.setNumberOfDoors(Integer.parseInt(carData.get("numberOfDoors"))); // Convertește string în int
 
         List<byte[]> imageBlobs = new ArrayList<>();

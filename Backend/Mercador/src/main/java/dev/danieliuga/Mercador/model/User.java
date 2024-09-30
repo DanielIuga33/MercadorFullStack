@@ -37,4 +37,5 @@ public class User {
     private String street;
     private Role role;
     private List<ObjectId> carIds;    // Lista de ID-uri ale mașinilor deținute de utilizator
+
 }

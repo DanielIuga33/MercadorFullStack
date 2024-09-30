@@ -107,3 +107,58 @@
     width: 90%;
     height: 400px;
 }
+
+.loader {
+    background-color: #2B2B2B;
+    border: 8px solid #a7a7a7; /* Culoarea de fundal */
+    border-top: 8px solid #a11919; /* Culoarea spinner-ului */
+    border-radius: 50%;
+    width: 50px; /* Dimensiunea spinner-ului */
+    height: 50px; /* Dimensiunea spinner-ului */
+    animation: spin 1s linear infinite; /* Animația de rotație */
+    margin: 20px auto; /* Centrare */
+    margin-top: 400px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.finished-posting-car {
+    background-color: #2B2B2B;
+    height: 91vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.finished-posting-car h1{
+    margin-bottom: 40px;
+    color: #c7c7c7;
+    border: 2px solid #474545;
+    padding: 10px;
+}
+.finished-posting-car img{
+    width: auto;
+    height: auto;
+    max-height: 450px;
+    max-width: 1100px;
+    border: 3px solid black;
+    box-shadow: 2px 2px 50px black;
+}
+
+.finished-posting-car button{
+    margin: 40px;
+    background-color: rgb(0, 150, 0);
+    color: rgb(59, 59, 59);
+    font-size: 2rem;
+    font-weight: bold;
+    border: 1px solid hsl(0, 97%, 13%);
+    box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    width: 400px;
+    height: 60px;
+
+}

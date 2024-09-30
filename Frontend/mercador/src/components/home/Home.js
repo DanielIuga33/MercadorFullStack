@@ -4,13 +4,13 @@ import '../searchbar/SearchBar';
 import SearchBar from '../searchbar/SearchBar';
 import MainPage from '../mainPage/MainPage';
 
-const Home = ({userData}) => {
+const Home = ({userData, setCarData}) => {
   return (
     <div className='home'>
       <SearchBar/>
       <div className='separator'>
       </div>
-      <MainPage></MainPage>
+      <MainPage setCarData={setCarData}/>
     </div>
   )
 }

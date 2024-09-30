@@ -1,5 +1,7 @@
 package dev.danieliuga.Mercador.controller;
 
+import dev.danieliuga.Mercador.dto.UserDTO;
+import dev.danieliuga.Mercador.mapper.UserMapper;
 import dev.danieliuga.Mercador.model.Role;
 import dev.danieliuga.Mercador.model.User;
 import dev.danieliuga.Mercador.service.UserService;
@@ -13,6 +15,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,19 +25,40 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping()
-    public ResponseEntity<List<User>> getAllUsers(){
-        return new ResponseEntity<List<User>>(userService.allUsers(), HttpStatus.OK);
+    @Autowired
+    private UserMapper userMapper;
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<User> users = userService.allUsers();
+
+        // Convertim lista de User în UserDTO
+        List<UserDTO> userDTOs = users.stream()
+                .map(userMapper::convertToUserDTO)
+                .collect(Collectors.toList());
+
+        // Returnăm lista de UserDTO într-un ResponseEntity
+        return ResponseEntity.ok(userDTOs);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getSingleUser(@PathVariable ObjectId id){
-        return new ResponseEntity<Optional<User>>(userService.singleUser(id),HttpStatus.OK);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
+        // Verificăm dacă ID-ul este valid
+        if (!ObjectId.isValid(id)) {
+            return ResponseEntity.badRequest().build(); // Returnăm un răspuns 400 Bad Request dacă ID-ul nu este valid
+        }
+
+        // Convertim String-ul în ObjectId
+        ObjectId objectId = new ObjectId(id);
+
+        // Căutăm utilizatorul folosind ObjectId
+        User user = userService.singleUser(objectId);
+
+        // Convertim User în UserDTO
+        UserDTO userDTO = userMapper.convertToUserDTO(user);
+
+        return ResponseEntity.ok(userDTO);
     }
-    @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        User createdUser = userService.addUser(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-    }
+
 
     @GetMapping("/check-email")
     public boolean checkEmailExists(@RequestParam String email) {
@@ -42,25 +66,35 @@ public class UserController {
     }
 
     @GetMapping("/findByEmail")
-    public ResponseEntity<User> findByEmail(@RequestParam String email) {
+    public ResponseEntity<UserDTO> findByEmail(@RequestParam String email) {
         User user = userService.userFindByEmail(email);
+        UserDTO userDTO = userMapper.convertToUserDTO(user);
 
-        if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
+        if (userDTO != null) {
+            return new ResponseEntity<>(userDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Returnează 404 dacă utilizatorul nu este găsit
         }
     }
 
-    @PatchMapping("/{email}")
-    public ResponseEntity<User> updateUser(@PathVariable String email, @RequestBody User updatedUser) {
+//    @PatchMapping("/{email}")
+//    public ResponseEntity<User> updateUser(@PathVariable String email, @RequestBody User updatedUser) {
+//        try {
+//            User user = userService.updateUser(email, updatedUser);
+//            return ResponseEntity.ok(user);
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(null);
+//        }
+//    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User updatedUser) {
+        ObjectId userId =  new ObjectId(id);
         try {
-            User user = userService.updateUser(email, updatedUser);
+            User user = userService.updateUser(userId, updatedUser);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
-
 }

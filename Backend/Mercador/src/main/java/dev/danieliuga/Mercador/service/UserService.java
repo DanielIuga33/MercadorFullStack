@@ -20,8 +20,8 @@ public class UserService {
         return  userRepository.findAll();
     }
 
-    public Optional<User> singleUser(ObjectId id){
-        return userRepository.findById(id);
+    public User singleUser(ObjectId id){
+        return userRepository.findById(id).orElse(null);
     }
 
     public boolean userExistsByEmail(String email) {
@@ -42,9 +42,54 @@ public class UserService {
         User user = userRepository.findByEmail(email);
         return user != null && PasswordUtils.checkPassword(password, user.getPassword());
     }
-    public User updateUser(String userEmail, User user) throws Exception {
+//    public User updateUser(String userEmail, User user) throws Exception {
+//        // Căutăm utilizatorul existent în baza de date pe baza ID-ului
+//        User existingUser = userRepository.findByEmail(userEmail);
+//
+//        // Actualizează doar câmpurile care au fost trimise (cele care nu sunt null)
+//        if (user.getName() != null && !user.getName().equals(existingUser.getName())) {
+//            existingUser.setName(user.getName());
+//        }
+//        if (user.getSurname() != null && !user.getSurname().equals(existingUser.getSurname())) {
+//            existingUser.setSurname(user.getSurname());
+//        }
+//        if (user.getUsername() != null && !user.getUsername().equals(existingUser.getUsername())) {
+//            existingUser.setUsername(user.getUsername());
+//        }
+//        if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail())) {
+//            // Verifică dacă email-ul există deja
+//            User userWithEmail = userRepository.findByEmail(user.getEmail());
+//            if (userWithEmail != null) {
+//                throw new Exception("Email already in use");
+//            }
+//            existingUser.setEmail(user.getEmail());
+//        }
+//        if (user.getBirthDate() != null) {
+//            existingUser.setBirthDate(user.getBirthDate());
+//        }
+//        if (user.getPassword() != null){
+//            System.out.println(user.getPassword());
+//            if (!user.getPassword().equals(existingUser.getPassword())) {
+//                existingUser.setPassword(PasswordUtils.hashPassword(user.getPassword()));
+//            }
+//        }
+//        if (user.getCountry() != null && !user.getCountry().equals(existingUser.getCountry())) {
+//            existingUser.setCountry(user.getCountry());
+//        }
+//        if (user.getCity() != null && !user.getCity().equals(existingUser.getCity())) {
+//            existingUser.setCity(user.getCity());
+//        }
+//        if (user.getStreet() != null && !user.getStreet().equals(existingUser.getStreet())) {
+//            existingUser.setStreet(user.getStreet());
+//        }
+//
+//        // Salvăm modificările în baza de date
+//        return userRepository.save(existingUser);
+//    }
+
+    public User updateUser(ObjectId id, User user) throws Exception {
         // Căutăm utilizatorul existent în baza de date pe baza ID-ului
-        User existingUser = userRepository.findByEmail(userEmail);
+        User existingUser = singleUser(id);
 
         // Actualizează doar câmpurile care au fost trimise (cele care nu sunt null)
         if (user.getName() != null && !user.getName().equals(existingUser.getName())) {
@@ -83,7 +128,12 @@ public class UserService {
             existingUser.setStreet(user.getStreet());
         }
 
+        if (user.getCarIds().size() > 0 && !user.getCarIds().equals(existingUser.getCarIds())){
+            existingUser.setCarIds(user.getCarIds());
+        }
+
         // Salvăm modificările în baza de date
         return userRepository.save(existingUser);
     }
+
 }

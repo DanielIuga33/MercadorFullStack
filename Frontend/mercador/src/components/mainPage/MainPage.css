@@ -131,11 +131,16 @@
         border-radius: 2px;
     }
     
+      
     .car-card img{
-        width: 285px;
+        /* width: 285px;
         max-height: auto;
         max-height: 250px;
-        min-height: 160px;
+        min-height: 160px; */
+        width: 100%;
+        max-height: 270px;
+        height: auto;
+        image-resolution: 300dpi;
     }
     
     .car-card .item{

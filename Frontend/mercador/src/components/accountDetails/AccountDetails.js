@@ -128,8 +128,7 @@ const AccountDetails = ({ userData }) => {
         }else{
             setErrorMsgFirstRow("");
             if (!emailError) setIsReadOnly(true);
-            const userEmail = userData.email;
-            updateUser(userEmail, formData);
+            updateUser(formData.id, formData);
         }
     };
 
@@ -154,20 +153,27 @@ const AccountDetails = ({ userData }) => {
         }
         if (!errorMsgSecondRow2){
             formData.password = newpassword;
-            updateUser(formData.email, formData);
+            updateUser(formData.id, formData);
             exit()
         } 
     };
 
-    const updateUser = async (email, userData) => {
-    try {
-        console.log("Updating user with email:", email);
-        const response = await axios.patch(`http://localhost:8080/api/users/${email}`, userData);
-        console.log('User updated:', response.data);
-    } catch (error) {
-        console.error('Error updating user:', error);
-    }
-};
+    const updateUser = async (id, userData) => {
+        console.log(id);
+        // try {
+        //     console.log("Updating user with email:", email);
+        //     const response = await axios.patch(`http://localhost:8080/api/users/${email}`, userData);
+        //     console.log('User updated:', response.data);
+        // } catch (error) {
+        //     console.error('Error updating user:', error);
+        // }
+        try {
+            const response = await axios.patch(`http://localhost:8080/api/users/${id}`, userData);
+            console.log('User updated:', response.data);
+        } catch (error) {
+            console.error('Error updating user:', error);
+        }
+    };
 
     
 
