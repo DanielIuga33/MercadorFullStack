@@ -28,6 +28,12 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
+    @PostMapping
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+        User createdUser = userService.addUser(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<User> users = userService.allUsers();
