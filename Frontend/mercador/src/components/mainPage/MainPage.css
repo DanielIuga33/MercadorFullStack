@@ -71,7 +71,7 @@
         background-color: rgb(17, 18, 20);
     }
 }
-@media (min-width: 1001px) and (max-width: 1524px) {
+@media (min-width: 1001px) and (max-width: 1300px) {
     .grid-container {
         border: 2px solid rgb(184, 52, 0);
         margin-right: 20px;
@@ -108,7 +108,45 @@
     }
 }
 
-@media (min-width: 1525px) {
+@media (min-width: 1301px) and (max-width: 1549px) {
+    .grid-container {
+        border: 2px solid rgb(184, 52, 0);
+        margin-right: 20px;
+        margin-top: 20px;
+        background-color: hsl(0, 0%, 11%);
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* Creates 3 equal columns */
+        gap: 10px; /* Optional: adds space between the grid items */
+        padding: 10px; /* Optional: adds padding inside the grid container */
+    }
+
+    .car-card{
+        border:2px solid rgb(0, 0, 0);
+        height: 350px;
+        width: 265px;
+        background-color: transparent;
+        color:white;
+        display: flex;
+        flex-direction: column;
+        border-radius: 2px;
+    }
+    
+    .car-card img{
+        width: 263px;
+        height: auto;
+        max-height: 240px;
+    }
+    
+    .car-card .item{
+        display: flex;
+        flex-direction: column;
+        height:100%;
+        border-radius: 2px;
+        background-color: rgb(17, 18, 20);
+    }
+}
+
+@media (min-width: 1550px) {
     .grid-container {
         border: 2px solid rgb(184, 52, 0);
         margin-right: 20px;

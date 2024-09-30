@@ -37,10 +37,8 @@ const RegisterPage = ({ setUserData, returning}) => {
         }
       });
       console.log('Response:', response.data);
-      return response.data;
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
-      throw error;
     }
   };
 
