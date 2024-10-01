@@ -66,7 +66,7 @@ const PostACar = ({userData}) => {
     const handleSubmit = async () => {
         console.log(carData.ownerId);
         const formData = new FormData();
-    
+        
         // Adaugă toate datele din carData în formData
         Object.entries(carData).forEach(([key, value]) => {
             formData.append(key, value);
@@ -269,7 +269,7 @@ const PostACar = ({userData}) => {
                     <div className='col'>
                         <div className='packet'>
                         <div className='row'>
-                                <label>Engine capacity</label>
+                                <label id="label-engine-capacity">Engine capacity</label>
                                 <input 
                                     name="cm3"
                                     onChange={handleChange}
@@ -327,7 +327,7 @@ const PostACar = ({userData}) => {
                                 </select>
                             </div>
                             <div className='row'>
-                                <label>Number of Doors</label>
+                                <label id="label-no-doors">Number of Doors</label>
                                 <input 
                                     name="numberOfDoors"
                                     onChange={handleChange}

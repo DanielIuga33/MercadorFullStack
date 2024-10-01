@@ -1,0 +1,17 @@
+
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ÿ‡Û§úÿÿÿÿ
+V
+java:S4684 "@Replace this persistent entity with a simple POJO or DTO object.(¬ŒÑ‘
+h
+java:S6204,"RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(ª™¨¹
+[
+java:S4684a"@Replace this persistent entity with a simple POJO or DTO object.(¯äËïûÿÿÿÿ
+Q	java:S125W"<This block of commented-out lines of code should be removed.(ÆÐûä
+Z
+java:S1128"?Remove this unused import 'dev.danieliuga.Mercador.model.Role'.(ùþ‹âûÿÿÿÿ
+K
+java:S1128"0Remove this unused import 'java.time.LocalDate'.(›‘¬èýÿÿÿÿ
+M
+java:S1128"2Remove this unused import 'java.util.Collections'.(¢³ïÓþÿÿÿÿ
+J
+java:S1128"/Remove this unused import 'java.util.Optional'.(¨˜ëÝüÿÿÿÿ

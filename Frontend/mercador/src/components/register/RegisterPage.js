@@ -11,6 +11,7 @@ const RegisterPage = ({ setUserData, returning}) => {
   const [formData, setFormData] = useState({
     name: '',
     surname: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -31,12 +32,11 @@ const RegisterPage = ({ setUserData, returning}) => {
 
   const sendData = async (formData) => {
     try {
-      const response = await axios.post(API_URL, formData, {
+        await axios.post(API_URL, formData, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      console.log('Response:', response.data);
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     }
@@ -44,7 +44,6 @@ const RegisterPage = ({ setUserData, returning}) => {
 
   const finalStep = async () => {
     try {
-      console.log(formData);
       await sendData(formData); // Trimite datele la server
       setUserData(formData); // Actualizează starea cu datele utilizatorului
      // Navighează către pagina home
@@ -55,6 +54,7 @@ const RegisterPage = ({ setUserData, returning}) => {
   };
 
   const goHome = () => {
+    finalStep();
     if (returning === 1){
       navigate('/account');
     } else{
@@ -70,7 +70,7 @@ const RegisterPage = ({ setUserData, returning}) => {
       {step === 2 && (
         <Step2 formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />
       )}
-      {step === 3 && finalStep() &&(
+      {step === 3 &&(
         <div className='done'>
           <h1>Hello and Welcome {formData.surname || formData.username}</h1>
           <h1>You successfully registered your account !</h1>

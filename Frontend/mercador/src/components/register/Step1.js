@@ -13,7 +13,7 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
     };
 
     const doNextStep = () => {
-        const { name, surname , email, password, confirmPassword } = formData;
+        const { name, surname, email, password, confirmPassword } = formData;
 
         if (!name || !surname || !email  || !password){
             setErrorMessage('You need to complete all the fields!');
@@ -30,7 +30,6 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
         
         // Dacă parolele se potrivesc, poți continua cu următorii pași
         setErrorMessage('');
-        console.log('Passwords match. Proceeding to the next step...');
         nextStep();
         // Aici poți face redirect, sau orice altă acțiune pentru următorul pas
     };

@@ -10,6 +10,7 @@ const Header = ({ userData, setUserData }) => {
         const reset = ({
             name: '',
             surname: '',
+            username: '',
             email: '',
             password: '',
             confirmPassword: '',
@@ -21,7 +22,6 @@ const Header = ({ userData, setUserData }) => {
             carIds: []
         });
         setUserData(reset);
-        console.log("Succes");
     }
 
     return (

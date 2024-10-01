@@ -15,6 +15,7 @@ function App() {
       id: '',
       name: '',
       surname: '',
+      username: '',
       email: '',
       password: '',
       confirmPassword: '',
