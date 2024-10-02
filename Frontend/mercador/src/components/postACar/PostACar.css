@@ -121,6 +121,37 @@
         font-size: 1.2rem;  
     }
 
+    .frame .imagesGrid{
+        width: 350px;
+        height: auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        background-color: hsl(0, 2%, 12%);
+        height: 200px;
+        border: 2px solid black;
+    }
+
+    .frame input[type="file"]{
+        width: 350px;
+        height: auto;
+        background-color: hsl(0, 2%, 15%);
+        color: white;
+        border: 2px solid black;
+    }
+
+    .frame .imagesGrid img{
+        max-height: 60px;
+        max-width: 100px;
+    }
+
+    .frame .imagesGrid h2{
+        font-size: 1.5rem;
+        text-align: center;
+        color: hsl(0, 0%, 41%);
+        justify-content: center;
+        width: 330px;
+    }
+
     #desc{
         width: 90%;
         height: 350px;
@@ -170,8 +201,11 @@
         height: 70vh;
         border: 2px solid black;
         margin: 20px;
-        background-color: rgb(51, 18, 18);
+        background-color: hsla(0, 97%, 23%, 0.534);
         border-radius: 5px;
+    }
+    .frame .col:hover{
+        box-shadow: 4px 4px 2px 5px rgba(0, 0, 0, 0.2);
     }
     .frame .row{
         background-color: transparent;
@@ -207,6 +241,7 @@
         height: 25px;
         width: 25px;
         background-color: hsl(0, 1%, 83%);
+        margin-left: -10px;
     }
     .frame .row select{
         height: 35px;
@@ -224,13 +259,47 @@
         width: 70px;
     }
     .frame .col .packet .packet .row label{
-        margin-left: -20px;
+        margin-left: -35px;
     }
     .frame .col .packet .packet{
         border: 1px solid whitesmoke;
         margin-left: 10px;
         border-radius: 8px;
         height: 80px;
+        width: 280px;
+    }
+
+    .frame input[type="file"]{
+        width: 400px;
+        height: auto;
+        background-color: hsl(0, 2%, 15%);
+        color: white;
+        border: 2px solid black;
+    }
+
+    .frame .imagesGrid{
+        width: 400px;
+        height: auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        background-color: hsl(0, 2%, 12%);
+        height: 200px;
+        border: 2px solid black;
+    }
+
+    .frame .imagesGrid img{
+        /* height: auto;
+        width: auto; */
+        max-height: 60px;
+        max-width: 100px;
+    }
+
+    .frame .imagesGrid h2{
+        font-size: 1.6rem;
+        text-align: center;
+        color: #686868;
+        justify-content: center;
+        width: 380px;
     }
 
     #desc{
@@ -240,7 +309,6 @@
 }
 
 .loader {
-    background-color: #2B2B2B;
     border: 8px solid #a7a7a7; /* Culoarea de fundal */
     border-top: 8px solid #a11919; /* Culoarea spinner-ului */
     border-radius: 50%;

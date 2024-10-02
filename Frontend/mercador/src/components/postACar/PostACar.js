@@ -13,6 +13,8 @@ const PostACar = ({userData}) => {
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
     const [images, setImages] = useState([]); // Stocăm URL-urile imaginilor
+    // const [descriptionError, setDescriptionError] = useState('');
+    
     const [carData, setCarData] = useState({
         title: '',
         brand: '',
@@ -52,10 +54,19 @@ const PostACar = ({userData}) => {
     const handleImageUpload = (event) => {
         const files = event.target.files;
         const fileArray = Array.from(files); // Convertim FileList în array
-    
+        if (fileArray.length > MAX_IMAGES){
+            alert(`You can only upload a maximum of ${MAX_IMAGES} images.`);
+            setImages([]);
+            return;
+        }
+        if (fileArray.length === 0){
+            setImages([]);
+            return;
+        }
         // Verifică dacă imaginile curente plus cele noi depășesc limita
         if (images.length + fileArray.length > MAX_IMAGES) {
             alert(`You can only upload a maximum of ${MAX_IMAGES} images.`);
+            setImages([]);
             return; // Oprește execuția dacă limita este depășită
         }
     
@@ -64,7 +75,24 @@ const PostACar = ({userData}) => {
     };
 
     const handleSubmit = async () => {
-        console.log(carData.ownerId);
+        if (
+            carData.title===''||
+            carData.brand===''||
+            carData.model===''||
+            carData.body===''||
+            carData.year===''||
+            carData.cm3===''||
+            carData.hp===''||
+            carData.mileage===''||
+            carData.price===''||
+            carData.currency===''||
+            carData.fuelType===''||
+            carData.registrationDate===''||
+            carData.description===''
+        ){
+            window.alert("You need to complete all necesary stuff !");
+            return;
+        }
         const formData = new FormData();
         
         // Adaugă toate datele din carData în formData
@@ -336,13 +364,23 @@ const PostACar = ({userData}) => {
                             </div>
                         </div>
                         <div className='row'>
-                        <label>Images</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            multiple // Permite încărcarea mai multor imagini
-                            onChange={handleImageUpload}
-                        />
+                            <label>Images</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple // Permite încărcarea mai multor imagini
+                                onChange={handleImageUpload}
+                            />
+                            <div className='imagesGrid'>
+                                {images.length === 0 && <h2>No images selected</h2>}
+                                {images.map((image, index) => 
+                                    <img 
+                                        key={index} 
+                                        alt='No Car' 
+                                        src={URL.createObjectURL(image)} 
+                                    />
+                                )}
+                            </div>
                         </div>
                     </div>
                     <div className='col'>
@@ -354,8 +392,9 @@ const PostACar = ({userData}) => {
                                 onChange={handleChange}
                             />
                         </div>
+                        <p>Description must have at least 40 words</p>
                         <div className="btn">
-                            <button type='button' onClick={() => handleSubmit()}>Sumbit and post</button>
+                            <button type='button' onClick={handleSubmit}>Sumbit and post</button>
                     </div>
                     </div>
                 </div>
