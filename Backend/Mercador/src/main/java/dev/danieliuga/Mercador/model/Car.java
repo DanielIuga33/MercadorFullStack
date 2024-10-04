@@ -34,6 +34,8 @@ public class Car {
     @NotBlank(message = "Body is mandatory")
     private String body;
 
+    private String vin;
+
     @NotNull(message = "Year is mandatory")
     @Min(value = 1886, message = "Year must be no earlier than 1886") // First car was invented in 1886
     private int year;

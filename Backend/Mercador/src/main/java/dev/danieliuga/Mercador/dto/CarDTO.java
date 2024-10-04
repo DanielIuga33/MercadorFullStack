@@ -15,6 +15,7 @@ public class CarDTO {
     private String brand;
     private String model;
     private String body;
+    private String vin;
     private int year;
     private double price;
     private String currency;

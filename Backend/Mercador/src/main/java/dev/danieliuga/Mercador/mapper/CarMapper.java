@@ -17,6 +17,7 @@ public class CarMapper {
                 car.getBrand(),
                 car.getModel(),
                 car.getBody(),
+                car.getVin(),
                 car.getYear(),
                 car.getPrice(),
                 car.getCurrency(),

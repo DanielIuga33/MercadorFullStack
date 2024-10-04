@@ -202,6 +202,16 @@ const PostACar = ({userData}) => {
                                     ))}
                                 </select>
                             </div>
+                            <div className='row'>
+                                <label>VIN</label>
+                                <input 
+                                    id="vin"
+                                    name="vin"
+                                    onChange={handleChange}
+                                    type="text" 
+                                    placeholder='car vin'
+                                />
+                            </div>
                         </div>
                         <div className='packet'>
                             <div className='row'>
