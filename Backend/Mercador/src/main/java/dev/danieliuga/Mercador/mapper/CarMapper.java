@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class CarMapper {
-
     public CarDTO convertToCarDTO(Car car) {
         return new CarDTO(
                 car.getId().toHexString(),
@@ -25,9 +24,7 @@ public class CarMapper {
                 car.getFuelType().name(),
                 car.getTransmission().name(),
                 car.getCondition().name(),
-                car.getImages().stream()
-                        .map(image -> Base64.getEncoder().encodeToString(image))
-                        .collect(Collectors.toList())
+                Base64.getEncoder().encodeToString(car.getImages().get(0))
         );
     }
 

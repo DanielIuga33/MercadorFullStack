@@ -71,7 +71,7 @@
         background-color: rgb(17, 18, 20);
     }
 }
-@media (min-width: 1001px) and (max-width: 1300px) {
+@media (min-width: 1001px) and (max-width: 1300px){
     .grid-container {
         border: 2px solid rgb(184, 52, 0);
         margin-right: 20px;
@@ -95,7 +95,7 @@
     }
     
     .car-card img{
-        width: 260px;
+        width: 250px;
         
     }
     

@@ -27,15 +27,12 @@ public class CarService {
     }
     public Car addCar(Car car) throws Exception {
         Car savedCar = carRepository.save(car);
-        System.out.println(savedCar.getId());
         User user = userService.singleUser((car.getOwnerId()));
-        System.out.println(user);
         List<ObjectId> newCarIds = user.getCarIds();
         if (!newCarIds.contains(savedCar.getId())){
             newCarIds.add(savedCar.getId());
             user.setCarIds(newCarIds);
         }
-        System.out.println(user);
         userService.updateUser(user.getId(), user);
         return carRepository.save(car);
     }

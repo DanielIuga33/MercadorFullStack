@@ -23,5 +23,5 @@ public class CarDTO {
     private String fuelType;
     private String transmission;
     private String condition;
-    private List<String> images;
+    private String image;
 }

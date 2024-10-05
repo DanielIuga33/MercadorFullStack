@@ -61,10 +61,11 @@ const MainPage = ({setCarData}) => {
                         className='car-card' 
                         onClick={accesCar}
                     >
-                        {car.images && car.images.length > 0 && (
+                        {car.image && (
                             <img
-                                src={`data:image/jpeg;base64,${car.images[(car.images).length - 1]}`} // Folosim primul URL de imagine
+                                src={`data:image/jpeg;base64,${car.image}`} // Folosim primul URL de imagine
                                 alt={`Car ${car.title}`} // Adăugăm un alt text descriptiv
+                                loading="lazy"
                             />
                         )}
                         <div className="item">

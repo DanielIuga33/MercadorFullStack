@@ -75,6 +75,7 @@ public class CarController {
         car.setBrand(carData.get("brand"));
         car.setModel(carData.get("model"));
         car.setBody(carData.get("body"));
+        car.setVin(carData.get("vin"));
         car.setYear(Integer.parseInt(carData.get("year"))); // Convertește string în int
         car.setCm3(Integer.parseInt(carData.get("cm3"))); // Convertește string în int
         car.setHp(Integer.parseInt(carData.get("hp"))); // Convertește string în int

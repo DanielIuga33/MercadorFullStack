@@ -8,24 +8,26 @@ import AccountDetails from './components/accountDetails/AccountDetails';
 import Account from './components/account/Account';
 import PostACar from './components/postACar/PostACar';
 import CarDetails from './components/carDetails/CarDetails';
+import useLocalStorage from './hooks/useLocalStorage'; // Asigură-te că calea este corectă
+
 
 function App() {
 
-  const [userData, setUserData] = useState({
-      id: '',
-      name: '',
-      surname: '',
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      birthDate: '',
-      country: '',
-      city: '',
-      street: '',
-      role: '',
-      carIds: []
-});
+  const [userData, setUserData] = useLocalStorage('userData', {
+    id: '',
+    name: '',
+    surname: '',
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    birthDate: '',
+    country: '',
+    city: '',
+    street: '',
+    role: '',
+    carIds: []
+  });
 
 const [carData, setCarData] = useState({
   id: '',
@@ -33,6 +35,7 @@ const [carData, setCarData] = useState({
   brand: '',
   model: '',
   body: '',
+  vin: '',
   year: '',
   cm3: '',
   hp: '',
