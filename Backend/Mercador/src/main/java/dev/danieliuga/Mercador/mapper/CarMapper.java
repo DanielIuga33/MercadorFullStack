@@ -27,11 +27,4 @@ public class CarMapper {
                 car.getImages().get(0)
         );
     }
-
-    // Metodă inversă (opțională)
-    public Car convertToCarEntity(CarDTO carDTO) {
-        // Cod pentru a transforma CarDTO în Car
-        // Implementare inversă
-        return null;
-    }
 }

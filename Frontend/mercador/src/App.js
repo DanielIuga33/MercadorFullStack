@@ -10,6 +10,8 @@ import PostACar from './components/postACar/PostACar';
 import CarDetails from './components/carDetails/CarDetails';
 import useLocalStorage from './hooks/useLocalStorage';
 import UserCars from './components/userCars/UserOwnCars';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 
 function App() {
@@ -54,7 +56,17 @@ function App() {
     ownerEmail: userData.email,
     images: []
   });
-
+  useEffect(() =>{
+    const cleanup = async () =>{
+        try{
+            const response = await axios.delete('http://localhost:8080/api/cleanup-images');
+            console.log(response.data);
+        } catch (error){
+          console.error('Error cleaning unused photos:', error);
+        }
+    }
+    cleanup();
+  },[])
   return (
     <div className='App.js'>
       <Header userData={userData} setUserData={setUserData}/>

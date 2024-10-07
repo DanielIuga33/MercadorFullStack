@@ -1,22 +1,95 @@
-.car-image-slider{
-    border: 2px solid red;
+.car-details{
+  display: flex;
+  background-color: hsla(0, 0%, 11%, 0.993);
+  justify-content: center;
+  min-height: 90.6vh;
+  height: auto;
+}
+.car-details .content{
+  max-width: 1500px;
+  width: auto;
+  border: 2px solid hsl(0, 0%, 63%);
+  box-shadow: 5px 2px 10px hsl(0, 0%, 29%);
 }
 
+.content .title{
+  display: flex;
+  justify-content: center;
+}
+.car-details h1{
+  margin-top: 15px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid rgb(12, 12, 12);
+  width: 60%;
+  text-align: center;
+  color: rgb(228, 228, 228);
+}
+.car-image-slider{
+  margin-top: 20px;
+  justify-content: center;
+  width: 100%;
+  max-height: 550px;
+  height: auto;
+  background-color: rgb(44, 11, 11);
+  border: 2px solid rgb(175, 175, 175);
+}
+
+.car-image-slider .image{
+  display: flex;
+  margin-left: 17%;
+  padding: 10px;
+}
+.car-image-slider img {
+  width: auto;
+  height: auto;
+  max-width: 66%;
+  max-height: 500px;
+  border: 2px solid black;
+}
+  
 .slick-dots li button:before {
-    font-size: 12px;
-    color: grey;
-  }
+  font-size: 12px;
+  color: grey;
+}
   
-  .slick-dots li.slick-active button:before {
-    color: black;
-  }
-  
-  .car-image-slider img {
-    max-width: 50%;
-    height: 500px;
-  }
-  
-  .slick-slide {
-    cursor: pointer;
-  }
+.slick-dots li.slick-active button:before {
+  color: black;
+}
+.content .car-info-box{
+  color: #7c7c7c;
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-top: 25px;
+  border: 2px solid rgb(0, 1, 87);
+  height: 200px;
+  width: 100%;
+  display: flex;
+}
+.content .col{
+   border: 2px solid greenyellow; 
+   width: 22%;
+   margin-left: 2%;
+   margin-right: 2%;
+}
+
+.bg{
+  background-color: hsla(0, 0%, 11%, 0.993);
+  height: 90.6vh;
+  display: flex;
+}
+.loader {
+  border: 8px solid #a7a7a7; /* Culoarea de fundal */
+  border-top: 8px solid #a11919; /* Culoarea spinner-ului */
+  border-radius: 50%;
+  width: 50px; /* Dimensiunea spinner-ului */
+  height: 50px; /* Dimensiunea spinner-ului */
+  animation: spin 1s linear infinite; /* Animația de rotație */
+  margin: 20px auto; /* Centrare */
+  margin-top: 20%;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
   
