@@ -24,7 +24,7 @@ public class CarMapper {
                 car.getFuelType().name(),
                 car.getTransmission().name(),
                 car.getCondition().name(),
-                Base64.getEncoder().encodeToString(car.getImages().get(0))
+                car.getImages().get(0)
         );
     }
 

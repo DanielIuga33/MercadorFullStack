@@ -40,7 +40,7 @@ const MainPage = ({setCarData}) => {
         
         // Găsește mașina în listă după id
         const carDetails = cars.find(car => car.id === carId); // Folosește ID-ul ca string
-    
+        
         if (carDetails) {
             setCarData(carDetails);
             navigate("/carDetails");
@@ -62,7 +62,7 @@ const MainPage = ({setCarData}) => {
                     >
                         {car.image && (
                             <img
-                                src={`data:image/jpeg;base64,${car.image}`} // Folosim primul URL de imagine
+                                src={`http://localhost:8080/api/uploads/${car.images[0]}`} // Folosim primul URL de imagine
                                 alt={`Car ${car.title}`} // Adăugăm un alt text descriptiv
                                 loading="lazy"
                             />

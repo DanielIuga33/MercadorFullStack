@@ -75,7 +75,7 @@ public class Car {
     private ObjectId ownerId; // ID-ul utilizatorului care deține mașina
 
     // O listă de imagini asociate cu mașina, sub formă de URL-uri
-    private List<byte[]> images;
+    private List<String> images;
 
     // Enum-uri pentru valori limitate
     public enum FuelType {

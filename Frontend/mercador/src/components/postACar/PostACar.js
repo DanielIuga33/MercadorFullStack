@@ -7,11 +7,13 @@ import './PostACar.css';
 const PostACar = ({userData}) => {
     const MAX_IMAGES = 9;
     const API_URL = 'http://localhost:8080/api/cars';
+    const IMAGE_UPLOAD_URL = 'http://localhost:8080/api/upload'; // URL pentru încărcarea imaginilor
     const navigate = useNavigate();
     const [selectedBrand, setSelectedBrand] = useState('');
     const [filteredModels, setFilteredModels] = useState([]);
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
+    const [imageFiles, setImageFiles] = useState([]);
     const [images, setImages] = useState([]); // Stocăm URL-urile imaginilor
     // const [descriptionError, setDescriptionError] = useState('');
     
@@ -53,90 +55,73 @@ const PostACar = ({userData}) => {
     }, [selectedBrand]);
 
     const handleImageUpload = (event) => {
-        const files = event.target.files;
-        const fileArray = Array.from(files); // Convertim FileList în array
-        if (fileArray.length > MAX_IMAGES){
+        const files = Array.from(event.target.files);
+        if (files.length + imageFiles.length > MAX_IMAGES) {
             alert(`You can only upload a maximum of ${MAX_IMAGES} images.`);
-            setImages([]);
             return;
         }
-        if (fileArray.length === 0){
-            setImages([]);
-            return;
-        }
-        // Verifică dacă imaginile curente plus cele noi depășesc limita
-        if (images.length + fileArray.length > MAX_IMAGES) {
-            alert(`You can only upload a maximum of ${MAX_IMAGES} images.`);
-            setImages([]);
-            return; // Oprește execuția dacă limita este depășită
-        }
-    
-        // Actualizează starea imaginilor cu fișierele originale
-        setImages((prevImages) => prevImages.concat(fileArray));
+        setImageFiles(prev => [...prev, ...files]);
     };
 
-    const handleSubmit = async () => {
-        console.log(carData);
-        if (
-            carData.title===''||
-            carData.brand===''||
-            carData.model===''||
-            carData.body===''||
-            carData.year===''||
-            carData.cm3===''||
-            carData.hp===''||
-            carData.mileage===''||
-            carData.price===''||
-            carData.currency===''||
-            carData.fuelType===''||
-            carData.description===''
-        ){
-            window.alert("You need to complete all necesary stuff !");
-            return;
-        }
+    const uploadImages = async () => {
         const formData = new FormData();
-        
-        // Adaugă toate datele din carData în formData
-        Object.entries(carData).forEach(([key, value]) => {
-            formData.append(key, value);
-        });
-    
-        // Adaugă imaginile ca fișiere originale
-        images.forEach((image) => {
-            formData.append('images', image); // Adaugă fișierele originale
-        });
-    
-        // Înlocuiește carData.images cu imaginile din formData
-        formData.append('registrationDate', new Date().toISOString());
+        imageFiles.forEach((file) => formData.append('images', file));
     
         try {
-            setLoading(true);
-            await axios.post(API_URL, formData,{
-                headers: {
-                    'Content-Type': 'multipart/form-data', // Setează corect Content-Type
+            const response = await axios.post(IMAGE_UPLOAD_URL, formData, {
+                headers: { 
+                    'Content-Type': 'multipart/form-data' 
                 },
             });
+            return response.data.imageUrls;
+        } catch (error) {
+            console.error('Error uploading images:', error.response ? error.response.data : error.message);
+            return [];
+        }
+    };
+    
+    const handleSubmit = async () => {
+        if (carData.title === '' || carData.brand === '' || carData.model === '' || carData.year === '' || carData.price === '' || carData.description === '') {
+            alert('You need to complete all the required fields!');
+            return;
+        }
+
+        setLoading(true);
+        
+        try {
+            // Încărcăm imaginile și obținem URL-urile acestora
+            const imageUrls = await uploadImages();
+            if (imageUrls.length === 0) {
+                alert("Error uploading images");
+                setLoading(false);
+                return;
+            }
+
+            // Actualizăm `carData` cu URL-urile imaginilor
+            const updatedCarData = { ...carData, images: imageUrls };
+
+            // Trimitere date mașină
+            console.log(updatedCarData);
+            await axios.post(API_URL, updatedCarData);
+            setDone(true);
         } catch (error) {
             console.error('Error:', error.response ? error.response.data : error.message);
-        } finally{
+        } finally {
             setLoading(false);
-            setDone(true);
         }
     };
 
     if (loading) {
-        return (
-            <div className="loader"></div> // Afișăm spinner-ul
-        );
+        return <div className="loader"></div>;
     }
-    if (done){
+
+    if (done) {
         return (
             <div className='finished-posting-car'>
-                <h1>Car successfully posted !</h1>
-                <img alt='No Car' src={URL.createObjectURL(images[images.length - 1])} />
+                <h1>Car successfully posted!</h1>
                 <button onClick={() => navigate("/account")}>Click here to proceed</button>
             </div>
-        )
+        );
     }
 
     return (
