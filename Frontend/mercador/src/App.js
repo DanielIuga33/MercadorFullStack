@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+// import React, {useState} from 'react';
 import LoginPage from './components/login/LoginPage';
 import RegisterPage from './components/register/RegisterPage';
 import { Routes, Route } from 'react-router-dom';
@@ -8,7 +8,8 @@ import AccountDetails from './components/accountDetails/AccountDetails';
 import Account from './components/account/Account';
 import PostACar from './components/postACar/PostACar';
 import CarDetails from './components/carDetails/CarDetails';
-import useLocalStorage from './hooks/useLocalStorage'; // Asigură-te că calea este corectă
+import useLocalStorage from './hooks/useLocalStorage';
+import UserCars from './components/userCars/UserOwnCars';
 
 
 function App() {
@@ -29,30 +30,30 @@ function App() {
     carIds: []
   });
 
-const [carData, setCarData] = useState({
-  id: '',
-  title: '',
-  brand: '',
-  model: '',
-  body: '',
-  vin: '',
-  year: '',
-  cm3: '',
-  hp: '',
-  mileage: '',
-  price: '',
-  currency: '',
-  color: '',
-  fuelType: '',
-  numberOfDoors: '',
-  transmission: '',
-  condition: '',
-  registrationDate: '',
-  description: '',
-  steeringwheel: '',
-  ownerEmail: userData.email,
-  images: []
-});
+  const [carData, setCarData] = useLocalStorage('carData', {
+    id: '',
+    title: '',
+    brand: '',
+    model: '',
+    body: '',
+    vin: '',
+    year: '',
+    cm3: '',
+    hp: '',
+    mileage: '',
+    price: '',
+    currency: '',
+    color: '',
+    fuelType: '',
+    numberOfDoors: '',
+    transmission: '',
+    condition: '',
+    registrationDate: '',
+    description: '',
+    steeringwheel: '',
+    ownerEmail: userData.email,
+    images: []
+  });
 
   return (
     <div className='App.js'>
@@ -62,6 +63,7 @@ const [carData, setCarData] = useState({
 
         <Route path="/account" element={<Account userData={userData}/>} />
         <Route path="/account/details" element={<AccountDetails userData={userData}/>} />
+        <Route path="/account/cars" element={<UserCars userData={userData}/>} />
         <Route path="/account/postACar" element={<PostACar userData={userData}/>}/>
 
         <Route path="/login" element={<LoginPage setUserData={setUserData} returning={0}/>} />
@@ -70,7 +72,7 @@ const [carData, setCarData] = useState({
         <Route path="/register" element={<RegisterPage userData={userData} setUserData={setUserData} returning={0}/>} />
         <Route path="/register/account" element={<RegisterPage userData={userData} setUserData={setUserData} returning={1}/>} />
 
-        <Route path="/carDetails" element={<CarDetails carData={carData}/>} />
+        <Route path="/carDetails" element={<CarDetails carDataId={carData.id}/>} />
       </Routes>
     </div>
   );

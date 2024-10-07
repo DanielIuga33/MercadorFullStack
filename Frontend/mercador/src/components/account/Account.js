@@ -4,6 +4,15 @@ import { useNavigate } from 'react-router-dom';
 
 const Account = ({userData}) => {
   const navigate = useNavigate();
+
+  const viewCars = () =>{
+    if ((userData.carIds).length === 0){
+      return;
+    }
+    else{
+      navigate('/account/cars');
+    }
+  }
   return (
     <div>
       {(!userData.email &&
@@ -20,7 +29,7 @@ const Account = ({userData}) => {
                 <span>
                   <div className='firstPart'>
                     <button onClick={() => navigate('/account/postACar')}>Post a Car</button>
-                    <button>View your cars ({(userData.carIds).length > 0 ? (userData.carIds).length : 'no'} cars posted)</button>
+                    <button onClick={viewCars}>View your cars ({(userData.carIds).length > 0 ? (userData.carIds).length : 'no'} cars posted)</button>
                   </div>
                   <div className='divider'></div>
                   <div className='secondPart'>

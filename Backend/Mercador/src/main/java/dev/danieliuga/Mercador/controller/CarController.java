@@ -44,8 +44,9 @@ public class CarController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Car>> getSingleCar(@PathVariable ObjectId id){
-        return new ResponseEntity<Optional<Car>>(carService.singleCar(id), HttpStatus.OK);
+    public ResponseEntity<Optional<Car>> getSingleCar(@PathVariable String id){
+        ObjectId objectId = new ObjectId(id);
+        return new ResponseEntity<Optional<Car>>(carService.singleCar(objectId), HttpStatus.OK);
     }
 
 //    @GetMapping("/{id}")

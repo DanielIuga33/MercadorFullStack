@@ -37,7 +37,6 @@ const MainPage = ({setCarData}) => {
 
     const accesCar = (e) => {
         const carId = e.currentTarget.id;
-        console.log("Selected car ID:", carId);
         
         // Găsește mașina în listă după id
         const carDetails = cars.find(car => car.id === carId); // Folosește ID-ul ca string
