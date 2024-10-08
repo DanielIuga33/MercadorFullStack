@@ -54,7 +54,7 @@ const CarDetails = ({carDataId}) => {
                 <Slider {...settings}>
                     {carImages.map((img, index) => (
                         <div className='image' key={index}>
-                            <img src={`http://localhost:8080/api${img}`} alt={`Car ${index + 1}`} style={{ cursor: 'pointer' }} />
+                            <img src={`http://localhost:8080/api${img}`} alt={`Car ${index + 1}`} />
                         </div>
                     ))}
                 </Slider>
