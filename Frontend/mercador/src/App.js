@@ -74,7 +74,7 @@ function App() {
         <Route path="/" element={<Home userData={userData} setCarData={setCarData}/>} />
 
         <Route path="/account" element={<Account userData={userData}/>} />
-        <Route path="/account/details" element={<AccountDetails userData={userData}/>} />
+        <Route path="/account/details" element={<AccountDetails userData={userData} setUserData={setUserData}/>} />
         <Route path="/account/cars" element={<UserCars userData={userData}/>} />
         <Route path="/account/postACar" element={<PostACar userData={userData}/>}/>
 

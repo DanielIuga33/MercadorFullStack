@@ -72,10 +72,11 @@ const CarDetails = ({carDataId}) => {
   return (
     <div className='car-details'>
         <div className='content'>
-            <span className='title'>
-                <h1>{car.title}</h1>
-            </span>
             <div className="car-image-slider">
+                <span className='title'>
+                    <h1 id='title'>{car.title}</h1>
+                    <h1 id='price'>{car.price} {car.currency}</h1>
+                </span>
                 <Slider ref={slider1Ref} {...settings1}>
                     {carImages.map((img, index) => (
                         <div className='image' key={index} onClick={() => handleImageClick(index)}>
@@ -106,13 +107,14 @@ const CarDetails = ({carDataId}) => {
                     <h4>Tehnical Data</h4>
                     <div className='bar'></div>
                     <label><span className="align-right"><strong>Condition: </strong></span>{car.condition}</label>
-                    <label><span className="align-right"><strong>Body type: </strong></span>{car.body}</label>
+                    <label><span className="align-right"><strong>Category: </strong></span>{car.body}</label>
                     <label><span className="align-right"><strong>First registartion: </strong></span>{car.year}</label>
                     <label><span className="align-right"><strong>Gearbox: </strong></span>Transmission {car.transmission}</label>
-                    <label><span className="align-right"><strong>Fuel: </strong></span>{car.fuelType}</label>
+                    <label><span className="align-right"><strong>Drive Type: </strong></span>{car.fuelType}</label>
                     <label><span className="align-right"><strong>Mileage: </strong></span>{car.mileage} km</label>
-                </div>
-                <div className='row'>
+                    <label><span className="align-right"><strong>Power: </strong></span>{Math.floor(car.hp * 0.74)}kW({car.hp} hp)</label>
+                    <label><span className="align-right"><strong>Engine capacity: </strong></span>{car.cm3} cm³</label>
+                    <label><span className="align-right"><strong>Door Count: </strong></span>{car.numberOfDoors}</label>
                 </div>
             </div>
        </div>

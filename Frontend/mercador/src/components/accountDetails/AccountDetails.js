@@ -4,7 +4,7 @@ import { useState , useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const AccountDetails = ({ userData }) => {
+const AccountDetails = ({ userData, setUserData}) => {
     const navigate = useNavigate();
     
     const [formData, setFormData] = useState(userData);
@@ -154,22 +154,14 @@ const AccountDetails = ({ userData }) => {
         if (!errorMsgSecondRow2){
             formData.password = newpassword;
             updateUser(formData.id, formData);
-            exit()
+            exit();
         } 
     };
 
     const updateUser = async (id, userData) => {
-        console.log(id);
-        // try {
-        //     console.log("Updating user with email:", email);
-        //     const response = await axios.patch(`http://localhost:8080/api/users/${email}`, userData);
-        //     console.log('User updated:', response.data);
-        // } catch (error) {
-        //     console.error('Error updating user:', error);
-        // }
         try {
-            const response = await axios.patch(`http://localhost:8080/api/users/${id}`, userData);
-            console.log('User updated:', response.data);
+            await axios.patch(`http://localhost:8080/api/users/${id}`, userData);
+            setUserData(userData);
         } catch (error) {
             console.error('Error updating user:', error);
         }

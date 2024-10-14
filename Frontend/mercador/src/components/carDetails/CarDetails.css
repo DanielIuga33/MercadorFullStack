@@ -6,18 +6,28 @@
   justify-content: center;
 }
 .car-details .content{
+  /* margin-top: 23px; */
+  padding-top: 15px;
   max-width: 1400px;
   width: auto;
   height: auto;
   border: 2px solid hsl(0, 0%, 15%);
   box-shadow: 5px 2px 10px hsl(0, 0%, 20%);
-  background-color: hsl(0, 0%, 4%);
+  background-color: hsl(0, 0%, 10%);
   border-radius: 10px;
 }
 
 .content .title{
   display: flex;
-  justify-content: center;
+}
+.content .title #title{
+  text-align:left;
+  margin-left: 10px;
+}
+.content .title #price{
+  text-align: end;
+  margin-right: 30px;
+  font-size: 2rem;
 }
 .car-details h1{
   margin-top: 15px;
@@ -28,7 +38,7 @@
   color: rgb(228, 228, 228);
 }
 .car-image-slider{
-  margin-top: 20px;
+  margin-top: 40px;
   justify-content: center;
   align-items: center;
   max-height: 750px;
