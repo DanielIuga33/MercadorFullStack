@@ -17,11 +17,16 @@ public class CarDTO {
     private String body;
     private String vin;
     private int year;
+    private int cm3;
+    private int hp;
     private double price;
     private String currency;
     private String color;
     private String fuelType;
     private String transmission;
     private String condition;
+    private String steeringwheel;
+    private double mileage;
+    private int numberOfDoors;
     private String image;
 }

@@ -18,10 +18,39 @@
         padding: 10px;
         border-radius: 5px;
     }
+    
     .sidebar #cauta{
         padding: 4px;
         width: 160px;
         margin-left: 10px;
+    }
+    .sidebar #reset{
+        margin-top: 12px;
+        background-color: rgb(129, 13, 13);
+        height: 30px;
+        font-size: 0.8rem;
+        padding: 0;
+        width: 100px;
+    }
+    .sidebar #reset:hover{
+        background-color: rgb(124, 35, 27);
+        box-shadow: 5px 5px 5px  rgba(0, 0, 0, 0.2);
+        transition: 0.5s ease;
+
+    }
+    .sidebar .line{
+        display: flex;
+    }
+    .sidebar .line p{
+        margin-top: 15px;
+        margin-left: 17px;
+        margin-right: -10px;
+        font-size: 0.8rem;
+        color: rgb(211, 211, 211);
+    }
+    .sidebar .line #sort{
+        margin-top: 10px;
+        width: 90px;
     }
     .sidebar button{
         margin-left: 10px;
@@ -64,6 +93,9 @@
 }
 @media (min-width: 1524px){
     .sidebar{
+        position: sticky;
+        top: 0; /* distanța față de partea de sus a paginii */
+        z-index: 1000;
         margin-left: 3px;
         background-color: hsl(0, 100%, 24%);
         border: 1.5px solid rgb(0, 0, 0);
@@ -87,8 +119,31 @@
         text-align: center;
         margin-left: 50px;
     }
+    .sidebar #reset{
+        margin-top: 12px;
+        background-color: rgb(129, 13, 13);
+        height: 30px;
+        font-size: 1rem;
+        padding: 0;
+        width: 100px;
+    }
+    .sidebar #reset:hover{
+        background-color: rgb(124, 35, 27);
+        box-shadow: 5px 5px 5px  rgba(0, 0, 0, 0.2);
+        transition: 0.5s ease;
+
+    }
     .sidebar .line{
         display: flex;
+    }
+    .sidebar .line p{
+        margin-top: 12px;
+        margin-left: 17px;
+        margin-right: -10px;
+        color: rgb(211, 211, 211);
+    }
+    .sidebar .line #sort{
+        margin-top: 10px;
     }
     .sidebar #cauta{
         padding: 4px;

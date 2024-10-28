@@ -18,12 +18,17 @@ public class CarMapper {
                 car.getBody(),
                 car.getVin(),
                 car.getYear(),
+                car.getCm3(),
+                car.getHp(),
                 car.getPrice(),
                 car.getCurrency(),
                 car.getColor(),
                 car.getFuelType().name(),
                 car.getTransmission().name(),
                 car.getCondition().name(),
+                car.getSteeringwheel(),
+                car.getMileage(),
+                car.getNumberOfDoors(),
                 car.getImages().get(0)
         );
     }

@@ -1,4 +1,3 @@
-// import React, {useState} from 'react';
 import LoginPage from './components/login/LoginPage';
 import RegisterPage from './components/register/RegisterPage';
 import { Routes, Route } from 'react-router-dom';

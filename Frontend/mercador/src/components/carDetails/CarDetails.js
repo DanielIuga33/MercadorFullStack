@@ -106,6 +106,8 @@ const CarDetails = ({carDataId}) => {
                 <div className='row'>
                     <h4>Tehnical Data</h4>
                     <div className='bar'></div>
+                    <label><span className="align-right"><strong>Brand: </strong></span>{car.brand}</label>
+                    <label><span className="align-right"><strong>Model: </strong></span>{car.model}</label>
                     <label><span className="align-right"><strong>Condition: </strong></span>{car.condition}</label>
                     <label><span className="align-right"><strong>Category: </strong></span>{car.body}</label>
                     <label><span className="align-right"><strong>First registartion: </strong></span>{car.year}</label>
@@ -114,6 +116,7 @@ const CarDetails = ({carDataId}) => {
                     <label><span className="align-right"><strong>Mileage: </strong></span>{car.mileage} km</label>
                     <label><span className="align-right"><strong>Power: </strong></span>{Math.floor(car.hp * 0.74)}kW({car.hp} hp)</label>
                     <label><span className="align-right"><strong>Engine capacity: </strong></span>{car.cm3} cm³</label>
+                    <label><span className="align-right"><strong>Color: </strong></span>{car.color}</label>
                     <label><span className="align-right"><strong>Door Count: </strong></span>{car.numberOfDoors}</label>
                 </div>
             </div>

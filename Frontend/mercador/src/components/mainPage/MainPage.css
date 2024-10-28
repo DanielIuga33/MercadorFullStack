@@ -1,5 +1,6 @@
 @media(max-width: 900px){
     .grid-container {
+        min-width: 80%;
         border: 2px solid rgb(184, 52, 0);
         margin-right: 20px;
         margin-top: 20px;
@@ -33,11 +34,9 @@
         background-color: rgb(17, 18, 20);
     }
 }
-
-
-
 @media (min-width: 900px) and (max-width: 1001px){
     .grid-container {
+        min-width: 80%;
         border: 2px solid rgb(184, 52, 0);
         margin-right: 20px;
         margin-top: 20px;
@@ -73,14 +72,15 @@
 }
 @media (min-width: 1001px) and (max-width: 1300px){
     .grid-container {
+        min-width: 80%;
         border: 2px solid rgb(184, 52, 0);
         margin-right: 20px;
         margin-top: 20px;
         background-color: hsl(0, 0%, 11%);
         display: grid;
-        grid-template-columns: repeat(3, 1fr); /* Creates 3 equal columns */
-        gap: 10px; /* Optional: adds space between the grid items */
-        padding: 10px; /* Optional: adds padding inside the grid container */
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 10px; 
+        padding: 10px; 
     }
 
     .car-card{
@@ -110,14 +110,15 @@
 
 @media (min-width: 1301px) and (max-width: 1549px) {
     .grid-container {
+        min-width: 80%;
         border: 2px solid rgb(184, 52, 0);
         margin-right: 20px;
         margin-top: 20px;
         background-color: hsl(0, 0%, 11%);
         display: grid;
-        grid-template-columns: repeat(4, 1fr); /* Creates 3 equal columns */
-        gap: 10px; /* Optional: adds space between the grid items */
-        padding: 10px; /* Optional: adds padding inside the grid container */
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        padding: 10px; 
     }
 
     .car-card{
@@ -148,14 +149,15 @@
 
 @media (min-width: 1550px) {
     .grid-container {
+        min-width: 80%;
         border: 2px solid rgb(184, 52, 0);
         margin-right: 20px;
         margin-top: 20px;
         background-color: hsl(0, 0%, 11%);
         display: grid;
-        grid-template-columns: repeat(5, 1fr); /* Creates 3 equal columns */
-        gap: 10px; /* Optional: adds space between the grid items */
-        padding: 10px; /* Optional: adds padding inside the grid container */
+        grid-template-columns: repeat(5, 1fr); 
+        gap: 10px; 
+        padding: 10px; 
     }
 
     .car-card{
@@ -171,10 +173,6 @@
     
       
     .car-card img{
-        /* width: 285px;
-        max-height: auto;
-        max-height: 250px;
-        min-height: 160px; */
         width: 100%;
         max-height: 270px;
         height: auto;
@@ -189,15 +187,24 @@
         background-color: rgb(17, 18, 20);
     }
 }
-
+.grid-container .noCars p{
+    font-size: 3rem;
+    text-align: center;
+}
+.grid-container .noCars{
+    width: 500%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .loader {
-    border: 8px solid #a7a7a7; /* Culoarea de fundal */
-    border-top: 8px solid #a11919; /* Culoarea spinner-ului */
+    border: 8px solid #a7a7a7; 
+    border-top: 8px solid #a11919;
     border-radius: 50%;
-    width: 50px; /* Dimensiunea spinner-ului */
-    height: 50px; /* Dimensiunea spinner-ului */
-    animation: spin 1s linear infinite; /* Animația de rotație */
-    margin: 20px auto; /* Centrare */
+    width: 50px;
+    height: 50px; 
+    animation: spin 1s linear infinite; 
+    margin: 20px auto;
     margin-top: 400px;
 }
 
