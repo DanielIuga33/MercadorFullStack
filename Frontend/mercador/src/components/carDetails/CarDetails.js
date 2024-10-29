@@ -69,6 +69,7 @@ const CarDetails = ({carDataId}) => {
   };
 
 
+
   return (
     <div className='car-details'>
         <div className='content'>
@@ -118,6 +119,11 @@ const CarDetails = ({carDataId}) => {
                     <label><span className="align-right"><strong>Engine capacity: </strong></span>{car.cm3} cm³</label>
                     <label><span className="align-right"><strong>Color: </strong></span>{car.color}</label>
                     <label><span className="align-right"><strong>Door Count: </strong></span>{car.numberOfDoors}</label>
+                </div>
+                <div className="row">
+                    <h4>Description</h4>
+                    <div className='bar'></div>
+                    <p className='description'>{car.description}</p>
                 </div>
             </div>
        </div>
