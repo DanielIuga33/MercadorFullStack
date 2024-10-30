@@ -258,6 +258,19 @@ const AccountDetails = ({ userData, setUserData}) => {
                             />
                         </div>
                         <div>
+                            <label htmlFor="county">County:</label>
+                            <input
+                                type="text"
+                                id="county"
+                                name="county"
+                                value={formData.county}
+                                readOnly = {isReadOnly}
+                                onChange={handleChange}
+                                style={{ borderColor: borderColors['county'], borderWidth: '2px', borderStyle: 'solid' }}
+                                required
+                            />
+                        </div>
+                        <div>
                             <label htmlFor="city">City:</label>
                             <input
                                 type="text"

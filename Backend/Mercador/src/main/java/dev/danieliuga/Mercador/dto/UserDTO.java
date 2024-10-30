@@ -17,6 +17,7 @@ public class UserDTO {
     private String email;
     private LocalDate birthDate;
     private String country;
+    private String county;
     private String city;
     private String street;
     private String role; // Poate fi util să fie un String pentru a simplifica expunerea

@@ -21,6 +21,7 @@ public class UserMapper {
                 user.getEmail(),
                 user.getBirthDate(),
                 user.getCountry(),
+                user.getCounty(),
                 user.getCity(),
                 user.getStreet(),
                 user.getRole().name(), // Convertim enum-ul Role la string

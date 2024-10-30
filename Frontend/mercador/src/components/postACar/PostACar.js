@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './PostACar.css';
-import { brands, modelsByBrand, bodies, colors } from '../carData';
+import { brands, modelsByBrand, bodies, colors } from '../ConstantData';
 
 const PostACar = ({userData}) => {
     const MAX_IMAGES = 9;

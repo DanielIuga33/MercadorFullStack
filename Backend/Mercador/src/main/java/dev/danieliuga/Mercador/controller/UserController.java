@@ -83,16 +83,6 @@ public class UserController {
         }
     }
 
-//    @PatchMapping("/{email}")
-//    public ResponseEntity<User> updateUser(@PathVariable String email, @RequestBody User updatedUser) {
-//        try {
-//            User user = userService.updateUser(email, updatedUser);
-//            return ResponseEntity.ok(user);
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body(null);
-//        }
-//    }
-
     @PatchMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User updatedUser) {
         ObjectId userId =  new ObjectId(id);

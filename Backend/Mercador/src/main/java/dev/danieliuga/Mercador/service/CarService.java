@@ -36,4 +36,10 @@ public class CarService {
         userService.updateUser(user.getId(), user);
         return carRepository.save(car);
     }
+
+    public void deleteCar(ObjectId id){carRepository.deleteById(id); }
+
+//    public Car update(Car car, ObjectId id){
+//        return carRepository.
+//    }
 }

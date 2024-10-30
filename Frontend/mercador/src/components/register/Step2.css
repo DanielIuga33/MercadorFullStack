@@ -26,11 +26,17 @@
   background-color: hsl(2, 99%, 35%);
 }
 
-.step2-container input[type="date"]{
+.step2-container input[type="date"], .step2-container select{
   width: 200px;
 }
+.step2-container #streetText {
+  width: 170px;
+}
+.step2-container #street {
+  width: 220px;
+}
 
-.step2-container input {
+.step2-container input, .step2-container select {
   flex: 1; /* Lasă input-ul să ocupe spațiul rămas */
   padding: 0.5rem;
   border: 1px solid #ccc;

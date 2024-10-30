@@ -1,7 +1,7 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import './SearchBar.css';
-import { brands, modelsByBrand, bodies, colors } from '../carData';
+import { brands, modelsByBrand, bodies, colors } from '../ConstantData';
 
 const SearchBar = ({searchFilters, setSearchFilters}) => {
     const [selectedBrand, setSelectedBrand] = useState('');
@@ -54,12 +54,12 @@ const SearchBar = ({searchFilters, setSearchFilters}) => {
                         value={currentSearchFilters.sort || ""}
                     >  
                         <option value="">see all</option>
-                        <option value={"YearDescending"}>Year descending</option>
-                        <option value={"YearAsscending"}>Year descending</option>
-                        <option value={"PriceDescending"}>Price descending</option>
-                        <option value={"PriceAscending"}>Price descending</option>
-                        <option value={"MileageDescending"}>Mileage descending</option>
-                        <option value={"MileageAscending"}>Mileage descending</option>
+                        <option value={"YearDescending"}>Year Descending</option>
+                        <option value={"YearAscending"}>Year Ascending</option>
+                        <option value={"PriceDescending"}>Price Descending</option>
+                        <option value={"PriceAscending"}>Price Ascending</option>
+                        <option value={"MileageDescending"}>Mileage Descending</option>
+                        <option value={"MileageAscending"}>Mileage Ascending</option>
                     </select>
                 </div>
                 <div className="line">

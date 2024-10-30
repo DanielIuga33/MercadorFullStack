@@ -133,11 +133,11 @@ const MainPage = ({searchFilters, setCarData}) => {
                     }
                     if (filteredSearchFilters[elem]["sort"] === "MileageDescending"){
                         carData = Object.values(carData)
-                            .sort((a, b) => Number(b.km) - Number(a.km));
+                            .sort((a, b) => Number(b.mileage) - Number(a.mileage));
                     }
                     if (filteredSearchFilters[elem]["sort"] === "MileageAscending"){
                         carData = Object.values(carData)
-                            .sort((a, b) => Number(a.km) - Number(b.km));
+                            .sort((a, b) => Number(a.mileage) - Number(b.mileage));
                     }
                 }
             }

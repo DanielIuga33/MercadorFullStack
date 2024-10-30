@@ -9,7 +9,7 @@ import PostACar from './components/postACar/PostACar';
 import CarDetails from './components/carDetails/CarDetails';
 import useLocalStorage from './hooks/useLocalStorage';
 import UserCars from './components/userCars/UserOwnCars';
-import { useEffect } from 'react';
+import { useEffect , useState} from 'react';
 import axios from 'axios';
 
 
@@ -24,6 +24,7 @@ function App() {
     password: '',
     confirmPassword: '',
     birthDate: '',
+    county: '',
     country: '',
     city: '',
     street: '',
@@ -55,6 +56,30 @@ function App() {
     ownerEmail: userData.email,
     images: []
   });
+
+  const [searchFilters, setSearchFilters] = useState({
+    title: '',
+    brand: '',
+    model: '',
+    body: '',
+    yearStart: '',
+    yearEnd: '',
+    cm3Start: '',
+    cm3End: '',
+    hpStart: '',
+    hpEnd: '',
+    kmStart: '',
+    kmEnd: '',
+    priceStart: '',
+    priceEnd: '',
+    color: '',
+    fuelType: '',
+    numberOfDoors: '',
+    transmission: '',
+    condition: '',
+    steeringwheel: '',
+    sort: '',
+  })
   useEffect(() =>{
     const cleanup = async () =>{
         try{
@@ -70,7 +95,7 @@ function App() {
     <div className='App.js'>
       <Header userData={userData} setUserData={setUserData}/>
       <Routes>
-        <Route path="/" element={<Home userData={userData} setCarData={setCarData}/>} />
+        <Route path="/" element={<Home searchFilters={searchFilters} setSearchFilters={setSearchFilters} setCarData={setCarData}/>} />
 
         <Route path="/account" element={<Account userData={userData}/>} />
         <Route path="/account/details" element={<AccountDetails userData={userData} setUserData={setUserData}/>} />

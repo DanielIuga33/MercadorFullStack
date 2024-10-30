@@ -19,7 +19,7 @@
     .account-details-container .container-details{
         text-align: center;
         display: flex;
-        height: 75vh;
+        height: 81vh;
         width: 100%;
         border: 2px solid orangered;
         box-shadow: 10px 20px 200px  rgb(243, 0, 0), 10px 10px 5px 8px black;
@@ -183,7 +183,7 @@
     .account-details-container .container-details{
         text-align: center;
         display: flex;
-        height: 62vh;
+        height: 67vh;
         width: 100%;
         border: 2px solid orangered;
         box-shadow: 10px 20px 200px  rgb(243, 0, 0), 10px 10px 5px 8px black;

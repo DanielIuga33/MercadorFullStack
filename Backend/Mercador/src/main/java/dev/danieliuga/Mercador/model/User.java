@@ -33,6 +33,7 @@ public class User {
     private String password;
     private LocalDate birthDate;
     private String country;
+    private String county;
     private String city;
     private String street;
     private Role role;
