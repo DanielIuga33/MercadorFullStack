@@ -2,7 +2,8 @@
   min-height: 2000px;
   height: auto;
   display: flex;
-  background-color: hsla(0, 0%, 5%, 0.993);
+  background-color: rgb(58, 6, 6);
+  /* background-color: hsla(0, 0%, 5%, 0.993); */
   justify-content: center;
 }
 .car-details .content{

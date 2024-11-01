@@ -11,7 +11,7 @@
         padding: 10px; /* Optional: adds padding inside the grid container */
     }
 
-    .car-card{
+    .grid-container .car-card{
         border:2px solid rgb(0, 0, 0);
         height: 320px;
         width: 290px;
@@ -22,7 +22,7 @@
         border-radius: 2px;
     }
     
-    .car-card img{
+    .grid-container .car-card img{
         width: 285px;
     }
     
@@ -47,7 +47,7 @@
         padding: 10px; /* Optional: adds padding inside the grid container */
     }
 
-    .car-card{
+    .grid-container .car-card{
         border:2px solid rgb(0, 0, 0);
         height: 330px;
         width: 290px;
@@ -58,7 +58,7 @@
         border-radius: 2px;
     }
     
-    .car-card img{
+    .grid-container .car-card img{
         width: 285px;
     }
     
@@ -83,7 +83,7 @@
         padding: 10px; 
     }
 
-    .car-card{
+    .grid-container .car-card{
         border:2px solid rgb(0, 0, 0);
         height: 320px;
         width: 265px;
@@ -94,12 +94,12 @@
         border-radius: 2px;
     }
     
-    .car-card img{
+    .grid-container .car-card img{
         width: 250px;
         
     }
     
-    .car-card .item{
+    .grid-container .car-card .item{
         display: flex;
         flex-direction: column;
         height:100%;
@@ -121,7 +121,7 @@
         padding: 10px; 
     }
 
-    .car-card{
+    .grid-container .car-card{
         border:2px solid rgb(0, 0, 0);
         height: 350px;
         width: 265px;
@@ -132,13 +132,13 @@
         border-radius: 2px;
     }
     
-    .car-card img{
+    .grid-container .car-card img{
         width: 263px;
         height: auto;
         max-height: 240px;
     }
     
-    .car-card .item{
+    .grid-container .car-card .item{
         display: flex;
         flex-direction: column;
         height:100%;
@@ -160,7 +160,7 @@
         padding: 10px; 
     }
 
-    .car-card{
+    .grid-container .car-card{
         border:2px solid rgb(0, 0, 0);
         height: 400px;
         width: 290px;
@@ -172,14 +172,14 @@
     }
     
       
-    .car-card img{
+    .grid-container .car-card img{
         width: 100%;
         max-height: 270px;
         height: auto;
         image-resolution: 300dpi;
     }
     
-    .car-card .item{
+    .grid-container .car-card .item{
         display: flex;
         flex-direction: column;
         height:100%;

@@ -1,15 +1,17 @@
 .ownCars{
     background-color: rgb(58, 6, 6);
-    height: 90.6vh;
+    min-height: 90.6vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: rgb(207, 207, 207);
 
 }
 .ownCars .container{
     display: flex;
     width: 100%;
-    height: 90vh;
+    min-height: 90vh;
+    height: auto;
     background-color: rgb(26, 26, 26);
     border: 2px solid black;
     align-items: center;
@@ -21,5 +23,89 @@
     width: 100%;
     height: fit-content;
     border: 2px solid gray;
+    padding: 10px;
     margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ownCars .car-card{
+    margin-left: 5vw;
+    background-color: rgb(31, 31, 31);
+    display: flex;
+    width: 50vw;
+    height: 250px;
+    margin-bottom: 20px;
+    align-items: center;
+    border-radius: 10px;
+}
+.ownCars img{
+    height: 70%;
+    max-width: 20vw;
+    width: auto;
+    margin-left: 20px;
+}
+.ownCars .item{
+    margin-left: 10px;
+    align-items: top;
+    height: 70%;
+    flex: 1;
+}
+.ownCars .buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid rgb(49, 49, 49);
+    margin-right: 10px;
+    height: 70%;
+    width: 250px;
+    gap: 30px;
+}
+.ownCars .buttons button{
+    padding: 10px 20px;
+    color: rgb(0, 0, 0);
+    font-size: 1rem;
+    font-weight: 600;
+    border: 4px solid rgba(255, 0, 0, 0.5); /* Culoarea inițială a bordurii */
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s;
+}
+
+.ownCars #view{
+    background-color: yellow;
+}
+.ownCars #delete{
+    background-color: red;
+}
+
+.ownCars .buttons button:hover{
+    animation: borderIntensityRotate 2s linear infinite;;
+}
+
+@keyframes borderIntensityRotate {
+    0% {
+        border-top-color: rgb(206, 80, 41); /* Culoare mai slabă */
+        border-width: 3px; /* Grosime mai mică */
+    }
+    25% {
+        border-right-color: rgb(206, 80, 41); /* Culoare plină */
+        border-width: 3px; /* Grosime mai mare */
+    }
+    50% {
+        border-bottom-color: rgb(206, 80, 41); /* Culoare mai slabă */
+        border-width: 3px; /* Grosime mai mică */
+    }
+    75% {
+        border-left-color: rgb(206, 80, 41); /* Culoare plină */
+        border-width: 3px; /* Grosime mai mare */
+    }
+    100% {
+        border-top-color: rgb(206, 80, 41); /* Revenire la culoarea mai slabă */
+        border-width: 3px; /* Revenire la grosimea inițială */
+    }
 }

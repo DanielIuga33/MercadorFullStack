@@ -41,6 +41,22 @@ public class CarController {
         return new ResponseEntity<Optional<Car>>(carService.singleCar(objectId), HttpStatus.OK);
     }
 
+    @GetMapping("dto/{id}")
+    public ResponseEntity<Optional<CarDTO>> getSingleDTOCar(@PathVariable String id){
+        ObjectId objectId = new ObjectId(id);
+        Optional<Car> optionalCar = carService.singleCar(objectId);
+
+        // Verifică dacă optional-ul conține o valoare
+        if (optionalCar.isPresent()) {
+            // Conversie la CarDTO
+            CarDTO carDTO = carMapper.convertToCarDTO(optionalCar.get());
+            return new ResponseEntity<>(Optional.of(carDTO), HttpStatus.OK);
+        } else {
+            // Dacă nu există, returnează un 404
+            return new ResponseEntity<>(Optional.empty(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     @PostMapping
     public ResponseEntity<Car> addCar(@RequestBody Car carData) throws Exception {
