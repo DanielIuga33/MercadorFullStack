@@ -27,3 +27,7 @@ m
 LMercador/src/main/java/dev/danieliuga/Mercador/controller/CarController.java,3\4\34b6a91e17f4e057230b35697c31928573d58522
 „
 TMercador/src/main/java/dev/danieliuga/Mercador/controller/ImageUploadController.java,b\f\bf12dd47d445795c87b5245ef904f327f69d5e06
+|
+LMercador/src/main/java/dev/danieliuga/Mercador/repository/CarRepository.java,1\5\158f0153cdcfbf1588d7dd922e20b2823a617ddd
+z
+JMercador/src/main/java/dev/danieliuga/Mercador/security/PasswordUtils.java,8\0\807f7d317e1410b6a25acf011116f03370f7af07

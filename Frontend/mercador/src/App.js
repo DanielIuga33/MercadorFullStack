@@ -105,6 +105,9 @@ function App() {
           }
 
           const uniqueCarIds = Array.from(validCarIds);
+          if (uniqueCarIds.length === 0){
+            return;
+          }
           if (validCarIds !== userData.carIds){
             // Actualizăm starea utilizatorului folosind funcția de actualizare
             setUserData(prevUserData => ({
