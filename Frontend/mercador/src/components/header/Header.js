@@ -8,6 +8,7 @@ const Header = ({ userData, setUserData }) => {
 
     const logout = () => {
         const reset = ({
+            id: '',
             name: '',
             surname: '',
             username: '',

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+// import '@fortawesome/fontawesome-free/css/all.min.css';
 import './LoginPage.css';
 
 function LoginPage({ setUserData, returning}) {
@@ -8,6 +9,7 @@ function LoginPage({ setUserData, returning}) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
 
   const handleSubmit = async(event) => {
     event.preventDefault();
@@ -24,14 +26,12 @@ function LoginPage({ setUserData, returning}) {
 
       if (response.status === 200) {
           // Redirect to homepage or dashboard
-          console.log(response);
       }
     } catch (error) {
         if (error.response && error.response.status === 401) {
             setError('Wrong email or password !');
             return;
         } else {
-            //console.log(error.response.status);
             setError('An error occurred. Please try again.');
             return;
         }
@@ -42,8 +42,36 @@ function LoginPage({ setUserData, returning}) {
       });
       if (response.status === 200) {
           const user = response.data;
+
+          const validCarIds = new Set();
+
+          try {
+              for (let elem of user.carIds) {
+                  const response = await axios.get(`http://localhost:8080/api/cars/${elem}`);
+                  if (response.data !== null) {
+                      validCarIds.add(elem); // Adăugăm ID-uri valide în Set
+                  }
+              }
+
+              const uniqueCarIds = Array.from(validCarIds);
+              if (validCarIds !== user.carIds){
+                // Actualizăm starea utilizatorului folosind funcția de actualizare
+                setUserData(prevUserData => ({
+                    ...prevUserData,
+                    carIds: uniqueCarIds // Asigurăm că actualizăm doar carIds
+                }));
+                // Facem patch la server cu ID-uri unice
+                await axios.patch(`http://localhost:8080/api/users/${user.id}`, {
+                    ...user,
+                    carIds: uniqueCarIds
+                });
+                user.carIds = uniqueCarIds;
+              }
+
+          } catch (error) {
+              console.error(error);
+          }
           setUserData(user); // Setează datele utilizatorului în starea globală
-          console.log(response.data);
           if (returning === 1){
             navigate('/account');
           } else{
@@ -56,7 +84,6 @@ function LoginPage({ setUserData, returning}) {
         } else if(error.response && error.response.status === 404){
           setError('Wrong email or password !');
         } else {
-            //console.log(error.response.status);
             setError('An error occurred. Please try again.');
         }
     }
@@ -84,7 +111,7 @@ function LoginPage({ setUserData, returning}) {
             placeholder="Enter your password"
           />
         </div>
-        {error && <div className="error">{error}</div>}
+        {error && <span className="error"><i className="fas fa-times" style={{ color: "red" }}></i><i> {error}</i></span>}
         <button type="submit">Enter</button>
       </form>
     </div>

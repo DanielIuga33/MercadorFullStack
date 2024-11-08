@@ -92,43 +92,6 @@ function App() {
     cleanup();
   },[])
 
-  useEffect(() => {
-    const cleanInexistingUserCars = async () =>{
-      const validCarIds = new Set();
-
-      try {
-          for (let elem of userData.carIds) {
-              const response = await axios.get(`http://localhost:8080/api/cars/${elem}`);
-              if (response.data !== null) {
-                  validCarIds.add(elem); // Adăugăm ID-uri valide în Set
-              }
-          }
-
-          const uniqueCarIds = Array.from(validCarIds);
-          if (uniqueCarIds.length === 0){
-            return;
-          }
-          if (validCarIds !== userData.carIds){
-            // Actualizăm starea utilizatorului folosind funcția de actualizare
-            setUserData(prevUserData => ({
-                ...prevUserData,
-                carIds: uniqueCarIds // Asigurăm că actualizăm doar carIds
-            }));
-
-            // Facem patch la server cu ID-uri unice
-            await axios.patch(`http://localhost:8080/api/users/${userData.id}`, {
-                ...userData,
-                carIds: uniqueCarIds
-            });
-          }
-
-      } catch (error) {
-          console.error(error);
-      }
-  };
-
-  cleanInexistingUserCars();
-  }, [userData, setUserData])
 
   return (
     <div className='App.js'>
@@ -139,7 +102,7 @@ function App() {
         <Route path="/account" element={<Account userData={userData}/>} />
         <Route path="/account/details" element={<AccountDetails userData={userData} setUserData={setUserData}/>} />
         <Route path="/account/cars" element={<UserCars userData={userData}/>} />
-        <Route path="/account/postACar" element={<PostACar userData={userData}/>}/>
+        <Route path="/account/postACar" element={<PostACar userData={userData} setUserData={setUserData}/>}/>
 
         <Route path="/login" element={<LoginPage setUserData={setUserData} returning={0}/>} />
         <Route path="/login/account" element={<LoginPage setUserData={setUserData} returning={1}/>} />

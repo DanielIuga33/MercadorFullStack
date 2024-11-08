@@ -82,7 +82,7 @@ public class UserService {
             existingUser.setStreet(user.getStreet());
         }
 
-        if (user.getCarIds().size() > 0 && !user.getCarIds().equals(existingUser.getCarIds())){
+        if (!user.getCarIds().equals(existingUser.getCarIds())){
             existingUser.setCarIds(user.getCarIds());
         }
 

@@ -5,7 +5,7 @@ import axios from 'axios';
 import './PostACar.css';
 import { brands, modelsByBrand, bodies, colors } from '../ConstantData';
 
-const PostACar = ({userData}) => {
+const PostACar = ({userData, setUserData}) => {
     const MAX_IMAGES = 9;
     const API_URL = 'http://localhost:8080/api/cars';
     const IMAGE_UPLOAD_URL = 'http://localhost:8080/api/upload'; // URL pentru încărcarea imaginilor
@@ -105,6 +105,10 @@ const PostACar = ({userData}) => {
             // Trimitere date mașină
             console.log(updatedCarData);
             await axios.post(API_URL, updatedCarData);
+            const response = await axios.get('http://localhost:8080/api/users/findByEmail', {
+                params: { email: userData.email }
+              });
+            setUserData(response.data);
             setDone(true);
         } catch (error) {
             console.error('Error:', error.response ? error.response.data : error.message);
