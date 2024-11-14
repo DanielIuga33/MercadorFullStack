@@ -5,30 +5,34 @@ import './UserOwnCars.css';
 const UserOwnCars = ({userData}) => {
   
   const carIds = userData.carIds;
+  const [loading, setLoading] = useState(true);
   const [cars, setCars] = useState([]);
   useEffect(() => {
     const getCarData = async () => {
-      try {
-        const tempCars = [];
-        for (let elem of carIds) {
+        try {
+            const tempCars = [];
+            for (let elem of carIds) {
                 const response = await axios.get(`http://localhost:8080/api/cars/dto/${elem}`);
                 if (response.data !== null) {
                     tempCars.push(response.data);
                 }
+            }
+            setCars(tempCars);
+        } catch (error) {
+            console.error("Error: ", error);
+        } finally {
+            setLoading(false);
         }
-        setCars(tempCars);
-      } catch (error) {
-        console.error("Error: ", error);
-    }
-    };
+        };
 
-    getCarData();
-}, [carIds]);
+        getCarData();
+    }, [carIds]);
 
 
-  return (
+    return (
     <div className='ownCars'>
         <div className='container'>
+            {!loading ? (
             <div className='container-principal'>
                 {cars.length > 0 ? (
                     cars.map((car) => (
@@ -60,7 +64,7 @@ const UserOwnCars = ({userData}) => {
                     <p>No cars available.</p>
                     </div>
                 )}
-            </div>
+            </div>) : <div className="loader"></div>}
         </div>
     </div>
   )

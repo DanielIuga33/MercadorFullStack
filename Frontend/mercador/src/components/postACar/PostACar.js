@@ -15,7 +15,10 @@ const PostACar = ({userData, setUserData}) => {
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
     const [images, setImages] = useState([]);
+
     const [errors, setErrors] = useState('');
+    const [descError, setDescError] = useState(false);
+    const [agreed, setAgreed] = useState(false);
     
     const [carData, setCarData] = useState({
         title: '',
@@ -47,12 +50,34 @@ const PostACar = ({userData, setUserData}) => {
     };
 
     useEffect(() => {
+        if (carData.description.length < 40 && carData.description.length > 0){
+            setDescError(true);
+            setAgreed(false);
+        } else if(carData.description.length === 0){ 
+            setDescError(false);
+            setAgreed(false);}
+        else {
+            setDescError(false);
+            setAgreed(true);
+        }
+    }, [carData.description]);
+
+    useEffect(() => {
         if (selectedBrand && modelsByBrand[selectedBrand]) {
             setFilteredModels(modelsByBrand[selectedBrand]);
         } else {
             setFilteredModels([]);
         }
     }, [selectedBrand]);
+
+    useEffect(() => {
+        const carVin = carData.vin.toUpperCase();
+        console.log(carVin);
+        if (carData.vin && carData.vin !== carData.vin.toUpperCase()) {
+            setCarData(c => ({ ...c, vin: carVin }));
+        }
+    }, [carData.vin]);
+    
 
     const handleImageUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -85,6 +110,9 @@ const PostACar = ({userData, setUserData}) => {
     const handleSubmit = async () => {
         if (carData.title === '' || carData.brand === '' || carData.model === '' || carData.year === '' || carData.price === '' || carData.description === '') {
             setErrors('You need to complete all the required fields!');
+            return;
+        }
+        if (errors || descError){
             return;
         }
         setErrors('');
@@ -201,6 +229,7 @@ const PostACar = ({userData, setUserData}) => {
                                     onChange={handleChange}
                                     type="text" 
                                     placeholder='car vin'
+                                    value={carData.vin}
                                 />
                             </div>
                         </div>
@@ -394,11 +423,15 @@ const PostACar = ({userData, setUserData}) => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <p>Description must have at least 40 words</p>
+                        <span>
+                            {descError && <i className="fas fa-times" style={{ color: "red" }}></i>}
+                            {agreed && <i className="fas fa-check" style={{ color: "green" }}></i>}
+                            <i>Description must have at least 40 words {descError && "!"}</i>
+                        </span>
                         <div className="btn">
                             <button type='button' onClick={handleSubmit}>Sumbit and post</button>
                         </div>
-                        <p className='error'>{errors}</p>
+                        {errors && <span className="error"><i className="fas fa-times" style={{ color: "red" }}></i><i>{errors}</i></span>}
                     </div>
                 </div>
             </div>

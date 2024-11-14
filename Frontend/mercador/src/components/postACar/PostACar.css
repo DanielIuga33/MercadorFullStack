@@ -541,3 +541,12 @@
     height: 60px;
 
 }
+.postCar-main-container span{
+    margin-left: 30px;
+}
+.postCar-main-container span i{
+    color: hsl(0, 0%, 59%);
+}
+.postCar-main-container .col span i{
+    background-color: transparent;
+}
