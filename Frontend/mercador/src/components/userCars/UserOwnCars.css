@@ -31,14 +31,15 @@
 }
 
 .ownCars .car-card{
-    margin-left: 5vw;
+    margin-left: 10%;
     background-color: rgb(31, 31, 31);
     display: flex;
-    width: 50vw;
+    width: 75%;
     height: 250px;
     margin-bottom: 20px;
     align-items: center;
     border-radius: 10px;
+    border: 2px solid rgb(154, 154, 154);
 }
 .ownCars img{
     height: 70%;

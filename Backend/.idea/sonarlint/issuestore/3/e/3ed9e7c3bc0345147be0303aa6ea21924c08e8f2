@@ -5,8 +5,6 @@ Q
 java:S1066G"/Merge this if statement with the enclosing one.(ÃÕÃ¦ıÿÿÿÿ8»·°2
 o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ëÿ·ó
 h
-java:S3776-"RRefactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.(ûïÛû
-Y
-java:S1155U">Use isEmpty() to check whether the collection is empty or not.(ÄÏ˜üúÿÿÿÿ
+java:S3776-"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(ûïÛû
 J
 java:S1128"/Remove this unused import 'java.util.Optional'.(¨˜ëİüÿÿÿÿ
