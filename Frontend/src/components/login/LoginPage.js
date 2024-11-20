@@ -23,7 +23,6 @@ function LoginPage({ setUserData, returning}) {
           email,
           password
       });
-
       if (response.status === 200) {
           // Redirect to homepage or dashboard
       }
@@ -36,6 +35,7 @@ function LoginPage({ setUserData, returning}) {
             return;
         }
     }
+
     try {
       const response = await axios.get('http://localhost:8080/api/users/findByEmail', {
         params: { email: email }

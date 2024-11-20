@@ -326,3 +326,13 @@
     }
     
 }
+
+.account-details-container .check{
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    gap: 10px;
+    font-size: 1rem;
+    color: rgb(131, 131, 131);
+  }

@@ -7,22 +7,23 @@ import axios from 'axios';
 const AccountDetails = ({ userData, setUserData}) => {
     const navigate = useNavigate();
     
-    const [formData, setFormData] = useState(userData);
-    const [borderColors, setBorderColors] = useState({});
-    const [isReadOnly, setIsReadOnly] = useState(true);
-    const [passwordsMatch, setPasswordsMatch] = useState(false);
-    const [emailError, setEmailError] = useState('');
-    const [errorMsgFirstRow, setErrorMsgFirstRow] = useState('');
-    const [errorMsgSecondRow1, setErrorMsgSecondRow1] = useState('');
-    const [errorMsgSecondRow2, setErrorMsgSecondRow2] = useState('');
-    const [password, setPassword] = useState('');
-    const [newpassword, setnewPassword] = useState('');
-    const [cfnpassword, setcfnPassword] = useState('');
-
 
     useEffect(() => {
         if (!userData.email) navigate('/account');
     }, [navigate, userData.email]);
+
+
+    /// COL 1
+    const [formData, setFormData] = useState(userData);
+    const [borderColors, setBorderColors] = useState({});
+    const [isReadOnly, setIsReadOnly] = useState(true);
+    const [emailError, setEmailError] = useState('');
+    const [errorMsgFirstRow, setErrorMsgFirstRow] = useState('');
+
+    const [emailOnFocus, setEmailOnFocus] = useState(false);
+    const [arontErr, setArontErr] = useState(false);
+    const [finishErr, setFinishErr] = useState(false);
+    const [emailLenErr, setEmailLenErr] = useState(false);
 
     const handleChangeColor = (id) => {
         setBorderColors(prevState => ({ ...prevState, [id]: 'red' }));
@@ -33,16 +34,11 @@ const AccountDetails = ({ userData, setUserData}) => {
         setBorderColors({ ...borderColors, [name]: '' });
         setFormData({...formData, [name]: value});
     };
-    
-    const edit = () => {
-        setIsReadOnly(!isReadOnly);
-    };
 
     const handleSubmit = async(event) => {
         event.preventDefault();
-        if (!userData.email || !password) {
-          setErrorMsgSecondRow1('Wrong password.');
-          return;
+        if (!password) {
+            return;
         }
         const email = userData.email;
         setErrorMsgSecondRow1('');
@@ -114,6 +110,10 @@ const AccountDetails = ({ userData, setUserData}) => {
             handleChangeColor("country");
             hasError = true;
         }
+        if (!formData.country) {
+            handleChangeColor("county");
+            hasError = true;
+        }
         if (!formData.city) {
             handleChangeColor("city");
             hasError = true;
@@ -132,11 +132,57 @@ const AccountDetails = ({ userData, setUserData}) => {
         }
     };
 
+    /// COL 1 END
+
+    /// COL 2
+    const [passwordsMatch, setPasswordsMatch] = useState(false);
+    const [errorMsgSecondRow1, setErrorMsgSecondRow1] = useState('');
+    const [errorMsgSecondRow2, setErrorMsgSecondRow2] = useState('');
+    const [password, setPassword] = useState('');
+    const [newpassword, setnewPassword] = useState('');
+    const [cfnpassword, setcfnPassword] = useState('');
+
+    const [charErr, setCharErr] = useState(false);
+    const [noNrErr, setNoNrErr] = useState(false);
+    const [noUpperErr, setNoUpperErr] = useState(false);
+
+    useEffect(() => {
+        if (newpassword){
+            if (newpassword.length < 8 || newpassword.length > 16){
+                setCharErr(true);
+            } else{
+                setCharErr(false);
+            }
+            if (!/\d/.test(newpassword)){
+                setNoNrErr(true);
+            }else{
+                setNoNrErr(false);
+            }
+            if (newpassword.toLowerCase() === newpassword){
+                setNoUpperErr(true);
+            }else{
+                setNoUpperErr(false);
+            }
+        } else{
+            setCharErr(false);
+            setNoNrErr(false);
+            setNoUpperErr(false);
+        }
+    },[newpassword])
+
+
+    useEffect(() => {
+        if (!password) {
+            setErrorMsgSecondRow1("");
+        }
+    }, [password]);
+
     const exit = () => {
         setPasswordsMatch(false);
         setcfnPassword('');
         setnewPassword('');
     };
+
 
     useEffect(() => {
         if (newpassword && cfnpassword && newpassword !== cfnpassword) {
@@ -146,17 +192,30 @@ const AccountDetails = ({ userData, setUserData}) => {
         }
     }, [newpassword, cfnpassword]);
 
+    
     const changePassword = () => {
         if (!newpassword){
             setErrorMsgSecondRow2('You need to complete the password field !');
             return;
         }
-        if (!errorMsgSecondRow2){
+        if (newpassword === password){
+            setErrorMsgSecondRow2('You cannot put the same password !');
+            return;
+        }
+        if (charErr || noNrErr || noUpperErr) return;
+        if (!cfnpassword){
+            setErrorMsgSecondRow2('You need to confirm the password !');
+            return;
+        }
+        if (!errorMsgSecondRow2 && !charErr && !noNrErr && !noUpperErr){
             formData.password = newpassword;
             updateUser(formData.id, formData);
             exit();
         } 
     };
+    /// COL 2 END
+
+
 
     const updateUser = async (id, userData) => {
         try {
@@ -297,7 +356,7 @@ const AccountDetails = ({ userData, setUserData}) => {
                             />
                         </div>
                         <div className='buttons'>
-                            <button type="button" onClick={edit}>Edit </button>
+                            <button type="button" onClick={() => setIsReadOnly(!isReadOnly)}>Edit </button>
                             <button type="button" onClick={submit}>Submit change </button>
                         </div>
                         <div className='errors'>
@@ -322,8 +381,8 @@ const AccountDetails = ({ userData, setUserData}) => {
                                 />
                             </div>
                             <button type="button" onClick={handleSubmit}>Submit your password</button>
-                            <div className='errors'>
-                                {errorMsgSecondRow1 && <p className="error">{errorMsgSecondRow1}</p>}
+                            <div className='check'>
+                                {errorMsgSecondRow1 && <span><i className="fas fa-times" style={{ color: "red" }}></i><i> {errorMsgSecondRow1}</i></span>}
                             </div>
                             {(passwordsMatch &&
                             <div>
@@ -339,6 +398,13 @@ const AccountDetails = ({ userData, setUserData}) => {
                                     required
                                 />
                             </div>)}
+                            {passwordsMatch &&<div className='check'>
+                                {(charErr && newpassword) && (<span><i className="fas fa-times" style={{ color: "red" }}></i><i id="red"> Password must be between 8 and 16 characters !</i></span>)}
+
+                                {(noNrErr && newpassword) && (<span><i className="fas fa-times" style={{ color: "red" }}></i><i id="red"> Password must contain numbers !</i></span>)}
+
+                                {(noUpperErr && newpassword) && (<span><i className="fas fa-times" style={{ color: "red" }}></i><i id="red"> Password must contain at least one uppercase letter !</i></span>)}
+                            </div>}
                             {(passwordsMatch &&
                             <div>
                                 <label htmlFor="confirmPassword">Confirm New Password:</label>
@@ -361,8 +427,8 @@ const AccountDetails = ({ userData, setUserData}) => {
                             <button type="button" onClick={exit}>Cancel</button>
                         </div>)}
                         {passwordsMatch && (
-                        <div className='errors'>
-                                {errorMsgSecondRow2 && <p className="error">{errorMsgSecondRow2}</p>}
+                        <div className='check'>
+                                {errorMsgSecondRow2 && <span><i className="fas fa-times" style={{ color: "red" }}></i><i>{errorMsgSecondRow2}</i></span>}
                             </div>)}
                     </form>
                 </div>

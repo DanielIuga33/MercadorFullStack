@@ -75,6 +75,9 @@ public class UserService {
         if (user.getCountry() != null && !user.getCountry().equals(existingUser.getCountry())) {
             existingUser.setCountry(user.getCountry());
         }
+        if (user.getCounty() != null && !user.getCounty().equals(existingUser.getCounty())) {
+            existingUser.setCounty(user.getCounty());
+        }
         if (user.getCity() != null && !user.getCity().equals(existingUser.getCity())) {
             existingUser.setCity(user.getCity());
         }
