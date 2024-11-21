@@ -58,7 +58,6 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
         if (formData.email) {
             const validateEmail = () =>{
                 let ok = true;
-                console.log("Da");
                 if (formData.email.length <= 6){
                     setEmailLenErr(true);
                     ok = false;
@@ -72,8 +71,7 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
                     setArontErr(false);
                 }
                 if (!formData.email.slice(formData.email.length - 4, formData.email.length).includes(".com") &&
-                    !formData.email.slice(formData.email.length - 2, formData.email.length).includes(".ro")){
-                    console.log(formData.email.slice(formData.email.length - 4, formData.email.length));
+                    !formData.email.slice(formData.email.length - 3, formData.email.length).includes(".ro")){
                     setFinishErr(true);
                     ok = false;
                 }else{

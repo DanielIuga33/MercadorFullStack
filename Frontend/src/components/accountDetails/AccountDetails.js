@@ -18,12 +18,30 @@ const AccountDetails = ({ userData, setUserData}) => {
     const [borderColors, setBorderColors] = useState({});
     const [isReadOnly, setIsReadOnly] = useState(true);
     const [emailError, setEmailError] = useState('');
-    const [errorMsgFirstRow, setErrorMsgFirstRow] = useState('');
+    const [errorMsgFirstCol, setErrorMsgFirstCol] = useState('');
 
     const [emailOnFocus, setEmailOnFocus] = useState(false);
     const [arontErr, setArontErr] = useState(false);
     const [finishErr, setFinishErr] = useState(false);
     const [emailLenErr, setEmailLenErr] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible1, setIsVisible1] = useState(false);
+
+    const showDiv = () => {
+        setIsVisible(true);
+        // Setăm un timeout pentru a ascunde div-ul după 5 secunde
+        setTimeout(() => {
+        setIsVisible(false);
+        }, 5000); 
+    };
+
+    const showDiv1 = () => {
+        setIsVisible1(true);
+        // Setăm un timeout pentru a ascunde div-ul după 5 secunde
+        setTimeout(() => {
+        setIsVisible1(false);
+        }, 5000); 
+    };
 
     const handleChangeColor = (id) => {
         setBorderColors(prevState => ({ ...prevState, [id]: 'red' }));
@@ -41,7 +59,7 @@ const AccountDetails = ({ userData, setUserData}) => {
             return;
         }
         const email = userData.email;
-        setErrorMsgSecondRow1('');
+        setErrorMsgSecondCol1('');
         try {
             const response = await axios.post('http://localhost:8080/api/auth/login', {
                 email,
@@ -54,39 +72,67 @@ const AccountDetails = ({ userData, setUserData}) => {
         } catch (error) {
             if (error.response) {
                 if (error.response.status === 401) {
-                    setErrorMsgSecondRow1('Wrong password!');
+                    setErrorMsgSecondCol1('Wrong password!');
                 } else {
-                    setErrorMsgSecondRow1(`An error occurred: ${error.response.statusText}`);
+                    setErrorMsgSecondCol1(`An error occurred: ${error.response.statusText}`);
                 }
             } else {
-                setErrorMsgSecondRow1('Network error. Please try again later.');
+                setErrorMsgSecondCol1('Network error. Please try again later.');
             }
         }
     }
 
     useEffect(() => {
-        if (formData.email !== userData.email) {
-            const checkEmail = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/users/check-email', {
-                    params: { email: formData.email }
-                });
-                if (response.data) {
-                    setEmailError('Email already exists');
-                } else {
-                    setEmailError('');
+        if (formData.email) {
+            const validateEmail = () =>{
+                let ok = true;
+                if (formData.email.length <= 6){
+                    setEmailLenErr(true);
+                    ok = false;
+                }else{
+                    setEmailLenErr(false);
                 }
-            } catch (error) {
-                console.error('Error checking email:', error);
-            }
-            };
-            checkEmail();
-        } else {
-            setEmailError('');
-        }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [formData.email]);
+                if (!formData.email.includes("@")){
+                    setArontErr(true);
+                    ok = false;
+                }else{
+                    setArontErr(false);
+                }
+                if (!formData.email.slice(formData.email.length - 4, formData.email.length).includes(".com") &&
+                    !formData.email.slice(formData.email.length - 3, formData.email.length).includes(".ro")){
+                    setFinishErr(true);
+                    ok = false;
+                }else{
+                    setFinishErr(false);
+                }
 
+                return ok;
+            }
+            const ok = validateEmail();
+            setEmailError("");
+            if (!ok) return;
+            const checkEmail = async () => {
+                try {
+                    const response = await axios.get('http://localhost:8080/api/users/check-email', {
+                        params: { email: formData.email }
+                    });
+                    if (response.data && emailOnFocus && !isReadOnly) {
+                        setEmailError('Email already exists');
+                    } else {
+                        setEmailError('');
+                    }
+                } catch (error) {
+                    console.error('Error checking email:', error);
+                }
+                };
+            checkEmail();
+
+        } else {
+          setEmailError('');
+        }
+    }, [formData.email, emailOnFocus, isReadOnly]);
+
+    
     const submit = () => {
         let hasError = false;
         if (!formData.name) {
@@ -123,10 +169,10 @@ const AccountDetails = ({ userData, setUserData}) => {
             hasError = true;
         }
         if (hasError) {
-            setErrorMsgFirstRow('You need to complete all the fields!');
+            setErrorMsgFirstCol('You need to complete all the fields!');
             return;
         }else{
-            setErrorMsgFirstRow("");
+            setErrorMsgFirstCol("");
             if (!emailError) setIsReadOnly(true);
             updateUser(formData.id, formData);
         }
@@ -136,8 +182,8 @@ const AccountDetails = ({ userData, setUserData}) => {
 
     /// COL 2
     const [passwordsMatch, setPasswordsMatch] = useState(false);
-    const [errorMsgSecondRow1, setErrorMsgSecondRow1] = useState('');
-    const [errorMsgSecondRow2, setErrorMsgSecondRow2] = useState('');
+    const [errorMsgSecondCol1, setErrorMsgSecondCol1] = useState('');
+    const [errorMsgSecondCol2, setErrorMsgSecondCol2] = useState('');
     const [password, setPassword] = useState('');
     const [newpassword, setnewPassword] = useState('');
     const [cfnpassword, setcfnPassword] = useState('');
@@ -173,7 +219,7 @@ const AccountDetails = ({ userData, setUserData}) => {
 
     useEffect(() => {
         if (!password) {
-            setErrorMsgSecondRow1("");
+            setErrorMsgSecondCol1("");
         }
     }, [password]);
 
@@ -186,28 +232,28 @@ const AccountDetails = ({ userData, setUserData}) => {
 
     useEffect(() => {
         if (newpassword && cfnpassword && newpassword !== cfnpassword) {
-            setErrorMsgSecondRow2('Passwords does not match !');
+            setErrorMsgSecondCol2('Passwords does not match !');
         } else {
-            setErrorMsgSecondRow2('');
+            setErrorMsgSecondCol2('');
         }
     }, [newpassword, cfnpassword]);
 
     
     const changePassword = () => {
         if (!newpassword){
-            setErrorMsgSecondRow2('You need to complete the password field !');
+            setErrorMsgSecondCol2('You need to complete the password field !');
             return;
         }
         if (newpassword === password){
-            setErrorMsgSecondRow2('You cannot put the same password !');
+            setErrorMsgSecondCol2('You cannot put the same password !');
             return;
         }
         if (charErr || noNrErr || noUpperErr) return;
         if (!cfnpassword){
-            setErrorMsgSecondRow2('You need to confirm the password !');
+            setErrorMsgSecondCol2('You need to confirm the password !');
             return;
         }
-        if (!errorMsgSecondRow2 && !charErr && !noNrErr && !noUpperErr){
+        if (!errorMsgSecondCol2 && !charErr && !noNrErr && !noUpperErr){
             formData.password = newpassword;
             updateUser(formData.id, formData);
             exit();
@@ -221,6 +267,8 @@ const AccountDetails = ({ userData, setUserData}) => {
         try {
             await axios.patch(`http://localhost:8080/api/users/${id}`, userData);
             setUserData(userData);
+            if (!newpassword) showDiv();
+            else showDiv1();
         } catch (error) {
             console.error('Error updating user:', error);
         }
@@ -285,11 +333,24 @@ const AccountDetails = ({ userData, setUserData}) => {
                                 value={formData.email}
                                 readOnly = {isReadOnly}
                                 onChange={handleChange}
+                                onFocus={() => setEmailOnFocus(true)}
+                                onBlur={() => setEmailOnFocus(false)}
                                 placeholder="Enter your email"
                                 style={{ borderColor: borderColors['email'], borderWidth: '2px', borderStyle: 'solid' }}
                                 required
                             />
                         </div>
+                        {formData.email && <div className='check-email'>
+                            {(arontErr && formData.email) && (<span><i className="fas fa-times" style={{ color: "red" }}></i><i id="red"> Email must contain @ !</i></span>)}
+
+                            {(finishErr && formData.email) && (<span><i className="fas fa-times" style={{ color: "red" }}></i><i id="red"> Email must finish with .com or .ro !</i></span>)}
+
+                            {(emailLenErr && formData.email) && (<span><i className="fas fa-times" style={{ color: "red" }}></i><i id="red"> Email must have at least 10 letters !</i></span>)}
+                        </div>}
+                        {(errorMsgFirstCol || emailError) &&<div className='check-email'>
+                            {errorMsgFirstCol && <span><i className="fas fa-times" style={{ color: "red" }}></i><i className="error"> {errorMsgFirstCol}</i></span>}
+                            {emailError && <span><i className="fas fa-times" style={{ color: "red" }}></i><i className="error"> {emailError}</i></span>}
+                        </div>}
                         <div>
                             <label htmlFor="birthDate">Birth Date:</label>
                             <input
@@ -356,13 +417,12 @@ const AccountDetails = ({ userData, setUserData}) => {
                             />
                         </div>
                         <div className='buttons'>
-                            <button type="button" onClick={() => setIsReadOnly(!isReadOnly)}>Edit </button>
-                            <button type="button" onClick={submit}>Submit change </button>
+                            <button disabled={passwordsMatch} type="button" onClick={() => setIsReadOnly(!isReadOnly)}>Edit </button>
+                            <button disabled={passwordsMatch} type="button" onClick={submit}>Submit change </button>
                         </div>
-                        <div className='errors'>
-                            {errorMsgFirstRow && <p className="error">{errorMsgFirstRow}</p>}
-                            {emailError && <p className="error">{emailError}</p>}
-                        </div>
+                        {isVisible && <div className='check' >
+                            <span><i className="fas fa-check" style={{ color: "green" }}></i><i id="green"> Changes successfully made !</i></span>
+                        </div>}
                         </form>
                     <form className='second-row'>
                         <h3>CHANGE YOUR PASSOWRD</h3>
@@ -373,16 +433,16 @@ const AccountDetails = ({ userData, setUserData}) => {
                                     type="password"
                                     id="oldpassword"
                                     name="oldpassword"
-                                    readOnly = {false}
+                                    readOnly = {!isReadOnly || passwordsMatch}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="your password"
                                     required
                                 />
                             </div>
-                            <button type="button" onClick={handleSubmit}>Submit your password</button>
+                            <button disabled={!isReadOnly || passwordsMatch} type="button" onClick={handleSubmit}>Submit your password</button>
                             <div className='check'>
-                                {errorMsgSecondRow1 && <span><i className="fas fa-times" style={{ color: "red" }}></i><i> {errorMsgSecondRow1}</i></span>}
+                                {errorMsgSecondCol1 && <span><i className="fas fa-times" style={{ color: "red" }}></i><i> {errorMsgSecondCol1}</i></span>}
                             </div>
                             {(passwordsMatch &&
                             <div>
@@ -428,8 +488,11 @@ const AccountDetails = ({ userData, setUserData}) => {
                         </div>)}
                         {passwordsMatch && (
                         <div className='check'>
-                                {errorMsgSecondRow2 && <span><i className="fas fa-times" style={{ color: "red" }}></i><i>{errorMsgSecondRow2}</i></span>}
-                            </div>)}
+                                {errorMsgSecondCol2 && <span><i className="fas fa-times" style={{ color: "red" }}></i><i>{errorMsgSecondCol2}</i></span>}
+                        </div>)}
+                        {isVisible1 && <div className='check' >
+                            <span><i className="fas fa-check" style={{ color: "green" }}></i><i id="green"> Changes successfully made !</i></span>
+                        </div>}
                     </form>
                 </div>
             </div>

@@ -146,6 +146,7 @@
         justify-content: center;
         display: inline-flex;
         width: 100%;
+        padding-bottom: 20px;
     }
     
     .container-details .second-row .buttons button{
@@ -168,7 +169,7 @@
         display: flex;
         justify-content: center;
         background-color: hsla(0, 0%, 0%, 0.897);
-        height: 91vh;
+        min-height: 91vh;
     }
     
     .account-details-container h2{
@@ -183,7 +184,7 @@
     .account-details-container .container-details{
         text-align: center;
         display: flex;
-        height: 67vh;
+        min-height: 67vh;
         width: 100%;
         border: 2px solid orangered;
         box-shadow: 10px 20px 200px  rgb(243, 0, 0), 10px 10px 5px 8px black;
@@ -226,6 +227,7 @@
         justify-content: center;
         display: inline-flex;
         width: 100%;
+        padding-bottom: 20px;
     }
     
     .container-details .first-row .buttons button{
@@ -326,6 +328,16 @@
     }
     
 }
+
+.account-details-container .check-email{
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    gap: 10px;
+    font-size: small;
+    color: rgb(131, 131, 131);
+  }
 
 .account-details-container .check{
     display: flex;

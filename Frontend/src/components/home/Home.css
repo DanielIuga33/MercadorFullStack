@@ -29,7 +29,7 @@
     margin-bottom: 20px;
 } */
 .home{
-    background-color: #2B2B2B;
+    background-color: hsl(240, 5%, 7%);
     display: flex;
 }
 .home .separator{

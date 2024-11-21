@@ -199,8 +199,9 @@ const MainPage = ({searchFilters, setCarData}) => {
                             />
                         )}
                         <div className="item">
-                            <h3>{car.title}</h3>
-                            <strong>{car.price} {car.currency}</strong>
+                            <h4>{car.title}</h4>
+                            <h3>{car.price} {car.currency}</h3>
+                            <p>{car.registrationDate}</p>
                         </div>
                     </div>
                 ))

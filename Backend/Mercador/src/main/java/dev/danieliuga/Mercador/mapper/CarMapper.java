@@ -27,6 +27,7 @@ public class CarMapper {
                 car.getTransmission().name(),
                 car.getCondition().name(),
                 car.getSteeringwheel(),
+                car.getRegistrationDate(),
                 car.getMileage(),
                 car.getNumberOfDoors(),
                 car.getImages().get(0)

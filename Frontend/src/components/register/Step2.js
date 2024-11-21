@@ -1,5 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import { cityByRegion, regionsByCountry, countries} from '../ConstantData';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "./Step2.css";
 
 const Step2 = ({ formData, setFormData, nextStep, prevStep }) => {
@@ -10,6 +12,7 @@ const Step2 = ({ formData, setFormData, nextStep, prevStep }) => {
     const [selectedCounty, setSelectedCounty] = useState('');
     const [filteredCounties, setFilteredCounties] = useState([]);
     const [filteredCities, setFilteredCities] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(null);
 
     useEffect(() => {
         if (selectedCountry && regionsByCountry[selectedCountry]) {
@@ -19,9 +22,17 @@ const Step2 = ({ formData, setFormData, nextStep, prevStep }) => {
         }
     }, [selectedCountry]);
 
+    const formatDate = (date) => {
+        if (!date) return '';
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Lunile încep de la 0
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     useEffect(() => {
         if (selectedCounty && cityByRegion[selectedCounty]) {
-            setFilteredCities(cityByRegion[selectedCounty]);
+            setFilteredCities(cityByRegion[selectedCounty].sort());
         } else {
             setFilteredCities([]);
         }
@@ -71,13 +82,24 @@ const Step2 = ({ formData, setFormData, nextStep, prevStep }) => {
                 <h2>More information about you: </h2>
                 <div>
                     <label htmlFor="birthDate">Birth Date:</label>
-                    <input
-                        type="date"
+                    <DatePicker
                         id="birthDate"
-                        name="birthDate"
-                        value={formData.birthDate}
-                        onChange={handleChange}
-                        style={{ borderColor: borderColors['birthDate'], borderWidth: '2px', borderStyle: 'solid' }}
+                        selected={selectedDate} // Trebuie să fie un obiect de tip Date
+                        onChange={(date) => {
+                            setSelectedDate(date); // Actualizează data selectată în format Date
+                            setFormData({ ...formData, birthDate: formatDate(date) }); // Actualizează și formData
+                            setBorderColors((prev) => ({ ...prev, birthDate: '' })); // Resetăm border-ul
+                        }}
+                        style={{
+                            borderColor: borderColors['birthDate'],
+                            borderWidth: '2px',
+                            borderStyle: 'solid',
+                        }}
+                        dateFormat="dd.MM.yyyy" // Formatare personalizată
+                        placeholderText="Selectează o dată"
+                        showYearDropdown
+                        showMonthDropdown
+                        dropdownMode="select"
                         required
                     />
                 </div>

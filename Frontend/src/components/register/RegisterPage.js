@@ -45,7 +45,11 @@ const RegisterPage = ({ setUserData, returning}) => {
   const finalStep = async () => {
     try {
       await sendData(formData); // Trimite datele la server
-      setUserData(formData); // Actualizează starea cu datele utilizatorului
+      const response = await axios.get('http://localhost:8080/api/users/findByEmail', {
+          params: { email: formData.email }
+      });
+      if (response.status === 200)
+          setUserData(response.data); // Actualizează starea cu datele utilizatorului
      // Navighează către pagina home
     } catch (error) {
       console.error('Failed to register:', error);

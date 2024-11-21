@@ -1,5 +1,6 @@
 package dev.danieliuga.Mercador.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class CarDTO {
     private String transmission;
     private String condition;
     private String steeringwheel;
+    private LocalDate registrationDate;
     private double mileage;
     private int numberOfDoors;
     private String image;

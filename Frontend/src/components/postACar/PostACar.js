@@ -131,7 +131,6 @@ const PostACar = ({userData, setUserData}) => {
             const updatedCarData = { ...carData, images: imageUrls };
 
             // Trimitere date mașină
-            console.log(updatedCarData);
             await axios.post(API_URL, updatedCarData);
             const response = await axios.get('http://localhost:8080/api/users/findByEmail', {
                 params: { email: userData.email }
