@@ -42,9 +42,9 @@
         margin-top: 20px;
         background-color: hsl(0, 0%, 11%);
         display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Creates 3 equal columns */
-        gap: 10px; /* Optional: adds space between the grid items */
-        padding: 10px; /* Optional: adds padding inside the grid container */
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 10px; 
+        padding: 10px; 
     }
 
     .grid-container .car-card{
@@ -147,7 +147,7 @@
     }
 }
 
-@media (min-width: 1550px) {
+/* @media (min-width: 1550px) {
     .grid-container {
         flex: 1;
         border: 2px solid rgb(184, 52, 0);
@@ -215,4 +215,4 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
+ */

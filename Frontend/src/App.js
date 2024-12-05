@@ -7,15 +7,25 @@ import AccountDetails from './components/accountDetails/AccountDetails';
 import Account from './components/account/Account';
 import PostACar from './components/postACar/PostACar';
 import CarDetails from './components/carDetails/CarDetails';
-import useLocalStorage from './hooks/useLocalStorage';
+import useSessionStorage from './hooks/useSessionStorage';
 import UserCars from './components/userCars/UserOwnCars';
 import { useEffect , useState} from 'react';
 import axios from 'axios';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#ff5252',
+    },
+  },
+});
 
 function App() {
 
-  const [userData, setUserData] = useLocalStorage('userData', {
+  const [userData, setUserData] = useSessionStorage('userData', {
     id: '',
     name: '',
     surname: '',
@@ -32,7 +42,7 @@ function App() {
     carIds: []
   });
 
-  const [carData, setCarData] = useLocalStorage('carData', {
+  const [carData, setCarData] = useSessionStorage('carData', {
     id: '',
     title: '',
     brand: '',
@@ -94,25 +104,28 @@ function App() {
 
 
   return (
-    <div className='App.js'>
-      <Header userData={userData} setUserData={setUserData}/>
-      <Routes>
-        <Route path="/" element={<Home searchFilters={searchFilters} setSearchFilters={setSearchFilters} setCarData={setCarData}/>} />
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+        <div className='App.js'>
+          <Header userData={userData} setUserData={setUserData}/>
+          <Routes>
+            <Route path="/" element={<Home searchFilters={searchFilters} setSearchFilters={setSearchFilters} setCarData={setCarData}/>} />
 
-        <Route path="/account" element={<Account userData={userData}/>} />
-        <Route path="/account/details" element={<AccountDetails userData={userData} setUserData={setUserData}/>} />
-        <Route path="/account/cars" element={<UserCars userData={userData}/>} />
-        <Route path="/account/postACar" element={<PostACar userData={userData} setUserData={setUserData}/>}/>
+            <Route path="/account" element={<Account userData={userData}/>} />
+            <Route path="/account/details" element={<AccountDetails userData={userData} setUserData={setUserData}/>} />
+            <Route path="/account/cars" element={<UserCars userData={userData}/>} />
+            <Route path="/account/postACar" element={<PostACar userData={userData} setUserData={setUserData}/>}/>
 
-        <Route path="/login" element={<LoginPage setUserData={setUserData} returning={0}/>} />
-        <Route path="/login/account" element={<LoginPage setUserData={setUserData} returning={1}/>} />
-  
-        <Route path="/register" element={<RegisterPage userData={userData} setUserData={setUserData} returning={0}/>} />
-        <Route path="/register/account" element={<RegisterPage userData={userData} setUserData={setUserData} returning={1}/>} />
+            <Route path="/login" element={<LoginPage setUserData={setUserData} returning={0}/>} />
+            <Route path="/login/account" element={<LoginPage setUserData={setUserData} returning={1}/>} />
+      
+            <Route path="/register" element={<RegisterPage userData={userData} setUserData={setUserData} returning={0}/>} />
+            <Route path="/register/account" element={<RegisterPage userData={userData} setUserData={setUserData} returning={1}/>} />
 
-        <Route path="/carDetails" element={<CarDetails carDataId={carData.id}/>} />
-      </Routes>
-    </div>
+            <Route path="/carDetails" element={<CarDetails carDataId={carData.id}/>} />
+          </Routes>
+        </div>
+    </ThemeProvider>
   );
 }
 
