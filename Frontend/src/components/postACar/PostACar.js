@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, TextareaAutosize, FormControlLabel, Checkbox, CircularProgress } from '@mui/material';
+import { TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, TextareaAutosize, CircularProgress, Typography, Box, CardMedia } from '@mui/material';
 import { brands, modelsByBrand, bodies, colors } from '../ConstantData';
 import './PostACar.css';
 
@@ -150,29 +150,59 @@ const PostACar = ({ userData, setUserData }) => {
     }
 
     return (
-        <div className='postCar-main-container'>
-            <div className='frame'>
-                <h1> Add your car details: </h1>
-                <Grid container spacing={3}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            fullWidth
-                            label="Title"
-                            name="title"
-                            value={carData.title}
-                            onChange={handleChange}
-                            placeholder="Write a descriptive title for your car"
-                            required
-                        />
-                    </Grid>
+        <Box className='postCar-main-container' sx={{
+            display: 'flex',
+            minHeight: '94vh',
+            backgroundColor: 'hsl(0, 0%, 7%)',
+            justifyContent: 'center',
+            alignItems: 'center',
+        }}>
+            <Box className='frame' sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                minHeight: '90vh',
+                width: '80%',
+                padding: '5%',
+                border: '3px solid hsl(0, 0%, 0%)',
+                borderRadius: '5px',
+                backgroundColor: 'hsl(0, 0%, 12%)',
+                boxShadow: '10px 20px 200px  rgb(243, 0, 0), 10px 10px 5px 8px rgb(31, 31, 31)',
+            }}>
+                <Typography 
+                    variant='h3' 
+                    sx={{
+                        fontSize: {
+                        xs: '4vw', // Dimensiune pentru ecrane mici
+                        sm: '2vw', // Dimensiune pentru ecrane medii
+                        md: '2.5vw', // Dimensiune pentru ecrane mai mari
+                        },
+                    }}
+                    gutterBottom
+                >
+                    Add your car details:
+                </Typography>
+                <Grid container spacing={3} sx={{justifyContent: 'center'}}>
+                    <TextField
+                        variant='outlined'
+                        label="Title"
+                        name="title"
+                        value={carData.title}
+                        onChange={handleChange}
+                        placeholder="Write a descriptive title for your car"
+                        sx={{width: '60%', marginTop: '20px',marginBottom: 2 }}
+                    />
                     <Grid item xs={12} sm={6}>
                         <FormControl fullWidth>
                             <InputLabel>Brand</InputLabel>
                             <Select
                                 name="brand"
+                                label="Brand"
+                                variant='outlined'
                                 value={carData.brand}
                                 onChange={(e) => { setSelectedBrand(e.target.value); handleChange(e); }}
-                            >
+                            >   
+                                <MenuItem value="">Choose</MenuItem>
                                 {brands.map((brand) => (
                                     <MenuItem key={brand} value={brand}>{brand}</MenuItem>
                                 ))}
@@ -184,9 +214,13 @@ const PostACar = ({ userData, setUserData }) => {
                             <InputLabel>Model</InputLabel>
                             <Select
                                 name="model"
+                                label="model"
                                 value={carData.model}
                                 onChange={handleChange}
-                            >
+                            >   
+                                {carData.brand ? (
+                                <MenuItem value="">Choose</MenuItem>) :
+                                <MenuItem value="">Choose the brand first</MenuItem>}
                                 {filteredModels.map((model) => (
                                     <MenuItem key={model} value={model}>{model}</MenuItem>
                                 ))}
@@ -198,9 +232,12 @@ const PostACar = ({ userData, setUserData }) => {
                             <InputLabel>Body Type</InputLabel>
                             <Select
                                 name="body"
+                                label="Body Type"
+                                variant='outlined'
                                 value={carData.body}
                                 onChange={handleChange}
-                            >
+                            >   
+                                <MenuItem value="">Choose</MenuItem>
                                 {bodies.map((body) => (
                                     <MenuItem key={body} value={body}>{body}</MenuItem>
                                 ))}
@@ -246,6 +283,143 @@ const PostACar = ({ userData, setUserData }) => {
                             onChange={handleChange}
                         />
                     </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl sx={{ width: "110px" }}>
+                            <InputLabel>Currency</InputLabel>
+                            <Select
+                                fullWidth
+                                label="Currency"
+                                name="currency"
+                                value={carData.currency}
+                                onChange={handleChange}
+                            >   
+                                <MenuItem value="">Choose</MenuItem>
+                                <MenuItem value="€">€</MenuItem>
+                                <MenuItem value="Ron">Ron</MenuItem>
+                                <MenuItem value="£">£</MenuItem>
+                                
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth sx={{}}>
+                            <InputLabel>Condition</InputLabel>
+                            <Select
+                                fullWidth
+                                label="Condition"
+                                name="condition"
+                                value={carData.condition}
+                                onChange={handleChange}
+                            >   
+                                <MenuItem value="">Choose</MenuItem>
+                                <MenuItem value="NEW">New</MenuItem>
+                                <MenuItem value="USED">Used</MenuItem>
+                                
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth sx={{}}>
+                            <InputLabel>Color</InputLabel>
+                            <Select
+                                fullWidth
+                                label="Color"
+                                name="color"
+                                value={carData.color}
+                                onChange={handleChange}
+                            >   
+                                <MenuItem value="">Choose</MenuItem>
+                                {colors.map((color) => 
+                                    <MenuItem key={color} value={color}>{color}</MenuItem>
+                                    )}
+                                
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Engine capacity(cm³)"
+                            name="cm3"
+                            type="number"
+                            value={carData.cm3}
+                            onChange={handleChange}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Engine displacement(hp)"
+                            name="hp"
+                            type="number"
+                            value={carData.hp}
+                            onChange={handleChange}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth sx={{}}>
+                            <InputLabel>Fuel Type</InputLabel>
+                            <Select
+                                fullWidth
+                                label="Fuel Type"
+                                name="fuelType"
+                                value={carData.fuelType}
+                                onChange={handleChange}
+                            >   
+                                <MenuItem value="">Choose</MenuItem>
+                                <MenuItem value="PETROL">Petrol</MenuItem>
+                                <MenuItem value="DIESEL">Diesel</MenuItem>
+                                <MenuItem value="GPL">GPL</MenuItem>
+                                <MenuItem value="HYBRID">Hybrid</MenuItem>
+                                <MenuItem value="ELECTRIC">Electric</MenuItem>
+                                
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth sx={{}}>
+                            <InputLabel>Gearbox</InputLabel>
+                            <Select
+                                fullWidth
+                                label="Gearbox"
+                                name="gearbox"
+                                value={carData.transmission}
+                                onChange={handleChange}
+                            >   
+                                <MenuItem value="">Choose</MenuItem>
+                                <MenuItem value="MANUAL">Manual</MenuItem>
+                                <MenuItem value="AUTOMATIC">Automatic</MenuItem>
+                                
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth sx={{}}>
+                            <InputLabel>Steeringwheel</InputLabel>
+                            <Select
+                                fullWidth
+                                label="Steeringwheel"
+                                name="steeringwheel"
+                                value={carData.steeringwheel}
+                                onChange={handleChange}
+                            >   
+                                <MenuItem value="">Choose</MenuItem>
+                                <MenuItem value="LEFT">Left Side</MenuItem>
+                                <MenuItem value="RIGHT">Right Side</MenuItem>
+                                
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Number of doors"
+                            name="numberOfDoors"
+                            type="number"
+                            value={carData.numberOfDoors}
+                            onChange={handleChange}
+                        />
+                    </Grid>
                     <Grid item xs={12}>
                         <TextareaAutosize
                             minRows={3}
@@ -262,13 +436,44 @@ const PostACar = ({ userData, setUserData }) => {
                             <input type="file" multiple accept="image/*" hidden onChange={handleImageUpload} />
                         </Button>
                     </Grid>
-                    <Grid item xs={12}>
-                        <div className="imagesGrid">
-                            {images.map((image, index) => (
-                                <img key={index} src={URL.createObjectURL(image)} alt={`img-${index}`} />
-                            ))}
-                        </div>
-                    </Grid>
+                    <Grid
+                        container
+                        spacing={2} // Spațiu între elemente
+                        sx={{
+                            backgroundColor: 'hsl(0, 2%, 12%)',
+                            width: '100%',
+                            height: {
+                            xs: '300px',
+                            sm: '400px',
+                            md: '500px',
+                            lg: '600px',
+                            },
+                            border: '2px solid black',
+                        }}
+                        >
+                        {images.map((image, index) => (
+                            <Grid 
+                            item 
+                            xs={4} sm={6} md={4} lg={4} // Configurație responsive
+                            key={index}
+                            >
+                            <CardMedia
+                                sx={{
+                                width: 'auto',
+                                maxWidth: '300px',
+                                maxHeight: '180px',
+                                height: '180px',
+                                objectFit: 'cover', // Păstrează proporțiile imaginii
+                                }}
+                                component="img"
+                                image={URL.createObjectURL(image)}
+                                alt={`img-${index}`}
+                            />
+                            </Grid>
+                        ))}
+                        </Grid>
+
+
                 </Grid>
                 <Button
                     variant="contained"
@@ -279,8 +484,8 @@ const PostACar = ({ userData, setUserData }) => {
                 >
                     Submit
                 </Button>
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 };
 

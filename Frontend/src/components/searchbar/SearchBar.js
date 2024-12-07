@@ -138,7 +138,7 @@ const SearchBar = ({ searchFilters, setSearchFilters }) => {
                 <InputLabel>Sort by</InputLabel>
                 <Select
                     name="sort"
-                    label="Sort By"
+                    label="Sort by"
                     value={currentSearchFilters.sort || ''}
                     onChange={handleChange}
                 >
@@ -181,7 +181,9 @@ const SearchBar = ({ searchFilters, setSearchFilters }) => {
                     value={currentSearchFilters.model || ''}
                     onChange={handleChange}
                 >
-                    <MenuItem value="">Choose</MenuItem>
+                    {currentSearchFilters.brand ? (
+                                <MenuItem value="">Choose</MenuItem>) :
+                                <MenuItem value="">Choose the brand first</MenuItem>}
                     {filteredModels.map((model) => (
                         <MenuItem key={model} value={model}>
                             {model}
