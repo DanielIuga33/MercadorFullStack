@@ -423,14 +423,13 @@ const PostACar = ({ userData, setUserData }) => {
                     <Grid item xs={12}>
                         <TextareaAutosize
                             minRows={3}
-                            name="description"
-                            value={carData.description}
-                            onChange={handleChange}
+                            name="description"      
+                            onChange={(e) => {if (e.target.value.length > 40 && e.target.value.length%10===0) handleChange(e)}}
                             placeholder="Describe the car"
-                            style={{ width: '100%' }}
+                            style={{ width: '90%', height: '300px' , backgroundColor: 'hsla(0, 0%, 7%, 0.658)' , color: 'white'}}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} sx={{marginBottom: '30px'}}>
                         <Button variant="outlined" component="label">
                             Upload Images
                             <input type="file" multiple accept="image/*" hidden onChange={handleImageUpload} />
@@ -441,12 +440,12 @@ const PostACar = ({ userData, setUserData }) => {
                         spacing={2} // Spațiu între elemente
                         sx={{
                             backgroundColor: 'hsl(0, 2%, 12%)',
-                            width: '100%',
+                            width: '90%',
                             height: {
-                            xs: '300px',
-                            sm: '400px',
-                            md: '500px',
-                            lg: '600px',
+                            xs: '100px',
+                            sm: '300px',
+                            md: '400px',
+                            lg: '550px',
                             },
                             border: '2px solid black',
                         }}
