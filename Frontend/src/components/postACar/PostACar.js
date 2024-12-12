@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, TextareaAutosize, CircularProgress, Typography, Box, CardMedia } from '@mui/material';
@@ -16,8 +16,8 @@ const PostACar = ({ userData, setUserData }) => {
     const [done, setDone] = useState(false);
     const [images, setImages] = useState([]);
     const [errors, setErrors] = useState('');
-    const [descError, setDescError] = useState(false);
-    const [agreed, setAgreed] = useState(false);
+    const [descError, setDescError] = useState('');
+    const descriptionRef = useRef();
 
     const [carData, setCarData] = useState({
         title: '',
@@ -48,18 +48,15 @@ const PostACar = ({ userData, setUserData }) => {
         setCarData({ ...carData, [name]: value });
     };
 
-    useEffect(() => {
+    const verifyDescription =() => {
         if (carData.description.length < 40 && carData.description.length > 0) {
-            setDescError(true);
-            setAgreed(false);
-        } else if (carData.description.length === 0) {
-            setDescError(false);
-            setAgreed(false);
+            setDescError('Invalid description size !');          
+        } else if (carData.description.length === 0){
+            setDescError('You need to complete the description !');
         } else {
-            setDescError(false);
-            setAgreed(true);
+            setDescError('');
         }
-    }, [carData.description]);
+    };
 
     useEffect(() => {
         if (selectedBrand && modelsByBrand[selectedBrand]) {
@@ -104,14 +101,18 @@ const PostACar = ({ userData, setUserData }) => {
     };
 
     const handleSubmit = async () => {
-        if (carData.title === '' || carData.brand === '' || carData.model === '' || carData.year === '' || carData.price === '' || carData.description === '') {
+        carData.description = descriptionRef.current.value;
+        verifyDescription();
+        if (carData.title === '' || carData.brand === '' || carData.model === '' || carData.year === '' || carData.price === '') {
             setErrors('You need to complete all the required fields!');
             return;
+        }else{
+            setErrors('');
         }
-        if (errors || descError) {
+        if (descError) {
+            console.log(descError);
             return;
         }
-        setErrors('');
         setLoading(true);
 
         try {
@@ -382,7 +383,7 @@ const PostACar = ({ userData, setUserData }) => {
                             <Select
                                 fullWidth
                                 label="Gearbox"
-                                name="gearbox"
+                                name="transmission"
                                 value={carData.transmission}
                                 onChange={handleChange}
                             >   
@@ -423,9 +424,8 @@ const PostACar = ({ userData, setUserData }) => {
                     <Grid item xs={12}>
                         <TextareaAutosize
                             minRows={3}
+                            ref={descriptionRef}
                             name="description"
-                            value={carData.description}
-                            onChange={handleChange}
                             placeholder="Describe the car"
                             style={{ width: '100%' }}
                         />
@@ -436,42 +436,51 @@ const PostACar = ({ userData, setUserData }) => {
                             <input type="file" multiple accept="image/*" hidden onChange={handleImageUpload} />
                         </Button>
                     </Grid>
-                    <Grid
+                    <Grid 
                         container
                         spacing={2} // Spațiu între elemente
                         sx={{
                             backgroundColor: 'hsl(0, 2%, 12%)',
-                            width: '100%',
-                            height: {
-                            xs: '300px',
-                            sm: '400px',
-                            md: '500px',
-                            lg: '600px',
-                            },
+                            maxWidth: '80%',
+                            marginTop: '50px',
+                            height: 'auto',
+                            padding: '5px',
                             border: '2px solid black',
                         }}
                         >
-                        {images.map((image, index) => (
+                        {images.length > 0 ? 
+                        images.map((image, index) => (
                             <Grid 
                             item 
-                            xs={4} sm={6} md={4} lg={4} // Configurație responsive
+                            xs={4} sm={6} md={4} lg={4}
                             key={index}
                             >
                             <CardMedia
                                 sx={{
-                                width: 'auto',
-                                maxWidth: '300px',
-                                maxHeight: '180px',
-                                height: '180px',
-                                objectFit: 'cover', // Păstrează proporțiile imaginii
+                                    width: 'auto',
+                                    maxWidth: "100%",
+                                    maxHeight: '180px',
+                                    objectFit: 'cover', 
+                                    border: '2px solid black'
                                 }}
                                 component="img"
                                 image={URL.createObjectURL(image)}
+                                onClick={() => setImages(images.filter((_, i) => i !== index))}
                                 alt={`img-${index}`}
                             />
                             </Grid>
-                        ))}
-                        </Grid>
+                        )) :
+                        <Box
+                            fullWidth
+                            sx={{
+                                height: "190px",
+                                alignContent: 'center',
+                                margin: '0 auto',
+                            }}
+                        >
+                            <Typography variant='h4' color={'gray'}> There are no images for now</Typography>
+                        </Box>}
+                    </Grid>
 
 
                 </Grid>
@@ -479,11 +488,19 @@ const PostACar = ({ userData, setUserData }) => {
                     variant="contained"
                     color="primary"
                     onClick={handleSubmit}
-                    disabled={!agreed || errors || descError}
+                    // disabled={!agreed || errors || descError}
                     style={{ marginTop: '20px' }}
                 >
                     Submit
                 </Button>
+                {errors &&
+                <Box>
+                    <Typography>{errors}</Typography>
+                </Box>}
+                {descError && 
+                <Box>
+                    <Typography>{descError}</Typography>
+                </Box>}
             </Box>
         </Box>
     );
