@@ -427,7 +427,7 @@ const PostACar = ({ userData, setUserData }) => {
                             ref={descriptionRef}
                             name="description"
                             placeholder="Describe the car"
-                            style={{ width: '100%' }}
+                            style={{ width: '90%', minHeight: '100px' , backgroundColor: 'hsla(0, 0%, 7%, 0.658)' , color: 'white'}}
                         />
                     </Grid>
                     <Grid item xs={12}>
