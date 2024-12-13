@@ -107,6 +107,8 @@ const SearchBar = ({ searchFilters, setSearchFilters }) => {
                             fontWeight: 550,
                             backgroundColor: 'rgb(129, 13, 13)',
                             '&:hover': { backgroundColor: 'rgb(124, 35, 27)' },
+                            color: 'hsl(0, 3.00%, 73.70%)',
+                            borderColor: 'hsl(0, 3.00%, 73.70%)'
                         }}
                     >
                         Reset

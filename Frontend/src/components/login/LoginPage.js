@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-// import '@fortawesome/fontawesome-free/css/all.min.css';
 import './LoginPage.css';
 
 function LoginPage({ setUserData, returning}) {

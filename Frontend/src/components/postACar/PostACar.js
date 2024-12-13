@@ -17,6 +17,7 @@ const PostACar = ({ userData, setUserData }) => {
     const [images, setImages] = useState([]);
     const [errors, setErrors] = useState('');
     const [descError, setDescError] = useState('');
+    const titleRef = useRef();
     const descriptionRef = useRef();
 
     const [carData, setCarData] = useState({
@@ -42,6 +43,12 @@ const PostACar = ({ userData, setUserData }) => {
         ownerId: userData.id,
         images: []
     });
+
+    useEffect(() => {
+        if (!userData.id){
+            navigate('/');
+        }
+    }, [userData, navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -101,6 +108,7 @@ const PostACar = ({ userData, setUserData }) => {
     };
 
     const handleSubmit = async () => {
+        carData.title = titleRef.current.value;
         carData.description = descriptionRef.current.value;
         verifyDescription();
         if (carData.title === '' || carData.brand === '' || carData.model === '' || carData.year === '' || carData.price === '') {
@@ -188,8 +196,7 @@ const PostACar = ({ userData, setUserData }) => {
                         variant='outlined'
                         label="Title"
                         name="title"
-                        value={carData.title}
-                        onChange={handleChange}
+                        ref={titleRef}
                         placeholder="Write a descriptive title for your car"
                         sx={{width: '60%', marginTop: '20px',marginBottom: 2 }}
                     />
@@ -495,11 +502,11 @@ const PostACar = ({ userData, setUserData }) => {
                 </Button>
                 {errors &&
                 <Box>
-                    <Typography>{errors}</Typography>
+                    <span className="error"><i className="fas fa-times" style={{ color: "red" }}></i><i> {errors}</i></span>
                 </Box>}
                 {descError && 
                 <Box>
-                    <Typography>{descError}</Typography>
+                    <span className="error"><i className="fas fa-times" style={{ color: "red" }}></i><i> {descError}</i></span>
                 </Box>}
             </Box>
         </Box>
