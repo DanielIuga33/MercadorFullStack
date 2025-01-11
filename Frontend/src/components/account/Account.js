@@ -1,4 +1,5 @@
 import React from 'react';
+import img1 from '../../images/img1.jpeg';
 import { Box, Typography, Button, Divider, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -74,7 +75,11 @@ const Account = ({ userData }) => {
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        backgroundColor: '#2B2B2B',
+        backgroundImage: `url(${img1})`,
+        backgroundSize: 'cover', // Ajustează dimensiunea imaginii
+        backgroundPosition: 'center', // Centrează imaginea
+        backgroundRepeat: 'no-repeat', // Evită repetarea imaginii
+        backgroundColor: '#2B2B2B', // Culoare de fundal fallback
         color: 'white',
         px: 3,
       }}
@@ -83,11 +88,11 @@ const Account = ({ userData }) => {
         sx={{
           border: '5px solid hsl(0, 100%, 24%)',
           borderRadius: 8,
-          backgroundColor: '#333333',
+          backgroundColor: 'transparent',
           padding: { xs: 5, md: 8 },
           width: { xs: '90%', sm: '80%', md: '60%', lg: '50%' },
           minWidth: 300,
-          boxShadow: '0px 10px 25px rgba(0, 0, 0, 0.6)',
+          boxShadow: '0px 10px 25px hsl(0, 96.30%, 31.60%)',
         }}
       >
         <Typography variant="h3" sx={{ textAlign: 'center', mb: 4, fontWeight: 'bold' }}>
@@ -102,7 +107,8 @@ const Account = ({ userData }) => {
               sx={{
                 backgroundColor: 'hsl(0, 100%, 24%)',
                 color: 'white',
-                '&:hover': { backgroundColor: 'hsl(0, 100%, 22%)' },
+                '&:hover': { backgroundColor: 'hsl(0, 100%, 19%)' ,
+                  boxShadow: '0px 8px 15px hsla(0, 26.10%, 36.10%, 0.64)'},
                 padding: '18px 0',
                 borderRadius: '12px',
                 boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.4)',
@@ -120,7 +126,8 @@ const Account = ({ userData }) => {
               sx={{
                 backgroundColor: 'hsl(0, 100%, 24%)',
                 color: 'white',
-                '&:hover': { backgroundColor: 'hsl(0, 100%, 22%)' },
+                '&:hover': { backgroundColor: 'hsl(0, 100%, 19%)' ,
+                  boxShadow: '0px 8px 15px hsla(0, 26.10%, 36.10%, 0.64)'},
                 padding: '18px 0',
                 borderRadius: '12px',
                 boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.4)',
@@ -141,7 +148,9 @@ const Account = ({ userData }) => {
               sx={{
                 backgroundColor: 'hsl(0, 100%, 24%)',
                 color: 'white',
-                '&:hover': { backgroundColor: 'hsl(0, 100%, 22%)' },
+                '&:hover': { backgroundColor: 'hsl(0, 100%, 19%)' ,
+                  boxShadow: '0px 8px 15px hsla(0, 26.10%, 36.10%, 0.64)',
+                },
                 padding: '18px 0',
                 borderRadius: '12px',
                 boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.4)',
@@ -158,7 +167,8 @@ const Account = ({ userData }) => {
               sx={{
                 backgroundColor: 'hsl(0, 100%, 24%)',
                 color: 'white',
-                '&:hover': { backgroundColor: 'hsl(0, 100%, 22%)' },
+                '&:hover': { backgroundColor: 'hsl(0, 100%, 19%)' ,
+                  boxShadow: '0px 8px 15px hsla(0, 26.10%, 36.10%, 0.64)' },
                 padding: '18px 0',
                 borderRadius: '12px',
                 boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.4)',
