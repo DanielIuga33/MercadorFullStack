@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Box, Card, CardContent, CardMedia, Typography, CircularProgress } from '@mui/material';
+import SpeedIcon from '@mui/icons-material/Speed';
+import { Grid, Box, Card, CardContent, CardMedia, Typography, CircularProgress} from '@mui/material';
 import axios from 'axios';
 
 const MainPage = ({ searchFilters, setCarData }) => {
@@ -195,10 +196,42 @@ const MainPage = ({ searchFilters, setCarData }) => {
                                     loading="lazy"
                                 />
                             )}
-                            <CardContent sx={{ backgroundColor: 'rgb(17, 18, 20)', color: 'lightgray', flexGrow: 1}}>
-                                <Typography variant="h6">{car.title}</Typography>
-                                <Typography variant="body2" color="textSecondary">{car.registrationDate}</Typography>
-                                <Typography variant="h5">{car.price} {car.currency}</Typography>
+                            <CardContent 
+                                sx={{ 
+                                    backgroundColor: 'rgb(17, 18, 20)',
+                                    color: 'lightgray',
+                                    flexGrow: 1,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                }}
+                            >
+                                <Typography 
+                                    variant="h6" 
+                                    noWrap 
+                                    gutterBottom
+                                    sx={{ 
+                                        textOverflow: "ellipsis", 
+                                        overflow: "hidden", 
+                                        whiteSpace: "nowrap",
+                                        fontSize: 'clamp(16px, 2vw, 20px)', // Ajustare automată a dimensiunii textului
+                                        }}
+                                >
+                                    {car.title}
+                                </Typography>
+                                <Typography variant="h5">
+                                    {car.price} {car.currency}
+                                </Typography>
+                                <Box sx={{marginTop: 'auto',marginBottom:'-15px'}}>
+                                    {car.year && car.mileage &&
+                                    <Typography 
+                                        color="textSecondary"
+                                        flex={1}
+                                    >
+                                        <SpeedIcon 
+                                            sx={{ fontSize: '1.2rem', color: 'white' }} 
+                                        /> {car.year} - {car.mileage} km
+                                    </Typography>}
+                                </Box>
                             </CardContent>
                         </Card>
                     </Grid>
