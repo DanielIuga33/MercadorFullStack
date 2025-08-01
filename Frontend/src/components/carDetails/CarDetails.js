@@ -111,6 +111,7 @@ const CarDetails = ({carDataId}) => {
                     <label><span className="align-right"><strong>Model: </strong></span>{car.model}</label>
                     <label><span className="align-right"><strong>Condition: </strong></span>{car.condition}</label>
                     <label><span className="align-right"><strong>Category: </strong></span>{car.body}</label>
+                    {car.vin &&  <label><span className="align-right"><strong>VIN: </strong></span>{car.vin}</label>}
                     <label><span className="align-right"><strong>First registartion: </strong></span>{car.year}</label>
                     <label><span className="align-right"><strong>Gearbox: </strong></span>Transmission {car.transmission}</label>
                     <label><span className="align-right"><strong>Drive Type: </strong></span>{car.fuelType}</label>

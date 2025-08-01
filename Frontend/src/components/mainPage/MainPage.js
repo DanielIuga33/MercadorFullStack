@@ -9,6 +9,9 @@ const MainPage = ({ searchFilters, setCarData }) => {
     const [loading, setLoading] = useState(true); // State for loading
     const navigate = useNavigate();
 
+    function normalizeText(text) {
+        return text.toLowerCase().replace(/[^a-z0-9ăâîșț ]/gi, '').replace(/\s+/g, ' ').trim();
+    }
     const existSearchFilters = (searchFilters) => {
         if (searchFilters) {
             for (let elem in searchFilters)
@@ -30,11 +33,12 @@ const MainPage = ({ searchFilters, setCarData }) => {
 
             for (let elem in filteredSearchFilters) {
                 if (filteredSearchFilters[elem]["title"]) {
-                    const keywords = filteredSearchFilters[elem]["title"].split(" ");
-                    carData = Object.values(carData).filter((item) =>
-                        keywords.every((keyword) => item["title"].includes(keyword))
-                    );
-                }
+                    const keywords = normalizeText(filteredSearchFilters[elem]["title"]).split(" ");
+                    carData = Object.values(carData).filter((item) => {
+                    const title = normalizeText(item["title"]);
+                    return keywords.every((keyword) => title.includes(keyword));
+                });
+}
                 if (filteredSearchFilters[elem]["brand"]) {
                     carData = Object.values(carData)
                         .filter((item) => item["brand"] === filteredSearchFilters[elem]["brand"]);
@@ -188,10 +192,15 @@ const MainPage = ({ searchFilters, setCarData }) => {
                                     component="img"
                                     sx={{
                                         width: '100%', // Setează lățimea imaginii la 100% din containerul său
-                                        maxHeight: '300px', // Setează înălțimea maximă
-                                        height: 'auto', // Menține raportul de aspect
+                                        height: 'auto', 
+                                        maxHeight: '200px', // Setează înălțimea maximă
                                     }}
                                     image={`http://localhost:8080/api${car.image}`}
+                                     srcSet={`
+                                        http://localhost:8080/api${car.image}?w=400 1x,
+                                        http://localhost:8080/api${car.image}?w=800 2x
+                                    `}
+                                    sizes="(max-width: 600px) 100vw, 600px"
                                     alt={`Car ${car.title}`}
                                     loading="lazy"
                                 />
