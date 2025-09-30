@@ -88,7 +88,7 @@ const SearchBar = ({ searchFilters, setSearchFilters }) => {
                     width: '8px',
                 },
                 '&::-webkit-scrollbar-thumb': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                    backgroundColor: 'hsla(0, 0%, 100%, 0.30)',
                     borderRadius: '10px',
                 },
             }}
@@ -119,7 +119,7 @@ const SearchBar = ({ searchFilters, setSearchFilters }) => {
                         type="submit"
                         sx={{
                             fontWeight: 600,
-                            backgroundColor: 'rgba(105, 105, 100, 0.74)',
+                            backgroundColor: 'hsla(60, 2%, 40%, 0.74)',
                             '&:hover': { backgroundColor: 'rgba(100, 100, 95, 0.74)' },
                         }}
                     >
