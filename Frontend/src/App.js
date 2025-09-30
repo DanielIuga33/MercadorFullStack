@@ -7,6 +7,7 @@ import AccountDetails from './components/accountDetails/AccountDetails';
 import Account from './components/account/Account';
 import PostACar from './components/postACar/PostACar';
 import CarDetails from './components/carDetails/CarDetails';
+import ConversationTab from './components/conversations/ConversationTab'
 import useSessionStorage from './hooks/useSessionStorage';
 import UserCars from './components/userCars/UserOwnCars';
 import { useEffect , useState} from 'react';
@@ -113,6 +114,7 @@ function App() {
 
             <Route path="/account" element={<Account userData={userData}/>} />
             <Route path="/account/details" element={<AccountDetails userData={userData} setUserData={setUserData}/>} />
+            <Route path="/account/conversations" element={<ConversationTab userData={userData} setUserData={setUserData}/>} />
             <Route path="/account/cars" element={<UserCars userData={userData}/>} />
             <Route path="/account/postACar" element={<PostACar userData={userData} setUserData={setUserData}/>}/>
 

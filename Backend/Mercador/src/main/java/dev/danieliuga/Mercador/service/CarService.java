@@ -25,6 +25,7 @@ public class CarService {
     public Optional<Car> singleCar(ObjectId id){
         return carRepository.findById(id);
     }
+
     public Car addCar(Car car) throws Exception {
         Car savedCar = carRepository.save(car);
         User user = userService.singleUser((car.getOwnerId()));
