@@ -124,7 +124,7 @@ function App() {
             <Route path="/register" element={<RegisterPage userData={userData} setUserData={setUserData} returning={0}/>} />
             <Route path="/register/account" element={<RegisterPage userData={userData} setUserData={setUserData} returning={1}/>} />
 
-            <Route path="/carDetails" element={<CarDetails carDataId={carData.id}/>} />
+            <Route path="/carDetails" element={<CarDetails userData={userData} carDataId={carData.id}/>} />
           </Routes>
         </div>
     </ThemeProvider>

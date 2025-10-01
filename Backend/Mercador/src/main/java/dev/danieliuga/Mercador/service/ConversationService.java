@@ -1,6 +1,7 @@
 package dev.danieliuga.Mercador.service;
 
 import dev.danieliuga.Mercador.model.Conversation;
+import dev.danieliuga.Mercador.model.Message;
 import dev.danieliuga.Mercador.repository.ConversationRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,31 @@ public class ConversationService {
     @Autowired
     private ConversationRepository conversationRepository;
 
-    private Conversation addConversation(Conversation conversation) throws Exception{
+    public Conversation addConversation(Conversation conversation) throws Exception{
         return conversationRepository.save(conversation);
     }
 
     private boolean exists(ObjectId user1, ObjectId user2){
         return conversationRepository.findConversationBetween(user1, user2) != null;
+    }
+    public ObjectId getConversation(ObjectId user1, ObjectId user2){
+        if (exists(user1, user2)){
+            return conversationRepository.findConversationBetween(user1, user2).getId();
+        }
+        else return null;
+    }
+    public void addMessageToConversation(ObjectId user1, ObjectId user2, Message message) throws Exception{
+        if (exists(user1, user2)){
+            Conversation conversation = conversationRepository.findConversationBetween(user1, user2);
+            List<Message> messages = conversation.getMessages();
+            messages.add(message);
+            conversation.setMessages(messages);
+            conversationRepository.save(conversation);
+        }
+    }
+    public void deleteConversation(ObjectId user1, ObjectId user2){
+        if (exists(user1, user2)) {
+            conversationRepository.delete(conversationRepository.findConversationBetween(user1, user2));
+        }
     }
 }

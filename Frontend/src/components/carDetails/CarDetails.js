@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
@@ -6,13 +7,16 @@ import "slick-carousel/slick/slick-theme.css";
 import './CarDetails.css';
 
 
-const CarDetails = ({carDataId}) => {
+const CarDetails = ({userData, carDataId}) => {
+const API_URL = 'http://localhost:8080/api/conversations/message/';
   const [car, setCar] = useState({});
   const [carImages, setCarImages] = useState([]); // Inițializează cu array gol
   const [loading, setLoading] = useState(true); // Stare pentru loading
   const [currentSlide, setCurrentSlide] = useState(0);
   const slider1Ref = useRef(null);
   const slider2Ref = useRef(null);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +33,19 @@ const CarDetails = ({carDataId}) => {
 
     fetchData();
   },[carDataId]);
+
+  const sendMessage = async() =>{
+    if (!userData.id){
+        return;
+    } else {
+        console.log("DAdadada");
+        let idSender = userData.id;
+        let idOwner = car.idOwner
+        let list= [idSender, idOwner]
+        await axios.post(`http://localhost:8080/api/conversations/${list}`);
+        navigate('/account/conversations/')
+    }
+  }
 
 
   if (loading) {
@@ -77,6 +94,9 @@ const CarDetails = ({carDataId}) => {
                 <span className='title'>
                     <h1 id='title'>{car.title}</h1>
                     <h1 id='price'>{car.price} {car.currency}</h1>
+                    <div className='chatWithOwner'>
+                        <button onClick={sendMessage}>Message</button>
+                    </div>
                 </span>
                 <Slider ref={slider1Ref} {...settings1}>
                     {carImages.map((img, index) => (
@@ -98,6 +118,13 @@ const CarDetails = ({carDataId}) => {
             </div>
             <div className='car-info-box'>
                 <div className='spacer'></div>
+                <div className='messageBox'>
+                    <div className='message'>
+                        <label for="message">Write a message</label>
+                        <input type='text'></input>
+                        <button id="sendButton">Send</button>
+                    </div>
+                </div>
                 <div className='row'>
                     <h4>Price</h4>
                     <div className='bar'></div>
