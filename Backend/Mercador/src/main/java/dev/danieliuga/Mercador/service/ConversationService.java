@@ -15,7 +15,10 @@ public class ConversationService {
     private ConversationRepository conversationRepository;
 
     public Conversation addConversation(Conversation conversation) throws Exception{
-        return conversationRepository.save(conversation);
+        if (!exists(conversation.getUser1(), conversation.getUser2())) {
+            return conversationRepository.save(conversation);
+        }
+        else return new Conversation();
     }
 
     private boolean exists(ObjectId user1, ObjectId user2){

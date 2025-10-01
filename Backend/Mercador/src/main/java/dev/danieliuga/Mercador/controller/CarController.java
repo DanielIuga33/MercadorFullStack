@@ -42,6 +42,11 @@ public class CarController {
         ObjectId objectId = new ObjectId(id);
         return new ResponseEntity<Optional<Car>>(carService.singleCar(objectId), HttpStatus.OK);
     }
+    @GetMapping("/owner/{id}")
+    public ResponseEntity<Optional<String>> getOwnerId(@PathVariable String id){
+        ObjectId objectId = new ObjectId(id);
+        return new ResponseEntity<Optional<String>>(Optional.of(carService.getIdOwner(objectId).toHexString()), HttpStatus.OK);
+    }
 
     @GetMapping("dto/{id}")
     public ResponseEntity<Optional<CarDTO>> getSingleDTOCar(@PathVariable String id){

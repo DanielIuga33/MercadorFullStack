@@ -38,6 +38,11 @@ public class CarService {
         return carRepository.save(car);
     }
 
+    public ObjectId getIdOwner(ObjectId carId){
+        Optional<Car> car = singleCar(carId);
+        return car.get().getOwnerId();
+    }
+
     public void deleteCar(ObjectId id){carRepository.deleteById(id); }
 
 //    public Car update(Car car, ObjectId id){

@@ -4,8 +4,6 @@ import dev.danieliuga.Mercador.model.Car;
 import dev.danieliuga.Mercador.dto.CarDTO;
 import org.springframework.stereotype.Component;
 
-import java.util.Base64;
-import java.util.stream.Collectors;
 
 @Component
 public class CarMapper {

@@ -8,7 +8,7 @@ import './CarDetails.css';
 
 
 const CarDetails = ({userData, carDataId}) => {
-const API_URL = 'http://localhost:8080/api/conversations/message/';
+const API_URL = "http://localhost:8080/api/conversations/message";
   const [car, setCar] = useState({});
   const [carImages, setCarImages] = useState([]); // Inițializează cu array gol
   const [loading, setLoading] = useState(true); // Stare pentru loading
@@ -38,11 +38,9 @@ const API_URL = 'http://localhost:8080/api/conversations/message/';
     if (!userData.id){
         return;
     } else {
-        console.log("DAdadada");
-        let idSender = userData.id;
-        let idOwner = car.idOwner
-        let list= [idSender, idOwner]
-        await axios.post(`http://localhost:8080/api/conversations/${list}`);
+        let ownerId = await axios.get(`http://localhost:8080/api/cars/owner/${carDataId}`)
+        let message = {user1: userData.id, user2: ownerId.data}
+        await axios.post(API_URL, message);
         navigate('/account/conversations/')
     }
   }
