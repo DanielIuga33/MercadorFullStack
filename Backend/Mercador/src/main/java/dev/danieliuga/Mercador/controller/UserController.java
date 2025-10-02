@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.sound.midi.Soundbank;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +48,7 @@ public class UserController {
         // Returnăm lista de UserDTO într-un ResponseEntity
         return ResponseEntity.ok(userDTOs);
     }
-    @GetMapping("/{id}")
+    @GetMapping("/getUser/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
         // Verificăm dacă ID-ul este valid
         if (!ObjectId.isValid(id)) {
@@ -61,7 +63,7 @@ public class UserController {
 
         // Convertim User în UserDTO
         UserDTO userDTO = userMapper.convertToUserDTO(user);
-
+        System.out.println(userDTO);
         return ResponseEntity.ok(userDTO);
     }
 

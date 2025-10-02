@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,5 +44,14 @@ public class ConversationService {
         if (exists(user1, user2)) {
             conversationRepository.delete(conversationRepository.findConversationBetween(user1, user2));
         }
+    }
+    public List<Conversation> findConversations(ObjectId id){
+        List<Conversation> conversations = new ArrayList<>();
+        for (Conversation conversation : conversationRepository.findAll()){
+            if (conversation.getUser1().equals(id) || conversation.getUser2().equals(id)){
+                conversations.add(conversation);
+            }
+        }
+        return conversations;
     }
 }

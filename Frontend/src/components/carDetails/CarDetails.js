@@ -16,7 +16,8 @@ const API_URL = "http://localhost:8080/api/conversations/message";
   const slider1Ref = useRef(null);
   const slider2Ref = useRef(null);
   const navigate = useNavigate();
-
+  const [carOwnerId, setCarOwnerId] = useState("");
+  const [message, setMessage] = useState("")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +25,8 @@ const API_URL = "http://localhost:8080/api/conversations/message";
             const response = await axios.get(`http://localhost:8080/api/cars/${carDataId}`);
             setCar(response.data);
             setCarImages(response.data.images || []); // Asigură-te că este un array
+            let carOwnerId = await axios.get(`http://localhost:8080/api/cars/owner/${carDataId}`);
+            setCarOwnerId(carOwnerId.data);
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -36,12 +39,28 @@ const API_URL = "http://localhost:8080/api/conversations/message";
 
   const sendMessage = async() =>{
     if (!userData.id){
+        window.alert("You need to login or register first!");
         return;
     } else {
         let ownerId = await axios.get(`http://localhost:8080/api/cars/owner/${carDataId}`)
         let message = {user1: userData.id, user2: ownerId.data}
         await axios.post(API_URL, message);
         navigate('/account/conversations/')
+    }
+  }
+
+  const handleChange = (event) =>{
+    setMessage(event.target.value);
+  } 
+
+  const sendAMessage = async() =>{
+    if (!userData.id){
+        window.alert("You need to login or register first!");
+        return;
+    }
+    if (message === ""){
+        window.alert("You need to write a message first");
+        return;
     }
   }
 
@@ -92,9 +111,11 @@ const API_URL = "http://localhost:8080/api/conversations/message";
                 <span className='title'>
                     <h1 id='title'>{car.title}</h1>
                     <h1 id='price'>{car.price} {car.currency}</h1>
+                    {carOwnerId !== userData.id &&
                     <div className='chatWithOwner'>
                         <button onClick={sendMessage}>Message</button>
                     </div>
+                    }
                 </span>
                 <Slider ref={slider1Ref} {...settings1}>
                     {carImages.map((img, index) => (
@@ -116,13 +137,15 @@ const API_URL = "http://localhost:8080/api/conversations/message";
             </div>
             <div className='car-info-box'>
                 <div className='spacer'></div>
+                {carOwnerId !== userData.id &&
                 <div className='messageBox'>
                     <div className='message'>
                         <label for="message">Write a message</label>
-                        <input type='text'></input>
-                        <button id="sendButton">Send</button>
+                        <input type='text' onChange={handleChange}></input>
+                        <button id="sendButton" onClick={sendAMessage}>Send</button>
                     </div>
                 </div>
+                }
                 <div className='row'>
                     <h4>Price</h4>
                     <div className='bar'></div>

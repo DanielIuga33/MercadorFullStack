@@ -23,8 +23,11 @@ public class ConversationController {
 
     @PostMapping("/message")
     public ResponseEntity<Conversation> createConversation(@RequestBody Conversation conv) throws Exception {
-        System.out.println(conv);
         Conversation savedConversation = conversationService.addConversation(conv);
         return new ResponseEntity<>(savedConversation, HttpStatus.CREATED);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<List<Conversation>> getConversations(@PathVariable("id") String id) throws Exception {
+        return new ResponseEntity<>(conversationService.findConversations(new ObjectId(id)), HttpStatus.OK);
     }
 }
