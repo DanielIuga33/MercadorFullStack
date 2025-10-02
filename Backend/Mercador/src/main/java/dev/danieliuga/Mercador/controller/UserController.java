@@ -48,7 +48,7 @@ public class UserController {
         // Returnăm lista de UserDTO într-un ResponseEntity
         return ResponseEntity.ok(userDTOs);
     }
-    @GetMapping("/getUser/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
         // Verificăm dacă ID-ul este valid
         if (!ObjectId.isValid(id)) {

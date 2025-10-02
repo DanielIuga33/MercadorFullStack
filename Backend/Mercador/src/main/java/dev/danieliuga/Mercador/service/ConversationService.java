@@ -1,5 +1,7 @@
 package dev.danieliuga.Mercador.service;
 
+import dev.danieliuga.Mercador.dto.ConversationDTO;
+import dev.danieliuga.Mercador.mapper.ConversationMapper;
 import dev.danieliuga.Mercador.model.Conversation;
 import dev.danieliuga.Mercador.model.Message;
 import dev.danieliuga.Mercador.repository.ConversationRepository;
@@ -14,6 +16,9 @@ import java.util.List;
 public class ConversationService {
     @Autowired
     private ConversationRepository conversationRepository;
+
+    @Autowired
+    private ConversationMapper conversattionMapper;
 
     public Conversation addConversation(Conversation conversation) throws Exception{
         if (!exists(conversation.getUser1(), conversation.getUser2())) {
@@ -53,5 +58,13 @@ public class ConversationService {
             }
         }
         return conversations;
+    }
+    public List<ConversationDTO> findConversationsDTO(ObjectId id){
+        List<Conversation> conversations = findConversations(id);
+        List<ConversationDTO> result = new ArrayList<>();
+        for (Conversation conv : conversations){
+            result.add(conversattionMapper.convertToConversationDTO(conv));
+        }
+        return result;
     }
 }

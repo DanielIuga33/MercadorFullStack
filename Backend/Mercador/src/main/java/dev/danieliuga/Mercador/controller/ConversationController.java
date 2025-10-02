@@ -1,5 +1,7 @@
 package dev.danieliuga.Mercador.controller;
 
+import dev.danieliuga.Mercador.dto.ConversationDTO;
+import dev.danieliuga.Mercador.mapper.ConversationMapper;
 import dev.danieliuga.Mercador.model.Car;
 import dev.danieliuga.Mercador.model.Conversation;
 import dev.danieliuga.Mercador.model.Message;
@@ -21,13 +23,14 @@ public class ConversationController {
     @Autowired
     private ConversationService conversationService;
 
+
     @PostMapping("/message")
     public ResponseEntity<Conversation> createConversation(@RequestBody Conversation conv) throws Exception {
         Conversation savedConversation = conversationService.addConversation(conv);
         return new ResponseEntity<>(savedConversation, HttpStatus.CREATED);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<List<Conversation>> getConversations(@PathVariable("id") String id) throws Exception {
-        return new ResponseEntity<>(conversationService.findConversations(new ObjectId(id)), HttpStatus.OK);
+    public ResponseEntity<List<ConversationDTO>> getConversations(@PathVariable("id") String id) throws Exception {
+        return new ResponseEntity<>(conversationService.findConversationsDTO(new ObjectId(id)), HttpStatus.OK);
     }
 }
