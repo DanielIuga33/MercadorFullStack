@@ -62,6 +62,11 @@ const API_URL = "http://localhost:8080/api/conversations/message";
         window.alert("You need to write a message first");
         return;
     }
+    let ownerId = await axios.get(`http://localhost:8080/api/cars/owner/${carDataId}`)
+    let conv = {sender: userData.id, receiver: ownerId.data, message: message}
+    await axios.post(`http://localhost:8080/api/conversations/conversation/message/`, conv);
+    setMessage("");
+    window.alert("Message was sent succesfully")
   }
 
 
@@ -141,7 +146,7 @@ const API_URL = "http://localhost:8080/api/conversations/message";
                 <div className='messageBox'>
                     <div className='message'>
                         <label for="message">Write a message</label>
-                        <input type='text' onChange={handleChange}></input>
+                        <input type='text' value={message} onChange={handleChange} ></input>
                         <button id="sendButton" onClick={sendAMessage}>Send</button>
                     </div>
                 </div>

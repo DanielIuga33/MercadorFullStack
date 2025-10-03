@@ -1,7 +1,9 @@
 package dev.danieliuga.Mercador.service;
 
 import dev.danieliuga.Mercador.dto.ConversationDTO;
+import dev.danieliuga.Mercador.dto.MessageDTO;
 import dev.danieliuga.Mercador.mapper.ConversationMapper;
+import dev.danieliuga.Mercador.mapper.MessageMapper;
 import dev.danieliuga.Mercador.model.Conversation;
 import dev.danieliuga.Mercador.model.Message;
 import dev.danieliuga.Mercador.repository.ConversationRepository;
@@ -16,9 +18,10 @@ import java.util.List;
 public class ConversationService {
     @Autowired
     private ConversationRepository conversationRepository;
-
     @Autowired
-    private ConversationMapper conversattionMapper;
+    private ConversationMapper conversationMapper;
+    @Autowired
+    private MessageMapper messageMapper;
 
     public Conversation addConversation(Conversation conversation) throws Exception{
         if (!exists(conversation.getUser1(), conversation.getUser2())) {
@@ -27,7 +30,7 @@ public class ConversationService {
         else return new Conversation();
     }
 
-    private boolean exists(ObjectId user1, ObjectId user2){
+    public boolean exists(ObjectId user1, ObjectId user2){
         return conversationRepository.findConversationBetween(user1, user2) != null;
     }
     public ObjectId getConversation(ObjectId user1, ObjectId user2){
@@ -39,9 +42,13 @@ public class ConversationService {
     public void addMessageToConversation(ObjectId user1, ObjectId user2, Message message) throws Exception{
         if (exists(user1, user2)){
             Conversation conversation = conversationRepository.findConversationBetween(user1, user2);
-            List<Message> messages = conversation.getMessages();
+            List<Message> messages = new ArrayList<>();
+            if (conversation.getMessages()!=null) {
+                messages.addAll(conversation.getMessages());
+            }
             messages.add(message);
             conversation.setMessages(messages);
+            conversationRepository.deleteById(conversation.getId());
             conversationRepository.save(conversation);
         }
     }
@@ -63,7 +70,19 @@ public class ConversationService {
         List<Conversation> conversations = findConversations(id);
         List<ConversationDTO> result = new ArrayList<>();
         for (Conversation conv : conversations){
-            result.add(conversattionMapper.convertToConversationDTO(conv));
+            result.add(conversationMapper.convertToConversationDTO(conv));
+        }
+        return result;
+    }
+
+    public Conversation findConversationById(ObjectId id){
+        return conversationRepository.findById(id).orElse(null);
+    }
+
+    public List<MessageDTO> getMessagesFromAConversation(ObjectId id){
+        List<MessageDTO> result = new ArrayList<>();
+        for (Message message : findConversationById(id).getMessages()){
+            result.add(messageMapper.convertToMessageDTO(message));
         }
         return result;
     }

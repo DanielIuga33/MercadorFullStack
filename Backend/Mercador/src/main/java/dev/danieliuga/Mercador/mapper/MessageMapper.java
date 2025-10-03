@@ -1,0 +1,18 @@
+package dev.danieliuga.Mercador.mapper;
+
+import dev.danieliuga.Mercador.dto.ConversationDTO;
+import dev.danieliuga.Mercador.dto.MessageDTO;
+import dev.danieliuga.Mercador.model.Message;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MessageMapper {
+    public MessageDTO convertToMessageDTO(Message mess) {
+        return new MessageDTO(
+                mess.getId().toHexString(),
+                mess.getSender().toHexString(),
+                mess.getReceiver().toHexString(),
+                mess.getMessage()
+        );
+    }
+}

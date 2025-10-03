@@ -15,7 +15,7 @@ public class MessageService {
     @Autowired
     private ConversationService conversationService;
 
-    private Message addMessage(Message message) throws Exception{
+    public Message addMessage(Message message) throws Exception{
         return messageRepository.save(message);
     }
 
