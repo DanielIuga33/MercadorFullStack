@@ -71,7 +71,6 @@ public class ConversationService {
         return conversations;
     }
     public List<ConversationDTO> findConversationsDTO(ObjectId id){
-        System.out.println(id);
         List<Conversation> conversations = findConversations(id);
         List<ConversationDTO> result = new ArrayList<>();
         for (Conversation conv : conversations){
@@ -87,7 +86,6 @@ public class ConversationService {
     public List<MessageDTO> getMessagesFromAConversation(ObjectId id){
         List<MessageDTO> result = new ArrayList<>();
         for (Message message : findConversationById(id).getMessages()){
-            System.out.println(message);
             result.add(messageMapper.convertToMessageDTO(message));
         }
         return result;

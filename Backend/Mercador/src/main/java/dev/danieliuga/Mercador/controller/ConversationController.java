@@ -42,11 +42,13 @@ public class ConversationController {
         return new ResponseEntity<>(conversationService.findConversationsDTO(new ObjectId(id)), HttpStatus.OK);
     }
 
+
     @PostMapping("/conversation/message/")
     public ResponseEntity<Conversation> sendMessage(@RequestBody MessageDTO message) throws Exception {
         ObjectId sender = new ObjectId(message.getSender());
+        System.out.println(message.getSender());
         ObjectId receiver = new ObjectId(message.getReceiver());
-
+        System.out.println("Da Ba");
         Message mess = new Message();
         mess.setMessage(message.getMessage());
         mess.setSender(sender);

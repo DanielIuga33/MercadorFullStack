@@ -63,7 +63,6 @@ public class UserController {
 
         // Convertim User în UserDTO
         UserDTO userDTO = userMapper.convertToUserDTO(user);
-        System.out.println(userDTO);
         return ResponseEntity.ok(userDTO);
     }
 
