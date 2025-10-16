@@ -8,7 +8,7 @@ import './CarDetails.css';
 
 
 const CarDetails = ({userData, carDataId}) => {
-const API_URL = "http://localhost:8080/api/conversations/message";
+  const API_URL = "http://localhost:8080/api/conversations/message";
   const [car, setCar] = useState({});
   const [carImages, setCarImages] = useState([]); // Inițializează cu array gol
   const [loading, setLoading] = useState(true); // Stare pentru loading

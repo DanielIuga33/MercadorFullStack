@@ -12,8 +12,13 @@ const ConversationTab = ({ userData }) => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/conversations/${userData.id}`);
-                setConversations(response.data);
-
+                if (response.data === null){
+                    setConversations([])
+                    return;
+                }
+                else{
+                    setConversations(response.data);
+                }
                 const usersMap = {};
                 for (const conversation of response.data) {
                     let id = conversation.user1 !== userData.id ? conversation.user1 : conversation.user2;
@@ -34,7 +39,6 @@ const ConversationTab = ({ userData }) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/conversations/messages/${conversation.id}`);
             setMessages(response.data);
-            window.alert(response.data)
         } catch (error) {
             console.error("Error fetching messages:", error);
         }
@@ -61,7 +65,7 @@ const ConversationTab = ({ userData }) => {
                                 border: "2px solid black", 
                                 backgroundColor: selectedConversation?.id === conversation.id ? "#333" : '#1c1c1cff', 
                                 width: "90%", 
-                                height: "10%", 
+                                height: "66px", 
                                 marginBottom: "20px", 
                                 cursor: "pointer",
                                 "&:hover": { backgroundColor: "#444" }
@@ -76,7 +80,7 @@ const ConversationTab = ({ userData }) => {
                                     </Typography>
                                 </Box>
                                 <Box sx={{ height: "70%" }}>
-                                    <Typography sx={{color:"red"}}>{conversation.messages[conversation.messages.length - 1].message}</Typography>
+                                    <Typography sx={{color:"red"}}>{conversation.messages && conversation.messages[conversation.messages.length - 1].message}</Typography>
                                 </Box>
                             </Box>
                         </Box>
@@ -106,7 +110,7 @@ const ConversationTab = ({ userData }) => {
                                                 mb:1 
                                             }}
                                         >
-                                            {msg.content}
+                                            {msg.message}
                                         </Typography>
                                     ))
                                 ) : (

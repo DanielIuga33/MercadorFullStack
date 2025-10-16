@@ -31,8 +31,11 @@ public class ConversationController {
 
     @PostMapping("/message")
     public ResponseEntity<Conversation> createConversation(@RequestBody Conversation conv) throws Exception {
-        Conversation savedConversation = conversationService.addConversation(conv);
-        return new ResponseEntity<>(savedConversation, HttpStatus.CREATED);
+        if (!conversationService.exists(conv.getUser1(), conv.getUser2())){
+            Conversation savedConversation = conversationService.addConversation(conv);
+            return new ResponseEntity<>(savedConversation, HttpStatus.CREATED);
+        }
+        return null;
     }
     @GetMapping("/{id}")
     public ResponseEntity<List<ConversationDTO>> getConversations(@PathVariable("id") String id) throws Exception {
@@ -58,7 +61,6 @@ public class ConversationController {
         else{
             List<Message> messages = new ArrayList<>();
             messages.add(mess);
-            System.out.println(messages);
             conversation.setMessages(messages);
             conversationService.addConversation(conversation);
         }

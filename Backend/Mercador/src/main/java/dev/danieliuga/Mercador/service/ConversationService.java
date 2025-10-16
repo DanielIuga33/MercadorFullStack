@@ -19,6 +19,8 @@ public class ConversationService {
     @Autowired
     private ConversationRepository conversationRepository;
     @Autowired
+    private MessageService messageService;
+    @Autowired
     private ConversationMapper conversationMapper;
     @Autowired
     private MessageMapper messageMapper;
@@ -27,7 +29,7 @@ public class ConversationService {
         if (!exists(conversation.getUser1(), conversation.getUser2())) {
             return conversationRepository.save(conversation);
         }
-        else return new Conversation();
+        else throw new Exception("Conversation already exist !");
     }
 
     public boolean exists(ObjectId user1, ObjectId user2){
@@ -46,6 +48,8 @@ public class ConversationService {
             if (conversation.getMessages()!=null) {
                 messages.addAll(conversation.getMessages());
             }
+            message.setId(new ObjectId());
+            messageService.addMessage(message);
             messages.add(message);
             conversation.setMessages(messages);
             conversationRepository.deleteById(conversation.getId());
@@ -67,6 +71,7 @@ public class ConversationService {
         return conversations;
     }
     public List<ConversationDTO> findConversationsDTO(ObjectId id){
+        System.out.println(id);
         List<Conversation> conversations = findConversations(id);
         List<ConversationDTO> result = new ArrayList<>();
         for (Conversation conv : conversations){
@@ -82,6 +87,7 @@ public class ConversationService {
     public List<MessageDTO> getMessagesFromAConversation(ObjectId id){
         List<MessageDTO> result = new ArrayList<>();
         for (Message message : findConversationById(id).getMessages()){
+            System.out.println(message);
             result.add(messageMapper.convertToMessageDTO(message));
         }
         return result;
