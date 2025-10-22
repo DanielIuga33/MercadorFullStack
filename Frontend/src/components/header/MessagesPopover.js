@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
 
-const MessagesPopover = ({ messages }) => {
+const MessagesPopover = ({ messages, userData }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleOpen = (event) => setAnchorEl(event.currentTarget);
@@ -56,7 +56,9 @@ const MessagesPopover = ({ messages }) => {
                   button
                   onClick={() => {
                     handleClose(); // închide popover-ul
-                    navigate(`account/conversations/`); // navighează
+                    if (userData.id){
+                        navigate(`account/conversations/`); // navighează
+                    }
                   }}
                 >
                   <ListItemText

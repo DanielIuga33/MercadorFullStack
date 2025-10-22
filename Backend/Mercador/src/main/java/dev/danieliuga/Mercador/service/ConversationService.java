@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class ConversationService {
                 messages.addAll(conversation.getMessages());
             }
             message.setId(new ObjectId());
+            message.setTimestamp(LocalDateTime.now());
             messageService.addMessage(message);
             messages.add(message);
             conversation.setMessages(messages);

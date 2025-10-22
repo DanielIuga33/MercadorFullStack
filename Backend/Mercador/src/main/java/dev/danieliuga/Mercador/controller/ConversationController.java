@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,9 +51,11 @@ public class ConversationController {
         ObjectId receiver = new ObjectId(message.getReceiver());
         System.out.println("Da Ba");
         Message mess = new Message();
+        mess.setId(new ObjectId());
         mess.setMessage(message.getMessage());
         mess.setSender(sender);
         mess.setReceiver(receiver);
+        mess.setTimestamp(LocalDateTime.now());
 
         Conversation conversation = new Conversation();
         conversation.setUser1(new ObjectId(message.getSender()));

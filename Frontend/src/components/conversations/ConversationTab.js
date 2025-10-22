@@ -1,16 +1,24 @@
 import { Box, Typography, TextField, Button } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 const ConversationTab = ({ userData }) => {
     const [conversations, setConversations] = useState([]);
+    const navigate = useNavigate();
     const [users, setUsers] = useState({});
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [messages, setMessages] = useState([]);
     const [loadingMessages, setLoadingMessages] = useState(false);
-    const [newMessage, setNewMessage] = useState(""); // 🔹 textul din input
+    const [newMessage, setNewMessage] = useState("");
 
-    // Fetch conversațiile utilizatorului
+
+    useEffect(() => {
+            if (!userData.id){
+                navigate('/');
+            }
+        }, [userData, navigate]);
+    // 🔹 Fetch conversațiile utilizatorului
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -21,32 +29,38 @@ const ConversationTab = ({ userData }) => {
                 }
                 setConversations(response.data);
 
-                // Fetch pentru fiecare utilizator din conversații
+                // 🔹 Fetch info pentru fiecare utilizator din conversații
                 const usersMap = {};
                 for (const conversation of response.data) {
-                    let id = conversation.user1 !== userData.id ? conversation.user1 : conversation.user2;
+                    const id = conversation.user1 !== userData.id ? conversation.user1 : conversation.user2;
                     const userRes = await axios.get(`http://localhost:8080/api/users/${id}`);
                     usersMap[id] = userRes.data;
                 }
                 setUsers(usersMap);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("❌ Error fetching conversations:", error);
             }
         };
         fetchData();
     }, [userData.id]);
 
-    // Când selectezi o conversație
+    // 🔹 Când selectezi o conversație
     const handleSelectConversation = async (conversation) => {
         setSelectedConversation(conversation);
         setMessages([]);
         setLoadingMessages(true);
 
         try {
-            const response = await axios.get(`http://localhost:8080/api/conversations/messages/${conversation.id}`);
-            setMessages(response.data);
+            const response = await axios.get(
+                `http://localhost:8080/api/conversations/messages/${conversation.id}`
+            );
+
+            console.log("✅ Received messages:", response.data);
+
+            // Backend trimite direct un array de MessageDTO
+            setMessages(response.data || []);
         } catch (error) {
-            console.error("Error fetching messages:", error);
+            console.error("❌ Error fetching messages:", error);
         } finally {
             setLoadingMessages(false);
         }
@@ -55,21 +69,31 @@ const ConversationTab = ({ userData }) => {
     // 🔹 Trimiterea mesajului
     const handleSendMessage = async () => {
         if (!newMessage.trim() || !selectedConversation) return;
+
         try {
+            const receiverId =
+                selectedConversation.user1 === userData.id
+                    ? selectedConversation.user2
+                    : selectedConversation.user1;
+
             const messageData = {
                 id: selectedConversation.id,
                 sender: userData.id,
-                receiver: selectedConversation.user2,
+                receiver: receiverId,
                 message: newMessage,
             };
-            // Trimite mesajul la backend
-            await axios.post("http://localhost:8080/api/conversations/conversation/message/", messageData);
 
-            // Adaugă mesajul local (fără să reîncarci tot)
+            // Trimite mesajul la backend
+            await axios.post(
+                "http://localhost:8080/api/conversations/conversation/message/",
+                messageData
+            );
+
+            // Adaugă local
             setMessages((prev) => [...prev, messageData]);
-            setNewMessage(""); // golește inputul
+            setNewMessage("");
         } catch (error) {
-            window.alert(error);
+            console.error("❌ Error sending message:", error);
         }
     };
 
@@ -80,7 +104,7 @@ const ConversationTab = ({ userData }) => {
 
     return (
         <Box sx={{ width: "100%", backgroundColor: "#bcbcc0ff", display: "flex" }}>
-            {/* Sidebar cu conversațiile */}
+            {/* 🔹 Sidebar cu conversațiile */}
             <Box
                 sx={{
                     alignItems: "center",
@@ -88,14 +112,15 @@ const ConversationTab = ({ userData }) => {
                     height: "92vh",
                     width: "25%",
                     borderRight: "4px solid black",
+                    overflowY: "auto",
                 }}
             >
-                <Typography textAlign={"center"} fontSize={35} fontWeight={400} marginBottom={6}>
+                <Typography textAlign="center" fontSize={35} fontWeight={400} marginBottom={6}>
                     Conversations
                 </Typography>
                 {conversations.map((conversation) => {
-                    let id = conversation.user1 !== userData.id ? conversation.user1 : conversation.user2;
-                    let otherUser = users[id];
+                    const id = conversation.user1 !== userData.id ? conversation.user1 : conversation.user2;
+                    const otherUser = users[id];
 
                     return (
                         <Box
@@ -116,35 +141,32 @@ const ConversationTab = ({ userData }) => {
                         >
                             <Box
                                 sx={{
-                                    backgroundColor: "#ffffffff",
+                                    backgroundColor: "#fff",
                                     height: "60px",
                                     width: "60px",
                                     borderRadius: "100%",
+                                    marginRight: "10px",
                                 }}
                             ></Box>
                             <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                                <Box sx={{ backgroundColor: "#6b6a6aff", height: "40%" }}>
-                                    <Typography sx={{ marginLeft: "2%" }}>
-                                        {otherUser ? otherUser.username : "Loading..."}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ height: "70%" }}>
-                                    <Typography sx={{ color: "red" }}>
-                                        {conversation.messages &&
-                                            conversation.messages[conversation.messages.length - 1]?.message}
-                                    </Typography>
-                                </Box>
+                                <Typography sx={{ color: "#fff", marginLeft: "2%" }}>
+                                    {otherUser ? otherUser.username : "Loading..."}
+                                </Typography>
+                                <Typography sx={{ color: "gray", marginLeft: "2%" }}>
+                                    {conversation.messages &&
+                                        conversation.messages[conversation.messages.length - 1]?.message}
+                                </Typography>
                             </Box>
                         </Box>
                     );
                 })}
             </Box>
 
-            {/* Zona de chat */}
+            {/* 🔹 Zona de chat */}
             <Box
                 sx={{
                     width: "100%",
-                    backgroundColor: "red",
+                    backgroundColor: "#101010",
                     height: "92vh",
                     display: "flex",
                     justifyContent: "center",
@@ -155,34 +177,27 @@ const ConversationTab = ({ userData }) => {
                     sx={{
                         width: "97%",
                         height: "96%",
-                        backgroundColor: "purple",
+                        backgroundColor: "#181818",
                         display: "flex",
                         flexDirection: "column",
                         p: 2,
+                        borderRadius: 2,
                     }}
                 >
                     {selectedConversation ? (
                         <>
                             {/* Header cu numele utilizatorului */}
-                            <Box sx={{ display: "flex", height: "70px" }}>
+                            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                                 <Box
                                     sx={{
                                         height: "60px",
                                         width: "60px",
-                                        backgroundColor: "yellow",
+                                        backgroundColor: "#666",
                                         borderRadius: "30px",
+                                        mr: 2,
                                     }}
                                 ></Box>
-                                <Typography
-                                    variant="h4"
-                                    sx={{
-                                        color: "white",
-                                        mb: 2,
-                                        alignItems: "center",
-                                        backgroundColor: "red",
-                                        marginTop: "auto",
-                                    }}
-                                >
+                                <Typography variant="h4" sx={{ color: "white" }}>
                                     {
                                         users[
                                             selectedConversation.user1 !== userData.id
@@ -193,7 +208,7 @@ const ConversationTab = ({ userData }) => {
                                 </Typography>
                             </Box>
 
-                            {/* Zona mesajelor */}
+                            {/* 🔹 Mesaje */}
                             <Box
                                 sx={{
                                     flexGrow: 1,
@@ -210,7 +225,7 @@ const ConversationTab = ({ userData }) => {
                                     <Typography sx={{ color: "gray" }}>Loading messages...</Typography>
                                 ) : messages.length > 0 ? (
                                     messages.map((msg, idx) => {
-                                        const isOwn = msg.senderId === userData.id;
+                                        const isOwn = msg.sender === userData.id;
                                         return (
                                             <Box
                                                 key={idx}
@@ -224,7 +239,9 @@ const ConversationTab = ({ userData }) => {
                                                     wordWrap: "break-word",
                                                 }}
                                             >
-                                                <Typography variant="body1">{msg.message}</Typography>
+                                                <Typography variant="body1">
+                                                    {msg.message || msg.text || msg.content}
+                                                </Typography>
                                             </Box>
                                         );
                                     })
@@ -233,7 +250,7 @@ const ConversationTab = ({ userData }) => {
                                 )}
                             </Box>
 
-                            {/* 🔹 Bara de input */}
+                            {/* 🔹 Input bar */}
                             <Box
                                 sx={{
                                     display: "flex",

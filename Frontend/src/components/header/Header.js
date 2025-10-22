@@ -39,7 +39,7 @@ const IconWithBadge = ({ icon, badgeContent = 0, label }) => (
   </Box>
 );
 
-const Header = ({ userData, setUserData }) => {
+const Header = ({userData, setUserData}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
@@ -150,7 +150,7 @@ const Header = ({ userData, setUserData }) => {
           </Box>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <MessagesPopover messages={messages} />
+            <MessagesPopover messages={messages} userData={userData} />
             <IconWithBadge icon={<NotificationsIcon />} badgeContent={0} />
             <IconButton
               size="large"

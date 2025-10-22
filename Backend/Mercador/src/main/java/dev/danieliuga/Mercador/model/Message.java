@@ -1,6 +1,7 @@
 package dev.danieliuga.Mercador.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,6 @@ public class Message {
     private ObjectId receiver;
     @NotBlank
     private String message;
-
+    @NotNull
     private LocalDateTime timestamp;
 }
