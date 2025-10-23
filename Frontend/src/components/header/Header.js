@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
   AppBar,
   Box,
@@ -16,35 +17,45 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import MessagesPopover from './MessagesPopover';
+import NotificationPopover from './NotificationPopover';
 
-// Simulăm mesaje (în practică iei din API sau state global)
-const messages = [
-  { senderName: 'Alice', text: 'Hello!' },
-  { senderName: 'Bob', text: 'How are you?' }
-];
+const Header = ({ userData, setUserData }) => {
+  const navigate = useNavigate();
 
-// În interiorul Box-ul cu iconițe:
-<MessagesPopover messages={messages} />
-
-// Component mic pentru icon + badge
-const IconWithBadge = ({ icon, badgeContent = 0, label }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
-    <IconButton size="large" color="inherit">
-      <Badge badgeContent={badgeContent} color="error">
-        {icon}
-      </Badge>
-    </IconButton>
-    {label && <Typography sx={{ ml: 1 }}>{label}</Typography>}
-  </Box>
-);
-
-const Header = ({userData, setUserData}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [notifAnchor, setNotifAnchor] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isNotifOpen = Boolean(notifAnchor);
+
+  // ✅ Fetch notificări din backend
+  useEffect(() => {
+    if (!userData?.id) return;
+
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/notifications/${userData.id}`);
+        setNotifications(response.data);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 10000); // refresh la 10 secunde
+    return () => clearInterval(interval);
+  }, [userData]);
+
+  // Navigare spre conversații
+  const goToConversations = () => navigate('/conversations');
+
+  // Deschidere popover notificări
+  const handleNotifOpen = (event) => setNotifAnchor(event.currentTarget);
+  const handleNotifClose = () => setNotifAnchor(null);
 
   const handleProfileMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => {
@@ -122,14 +133,27 @@ const Header = ({userData, setUserData}) => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconWithBadge icon={<MailIcon />} badgeContent={0} label="Messages" />
+      <MenuItem onClick={goToConversations}>
+        <IconButton size="large" color="inherit">
+          <Badge badgeContent={messages.length} color="error">
+            <MailIcon />
+          </Badge>
+        </IconButton>
+        <p>Messages</p>
       </MenuItem>
-      <MenuItem>
-        <IconWithBadge icon={<NotificationsIcon />} badgeContent={47} label="Notifications" />
+      <MenuItem onClick={handleNotifOpen}>
+        <IconButton size="large" color="inherit">
+          <Badge badgeContent={notifications.length} color="error">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+        <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
-        <IconWithBadge icon={<AccountCircle />} label="Profile" />
+        <IconButton size="large" color="inherit">
+          <AccountCircle />
+        </IconButton>
+        <p>Profile</p>
       </MenuItem>
     </Menu>
   );
@@ -143,26 +167,48 @@ const Header = ({userData, setUserData}) => {
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             </SvgIcon>
           </Button>
+
           <Box sx={{ width: '100%', justifyContent: 'center' }}>
             <Typography sx={headerTitleStyles}>
               Life Is a Journey – Choose Your Ride Wisely.
             </Typography>
           </Box>
+
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <MessagesPopover messages={messages} userData={userData} />
-            <IconWithBadge icon={<NotificationsIcon />} badgeContent={0} />
+
+          {/* Desktop icons */}
+          <Box
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              alignItems: 'center',
+              gap: 1.5, // mai echilibrat
+            }}
+          >
+            {/* Mesaje */}
+            <IconButton color="inherit" onClick={goToConversations}>
+              <Badge badgeContent={messages.length} color="error">
+                <MailIcon fontSize="medium" />
+              </Badge>
+            </IconButton>
+
+            {/* Notificări */}
+            <IconButton color="inherit" onClick={handleNotifOpen}>
+              <Badge badgeContent={notifications.length} color="error">
+                <NotificationsIcon fontSize="medium" />
+              </Badge>
+            </IconButton>
+
+            {/* Profil */}
             <IconButton
-              size="large"
               edge="end"
-              aria-label="account of current user"
-              aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <AccountCircle />
+              <AccountCircle fontSize="medium" />
             </IconButton>
           </Box>
+
+          {/* Mobile icons */}
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -177,8 +223,22 @@ const Header = ({userData, setUserData}) => {
           </Box>
         </Toolbar>
       </AppBar>
+
       {renderMobileMenu}
       {renderMenu}
+
+      {/* Notification popover */}
+      <NotificationPopover
+        anchorEl={notifAnchor}
+        open={isNotifOpen}
+        onClose={handleNotifClose}
+        notifications={notifications}
+        refreshNotifications={() => {
+          axios.get(`http://localhost:8080/api/notifications/${userData.id}`)
+          .then(res => setNotifications(res.data))
+          .catch(err => console.error(err));
+        }}
+      />
     </Box>
   );
 };

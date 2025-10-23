@@ -226,6 +226,7 @@ const ConversationTab = ({ userData }) => {
                                 ) : messages.length > 0 ? (
                                     messages.map((msg, idx) => {
                                         const isOwn = msg.sender === userData.id;
+                                        !userData.id && (navigate('/'))
                                         return (
                                             <Box
                                                 key={idx}

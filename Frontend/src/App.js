@@ -125,6 +125,7 @@ function App() {
             <Route path="/register/account" element={<RegisterPage userData={userData} setUserData={setUserData} returning={1}/>} />
 
             <Route path="/carDetails" element={<CarDetails userData={userData} carDataId={carData.id}/>} />
+            <Route path="/conversations" element={<ConversationTab userData={userData} />} />
           </Routes>
         </div>
     </ThemeProvider>

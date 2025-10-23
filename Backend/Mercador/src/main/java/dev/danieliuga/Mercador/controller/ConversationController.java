@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.danieliuga.Mercador.dto.ConversationDTO;
 import dev.danieliuga.Mercador.dto.MessageDTO;
 import dev.danieliuga.Mercador.mapper.ConversationMapper;
-import dev.danieliuga.Mercador.model.Car;
-import dev.danieliuga.Mercador.model.Conversation;
-import dev.danieliuga.Mercador.model.Message;
+import dev.danieliuga.Mercador.model.*;
 import dev.danieliuga.Mercador.service.ConversationService;
 import dev.danieliuga.Mercador.service.MessageService;
+import dev.danieliuga.Mercador.service.NotificationService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +28,9 @@ public class ConversationController {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private NotificationService notificationService;
+
 
     @PostMapping("/message")
     public ResponseEntity<Conversation> createConversation(@RequestBody Conversation conv) throws Exception {
@@ -44,12 +46,11 @@ public class ConversationController {
     }
 
 
+
     @PostMapping("/conversation/message/")
     public ResponseEntity<Conversation> sendMessage(@RequestBody MessageDTO message) throws Exception {
         ObjectId sender = new ObjectId(message.getSender());
-        System.out.println(message.getSender());
         ObjectId receiver = new ObjectId(message.getReceiver());
-        System.out.println("Da Ba");
         Message mess = new Message();
         mess.setId(new ObjectId());
         mess.setMessage(message.getMessage());
@@ -70,6 +71,13 @@ public class ConversationController {
             conversationService.addConversation(conversation);
         }
         messageService.addMessage(mess);
+        MessageNotification notification = new MessageNotification();
+        notification.setId(new ObjectId());
+        notification.setSender(sender);
+        notification.setReceiver(receiver);
+        notification.setTimestamp(LocalDateTime.now());
+        notification.setMessage(mess.getMessage());
+        notificationService.saveNotification(notification);
         return new ResponseEntity<>(conversation, HttpStatus.OK);
     }
 
