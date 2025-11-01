@@ -1,6 +1,6 @@
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react"; 
 import axios from "axios";
 
 const ConversationTab = ({ userData }) => {
@@ -12,12 +12,15 @@ const ConversationTab = ({ userData }) => {
     const [loadingMessages, setLoadingMessages] = useState(false);
     const [newMessage, setNewMessage] = useState("");
 
+    // 1. Creează referința pentru a marca finalul containerului de mesaje
+    const messagesEndRef = useRef(null); 
 
     useEffect(() => {
-            if (!userData.id){
-                navigate('/');
-            }
-        }, [userData, navigate]);
+        if (!userData.id) {
+            navigate('/');
+        }
+    }, [userData, navigate]);
+
     // 🔹 Fetch conversațiile utilizatorului
     useEffect(() => {
         const fetchData = async () => {
@@ -47,7 +50,8 @@ const ConversationTab = ({ userData }) => {
     // 🔹 Când selectezi o conversație
     const handleSelectConversation = async (conversation) => {
         setSelectedConversation(conversation);
-        setMessages([]);
+        // Se resetează mesajele, ceea ce declanșează useEffect-ul de scroll
+        setMessages([]); 
         setLoadingMessages(true);
 
         try {
@@ -57,8 +61,8 @@ const ConversationTab = ({ userData }) => {
 
             console.log("✅ Received messages:", response.data);
 
-            // Backend trimite direct un array de MessageDTO
-            setMessages(response.data || []);
+            // Când se setează noile mesaje, se declanșează din nou useEffect-ul de scroll
+            setMessages(response.data || []); 
         } catch (error) {
             console.error("❌ Error fetching messages:", error);
         } finally {
@@ -69,6 +73,12 @@ const ConversationTab = ({ userData }) => {
     // 🔹 Trimiterea mesajului
     const handleSendMessage = async () => {
         if (!newMessage.trim() || !selectedConversation) return;
+
+        const tempMessage = {
+            id: selectedConversation.id,
+            sender: userData.id,
+            message: newMessage,
+        };
 
         try {
             const receiverId =
@@ -89,13 +99,22 @@ const ConversationTab = ({ userData }) => {
                 messageData
             );
 
-            // Adaugă local
-            setMessages((prev) => [...prev, messageData]);
+            // Adaugă local, declanșând useEffect-ul de scroll
+            setMessages((prev) => [...prev, tempMessage]);
             setNewMessage("");
+            
         } catch (error) {
             console.error("❌ Error sending message:", error);
         }
     };
+
+    // 2. Scroll rapid/instantaneu la elementul de la final
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            // Setează behavior: "instant" pentru scroll imediat
+            messagesEndRef.current.scrollIntoView({ behavior: "instant" }); 
+        }
+    }, [messages]); 
 
     // 🔹 Trimite și cu Enter
     const handleKeyPress = (e) => {
@@ -139,15 +158,27 @@ const ConversationTab = ({ userData }) => {
                             }}
                             onClick={() => handleSelectConversation(conversation)}
                         >
+                            <Box 
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    marginRight: "8px",
+                                    marginLeft: "8px",
+                                
+                                }}>
                             <Box
                                 sx={{
                                     backgroundColor: "#fff",
-                                    height: "60px",
-                                    width: "60px",
+                                    height: "50px",
+                                    width: "50px",
                                     borderRadius: "100%",
-                                    marginRight: "10px",
+                                    marginRight: "11px",
+                                    margin: "0 auto",
+
                                 }}
                             ></Box>
+                            </Box>
                             <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
                                 <Typography sx={{ color: "#fff", marginLeft: "2%" }}>
                                     {otherUser ? otherUser.username : "Loading..."}
@@ -208,14 +239,14 @@ const ConversationTab = ({ userData }) => {
                                 </Typography>
                             </Box>
 
-                            {/* 🔹 Mesaje */}
+                            {/* 🔹 Containerul de Mesaje (Aici se afișează conținutul) */}
                             <Box
                                 sx={{
                                     flexGrow: 1,
                                     backgroundColor: "#222",
                                     borderRadius: 2,
                                     p: 2,
-                                    overflowY: "auto",
+                                    overflowY: "auto", // Acesta este containerul care face scroll
                                     display: "flex",
                                     flexDirection: "column",
                                     gap: 1,
@@ -249,6 +280,9 @@ const ConversationTab = ({ userData }) => {
                                 ) : (
                                     <Typography sx={{ color: "gray" }}>No messages yet ...</Typography>
                                 )}
+                                
+                                {/* 3. Elementul de final: Când facem scroll, îl țintim pe acesta */}
+                                <div ref={messagesEndRef} /> 
                             </Box>
 
                             {/* 🔹 Input bar */}

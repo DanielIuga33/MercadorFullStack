@@ -18,7 +18,7 @@ public class MessageService {
     }
 
     public Message modifyMessage(Message oldMessage, Message newMessage){
-        return
+        return oldMessage;
     }
 
 

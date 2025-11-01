@@ -54,18 +54,18 @@ public class ConversationController {
     }
 
 
-    @PutMapping("/markMessagesAsRead/{id}")
-    public ResponseEntity<Void> markAllMessagesAsRead(@PathVariable("id") String id) throws Exception {
-        Optional<Conversation> conversation1 = conversationService.getConversation(new ObjectId());
-        if (conversation1.isPresent()) {
-            Conversation conversation = conversation1.get();
-            for (Message message : conversation.getMessages()){
-                if (!message.isRead()){
-                    messageService.modify
-                }
-            }
-        }
-    }
+//    @PutMapping("/markMessagesAsRead/{id}")
+//    public ResponseEntity<Void> markAllMessagesAsRead(@PathVariable("id") String id) throws Exception {
+//        Optional<Conversation> conversation1 = conversationService.getConversation(new ObjectId());
+//        if (conversation1.isPresent()) {
+//            Conversation conversation = conversation1.get();
+//            for (Message message : conversation.getMessages()){
+//                if (!message.isRead()){
+//                    messageService.modify
+//                }
+//            }
+//        }
+//    }
 
     @PostMapping("/conversation/message/")
     public ResponseEntity<Conversation> sendMessage(@RequestBody MessageDTO message) throws Exception {
