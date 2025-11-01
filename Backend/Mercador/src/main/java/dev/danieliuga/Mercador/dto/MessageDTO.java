@@ -15,4 +15,5 @@ public class MessageDTO {
     private String receiver;
     private String message;
     private String time;
+    private boolean read;
 }

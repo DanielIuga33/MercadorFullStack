@@ -1,5 +1,7 @@
 package dev.danieliuga.Mercador.service;
 
+import dev.danieliuga.Mercador.dto.NotificationDTO;
+import dev.danieliuga.Mercador.mapper.NotificationMapper;
 import dev.danieliuga.Mercador.model.Notification;
 import dev.danieliuga.Mercador.repository.NotificationRepository;
 import org.bson.types.ObjectId;
@@ -13,9 +15,16 @@ import java.util.List;
 public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    private NotificationMapper notificationMapper;
 
-    public List<Notification> getNotificationsForUser(ObjectId receiver) {
-        return notificationRepository.findByReceiver(receiver);
+
+    public List<NotificationDTO> getNotificationsForUser(ObjectId receiver) {
+        List<NotificationDTO> result = new ArrayList<>();
+        for (Notification notification : notificationRepository.findByReceiver(receiver)){
+            result.add(notificationMapper.convertToNotificationDTO(notification));
+        }
+        return result;
     }
 
     public Notification saveNotification(Notification notification) {

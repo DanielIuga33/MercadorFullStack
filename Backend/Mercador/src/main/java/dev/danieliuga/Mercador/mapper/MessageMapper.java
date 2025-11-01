@@ -24,7 +24,8 @@ public class MessageMapper {
                 mess.getSender().toHexString(),
                 mess.getReceiver().toHexString(),
                 mess.getMessage(),
-                formattedTime
+                formattedTime,
+                mess.isRead()
         );
     }
 }

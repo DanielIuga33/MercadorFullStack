@@ -1,5 +1,6 @@
 package dev.danieliuga.Mercador.controller;
 
+import dev.danieliuga.Mercador.dto.NotificationDTO;
 import dev.danieliuga.Mercador.model.Notification;
 import dev.danieliuga.Mercador.service.MessageService;
 import dev.danieliuga.Mercador.service.NotificationService;
@@ -18,8 +19,8 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<Notification>> getUserNotifications(@PathVariable String userId) {
-        List<Notification> notifications = notificationService.getNotificationsForUser(new ObjectId(userId));
+    public ResponseEntity<List<NotificationDTO>> getUserNotifications(@PathVariable String userId) {
+        List<NotificationDTO> notifications = notificationService.getNotificationsForUser(new ObjectId(userId));
         return ResponseEntity.ok(notifications);
     }
 

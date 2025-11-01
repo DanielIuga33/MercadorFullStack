@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ConversationService {
@@ -41,6 +42,10 @@ public class ConversationService {
             return conversationRepository.findConversationBetween(user1, user2).getId();
         }
         else return null;
+    }
+
+    public Optional<Conversation> getConversation(ObjectId idConversation){
+        return conversationRepository.findById(idConversation);
     }
     public void addMessageToConversation(ObjectId user1, ObjectId user2, Message message) throws Exception{
         if (exists(user1, user2)){
@@ -85,6 +90,14 @@ public class ConversationService {
         return conversationRepository.findById(id).orElse(null);
     }
 
+    public Boolean hasUnreadMessages(ConversationDTO conversation){
+        for (Message message : conversation.getMessages()){
+            if (!message.isRead()){
+                return true;
+            }
+        }
+        return false;
+    }
     public List<MessageDTO> getMessagesFromAConversation(ObjectId id){
         List<MessageDTO> result = new ArrayList<>();
         for (Message message : findConversationById(id).getMessages()){

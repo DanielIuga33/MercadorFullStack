@@ -2,13 +2,14 @@ import { Popover, Box, Typography, Divider, List, ListItem, ListItemText } from 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const NotificationPopover = ({ anchorEl, open, onClose, notifications = [], refreshNotifications }) => {
+const NotificationPopover = ({ anchorEl, open, onClose, notifications = [], unreadNotifications, setUnreadNotifications, id, refreshNotifications }) => {
   const navigate = useNavigate();
 
   const handleNotificationClick = async (notif) => {
     try {
       // ✅ Marchează notificarea ca citită
       await axios.put(`http://localhost:8080/api/notifications/read/${notif.id}`);
+      setUnreadNotifications(unreadNotifications - 1);
 
       // ✅ Închide popover-ul
       onClose();
@@ -42,15 +43,19 @@ const NotificationPopover = ({ anchorEl, open, onClose, notifications = [], refr
       }}
     >
       <Box sx={{ width: 300, p: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          Notifications
-        </Typography>
+        {!id ? (
+          <></>
+        ) : (
+          <Typography variant="h6" gutterBottom>
+            Notifications
+          </Typography>
+        )}
         <Divider />
         <List sx={{ maxHeight: 400, overflowY: 'auto' }}>
           {notifications.length > 0 ? (
-            notifications.map((notif) => (
+            notifications.map((notif, index) => (
               <ListItem
-                key={notif.id}
+                key={notif.id} 
                 button
                 onClick={() => handleNotificationClick(notif)}
                 sx={{
@@ -68,6 +73,10 @@ const NotificationPopover = ({ anchorEl, open, onClose, notifications = [], refr
                 />
               </ListItem>
             ))
+          ) : !id ? (
+            <Typography variant="body2" sx={{ textAlign: 'center', mt: 1, fontSize: '16px' }}>
+              You are not logged on or registered!
+            </Typography>
           ) : (
             <Typography variant="body2" sx={{ textAlign: 'center', mt: 2 }}>
               No notifications yet.

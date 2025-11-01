@@ -25,4 +25,5 @@ public class Message {
     private String message;
     @NotNull
     private LocalDateTime timestamp;
+    private boolean read = false;
 }

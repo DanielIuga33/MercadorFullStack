@@ -25,8 +25,9 @@ const Header = ({ userData, setUserData }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [notifAnchor, setNotifAnchor] = useState(null);
-  const [messages, setMessages] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -34,7 +35,10 @@ const Header = ({ userData, setUserData }) => {
 
   // ✅ Fetch notificări din backend
   useEffect(() => {
-    if (!userData?.id) return;
+    if (!userData?.id) {
+      setNotifications([]);
+      return;
+    }
 
     const fetchNotifications = async () => {
       try {
@@ -45,18 +49,35 @@ const Header = ({ userData, setUserData }) => {
       }
     };
 
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/conversations/unreadMessages/${userData.id}`)
+        setUnreadMessages(response.data);
+      } catch (error) {
+        console.error('Error fetching unread messages: ', error)
+      }
+    };
+
+
     fetchNotifications();
+    fetchMessages();
     const interval = setInterval(fetchNotifications, 10000); // refresh la 10 secunde
     return () => clearInterval(interval);
   }, [userData]);
 
-  // Navigare spre conversații
-  const goToConversations = () => navigate('/conversations');
+  useEffect(() => {
+      const count = notifications.filter((notif) => !notif.read).length;
+      setUnreadNotifications(count);
+  }, [notifications]);
 
-  // Deschidere popover notificări
+  // Navigare spre conversații
+  const goToConversations = () => {
+    if (userData.id) navigate('/conversations');
+  };
+
+  // Deschidere / închidere meniuri
   const handleNotifOpen = (event) => setNotifAnchor(event.currentTarget);
   const handleNotifClose = () => setNotifAnchor(null);
-
   const handleProfileMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -98,6 +119,7 @@ const Header = ({ userData, setUserData }) => {
     fontSize: 'clamp(16px, 2vw, 30px)'
   };
 
+  // ✅ FIX: fără <></>, folosim array cu key-uri
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -107,18 +129,52 @@ const Header = ({ userData, setUserData }) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      {userData.email ? (
-        <>
-          <MenuItem component={Link} to="/account" onClick={handleMenuClose}>Profile</MenuItem>
-          <MenuItem component={Link} to="/account/details" onClick={handleMenuClose}>My account</MenuItem>
-          <MenuItem onClick={() => { logout(); handleMenuClose(); }}>Logout</MenuItem>
-        </>
-      ) : (
-        <>
-          <MenuItem component={Link} to="/login" onClick={handleMenuClose}>Login</MenuItem>
-          <MenuItem component={Link} to="/register" onClick={handleMenuClose}>Register</MenuItem>
-        </>
-      )}
+      {userData.email
+        ? [
+            <MenuItem
+              key="profile"
+              component={Link}
+              to="/account"
+              onClick={handleMenuClose}
+            >
+              Profile
+            </MenuItem>,
+            <MenuItem
+              key="details"
+              component={Link}
+              to="/account/details"
+              onClick={handleMenuClose}
+            >
+              My account
+            </MenuItem>,
+            <MenuItem
+              key="logout"
+              onClick={() => {
+                logout();
+                handleMenuClose();
+              }}
+            >
+              Logout
+            </MenuItem>
+          ]
+        : [
+            <MenuItem
+              key="login"
+              component={Link}
+              to="/login"
+              onClick={handleMenuClose}
+            >
+              Login
+            </MenuItem>,
+            <MenuItem
+              key="register"
+              component={Link}
+              to="/register"
+              onClick={handleMenuClose}
+            >
+              Register
+            </MenuItem>
+          ]}
     </Menu>
   );
 
@@ -135,7 +191,7 @@ const Header = ({ userData, setUserData }) => {
     >
       <MenuItem onClick={goToConversations}>
         <IconButton size="large" color="inherit">
-          <Badge badgeContent={messages.length} color="error">
+          <Badge badgeContent={unreadMessages} color="error">
             <MailIcon />
           </Badge>
         </IconButton>
@@ -181,24 +237,21 @@ const Header = ({ userData, setUserData }) => {
             sx={{
               display: { xs: 'none', md: 'flex' },
               alignItems: 'center',
-              gap: 1.5, // mai echilibrat
+              gap: 1.5
             }}
           >
-            {/* Mesaje */}
             <IconButton color="inherit" onClick={goToConversations}>
-              <Badge badgeContent={messages.length} color="error">
+              <Badge badgeContent={unreadMessages} color="error">
                 <MailIcon fontSize="medium" />
               </Badge>
             </IconButton>
 
-            {/* Notificări */}
             <IconButton color="inherit" onClick={handleNotifOpen}>
-              <Badge badgeContent={notifications.length} color="error">
+              <Badge badgeContent={unreadNotifications} color="error">
                 <NotificationsIcon fontSize="medium" />
               </Badge>
             </IconButton>
 
-            {/* Profil */}
             <IconButton
               edge="end"
               onClick={handleProfileMenuOpen}
@@ -227,16 +280,19 @@ const Header = ({ userData, setUserData }) => {
       {renderMobileMenu}
       {renderMenu}
 
-      {/* Notification popover */}
       <NotificationPopover
         anchorEl={notifAnchor}
         open={isNotifOpen}
         onClose={handleNotifClose}
         notifications={notifications}
+        unreadNotifications={unreadNotifications}
+        setUnreadNotifications={setUnreadNotifications}
+        id={userData.id}
         refreshNotifications={() => {
-          axios.get(`http://localhost:8080/api/notifications/${userData.id}`)
-          .then(res => setNotifications(res.data))
-          .catch(err => console.error(err));
+          axios
+            .get(`http://localhost:8080/api/notifications/${userData.id}`)
+            .then((res) => setNotifications(res.data))
+            .catch((err) => console.error(err));
         }}
       />
     </Box>

@@ -17,6 +17,10 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
+    public Message modifyMessage(Message oldMessage, Message newMessage){
+        return
+    }
+
 
 
 

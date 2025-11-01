@@ -1,9 +1,7 @@
 package dev.danieliuga.Mercador.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.danieliuga.Mercador.dto.ConversationDTO;
 import dev.danieliuga.Mercador.dto.MessageDTO;
-import dev.danieliuga.Mercador.mapper.ConversationMapper;
 import dev.danieliuga.Mercador.model.*;
 import dev.danieliuga.Mercador.service.ConversationService;
 import dev.danieliuga.Mercador.service.MessageService;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/conversations")
@@ -45,7 +44,28 @@ public class ConversationController {
         return new ResponseEntity<>(conversationService.findConversationsDTO(new ObjectId(id)), HttpStatus.OK);
     }
 
+    @GetMapping("/unreadMessages/{id}")
+    public ResponseEntity<Integer> getCountOfUnreadMessages(@PathVariable("id") String id) throws Exception {
+        int count = 0;
+        for (ConversationDTO conversation : conversationService.findConversationsDTO(new ObjectId(id))){
+            if (conversationService.hasUnreadMessages(conversation)) count +=1;
+        }
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
 
+
+    @PutMapping("/markMessagesAsRead/{id}")
+    public ResponseEntity<Void> markAllMessagesAsRead(@PathVariable("id") String id) throws Exception {
+        Optional<Conversation> conversation1 = conversationService.getConversation(new ObjectId());
+        if (conversation1.isPresent()) {
+            Conversation conversation = conversation1.get();
+            for (Message message : conversation.getMessages()){
+                if (!message.isRead()){
+                    messageService.modify
+                }
+            }
+        }
+    }
 
     @PostMapping("/conversation/message/")
     public ResponseEntity<Conversation> sendMessage(@RequestBody MessageDTO message) throws Exception {
