@@ -4,7 +4,6 @@ import dev.danieliuga.Mercador.dto.ConversationDTO;
 import dev.danieliuga.Mercador.dto.MessageDTO;
 import dev.danieliuga.Mercador.model.*;
 import dev.danieliuga.Mercador.service.ConversationService;
-import dev.danieliuga.Mercador.service.MessageService;
 import dev.danieliuga.Mercador.service.NotificationService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,6 @@ import java.util.Optional;
 public class ConversationController {
     @Autowired
     private ConversationService conversationService;
-
-    @Autowired
-    private MessageService messageService;
 
     @Autowired
     private NotificationService notificationService;
@@ -48,24 +44,18 @@ public class ConversationController {
     public ResponseEntity<Integer> getCountOfUnreadMessages(@PathVariable("id") String id) throws Exception {
         int count = 0;
         for (ConversationDTO conversation : conversationService.findConversationsDTO(new ObjectId(id))){
-            if (conversationService.hasUnreadMessages(conversation)) count +=1;
+            if (conversationService.hasUnreadMessages(conversation, new ObjectId(id))) count +=1;
         }
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
 
-//    @PutMapping("/markMessagesAsRead/{id}")
-//    public ResponseEntity<Void> markAllMessagesAsRead(@PathVariable("id") String id) throws Exception {
-//        Optional<Conversation> conversation1 = conversationService.getConversation(new ObjectId());
-//        if (conversation1.isPresent()) {
-//            Conversation conversation = conversation1.get();
-//            for (Message message : conversation.getMessages()){
-//                if (!message.isRead()){
-//                    messageService.modify
-//                }
-//            }
-//        }
-//    }
+    @PutMapping("/markMessagesAsRead/{id}")
+    public ResponseEntity<Integer> markAllMessagesAsRead(@PathVariable("id") String id) throws Exception {
+        Conversation conversation = conversationService.findTheConversationWithThisMessage(new ObjectId(id));
+        int counter = conversationService.markMessageAsReadForConversation(conversation, new ObjectId(id));
+        return new ResponseEntity<>(counter, HttpStatus.OK);
+    }
 
     @PostMapping("/conversation/message/")
     public ResponseEntity<Conversation> sendMessage(@RequestBody MessageDTO message) throws Exception {
@@ -90,7 +80,7 @@ public class ConversationController {
             conversation.setMessages(messages);
             conversationService.addConversation(conversation);
         }
-        messageService.addMessage(mess);
+//        messageService.addMessage(mess);
         MessageNotification notification = new MessageNotification();
         notification.setId(new ObjectId());
         notification.setSender(sender);

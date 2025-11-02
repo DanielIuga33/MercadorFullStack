@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import path from '../..';
 import axios from 'axios';
 import {
   AppBar,
@@ -19,14 +20,13 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import NotificationPopover from './NotificationPopover';
 
-const Header = ({ userData, setUserData }) => {
+const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) => {
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [notifAnchor, setNotifAnchor] = useState(null);
   const [notifications, setNotifications] = useState([]);
-  const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   const isMenuOpen = Boolean(anchorEl);
@@ -37,12 +37,13 @@ const Header = ({ userData, setUserData }) => {
   useEffect(() => {
     if (!userData?.id) {
       setNotifications([]);
+      setUnreadMessages(0);
       return;
     }
 
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/notifications/${userData.id}`);
+        const response = await axios.get(`${path}/notifications/${userData.id}`);
         setNotifications(response.data);
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -51,7 +52,7 @@ const Header = ({ userData, setUserData }) => {
 
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/conversations/unreadMessages/${userData.id}`)
+        const response = await axios.get(`${path}/conversations/unreadMessages/${userData.id}`)
         setUnreadMessages(response.data);
       } catch (error) {
         console.error('Error fetching unread messages: ', error)
@@ -63,7 +64,7 @@ const Header = ({ userData, setUserData }) => {
     fetchMessages();
     const interval = setInterval(fetchNotifications, 10000); // refresh la 10 secunde
     return () => clearInterval(interval);
-  }, [userData]);
+  }, [userData, setUnreadMessages]);
 
   useEffect(() => {
       const count = notifications.filter((notif) => !notif.read).length;
@@ -290,7 +291,7 @@ const Header = ({ userData, setUserData }) => {
         id={userData.id}
         refreshNotifications={() => {
           axios
-            .get(`http://localhost:8080/api/notifications/${userData.id}`)
+            .get(`${path}/notifications/${userData.id}`)
             .then((res) => setNotifications(res.data))
             .catch((err) => console.error(err));
         }}

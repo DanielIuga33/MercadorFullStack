@@ -21,8 +21,6 @@ public class ConversationService {
     @Autowired
     private ConversationRepository conversationRepository;
     @Autowired
-    private MessageService messageService;
-    @Autowired
     private ConversationMapper conversationMapper;
     @Autowired
     private MessageMapper messageMapper;
@@ -43,6 +41,29 @@ public class ConversationService {
         }
         else return null;
     }
+    public Conversation findTheConversationWithThisMessage(ObjectId idMessage){
+        List<Conversation> conversations = conversationRepository.findAll();
+        for (Conversation conv: conversations){
+            if (conv.hasThisMessage(idMessage))
+                return conv;
+        }
+        return new Conversation();
+    }
+
+    public int markMessageAsReadForConversation(Conversation conversation, ObjectId idMessage){
+        List<Message> messages = new ArrayList<>();
+        int counter = 0;
+        for (Message mess: conversation.getMessages()){
+            if (mess.getId().compareTo(idMessage) == 0){
+                counter += 1;
+                mess.setRead(true);
+            }
+            messages.add(mess);
+        }
+        conversation.setMessages(messages);
+        conversationRepository.save(conversation);
+        return counter;
+    }
 
     public Optional<Conversation> getConversation(ObjectId idConversation){
         return conversationRepository.findById(idConversation);
@@ -56,7 +77,6 @@ public class ConversationService {
             }
             message.setId(new ObjectId());
             message.setTimestamp(LocalDateTime.now());
-            messageService.addMessage(message);
             messages.add(message);
             conversation.setMessages(messages);
             conversationRepository.deleteById(conversation.getId());
@@ -90,9 +110,9 @@ public class ConversationService {
         return conversationRepository.findById(id).orElse(null);
     }
 
-    public Boolean hasUnreadMessages(ConversationDTO conversation){
+    public Boolean hasUnreadMessages(ConversationDTO conversation, ObjectId idUser){
         for (Message message : conversation.getMessages()){
-            if (!message.isRead()){
+            if (!message.isRead() && message.getReceiver().equals(idUser)){
                 return true;
             }
         }

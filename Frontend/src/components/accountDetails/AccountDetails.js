@@ -3,6 +3,7 @@ import './AccountDetails.css';
 import { useState , useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import path from '../..';
 
 const AccountDetails = ({ userData, setUserData}) => {
     const navigate = useNavigate();
@@ -61,7 +62,7 @@ const AccountDetails = ({ userData, setUserData}) => {
         const email = userData.email;
         setErrorMsgSecondCol1('');
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/login', {
+            const response = await axios.post(`${path}/auth/login`, {
                 email,
                 password
             });
@@ -113,7 +114,7 @@ const AccountDetails = ({ userData, setUserData}) => {
             if (!ok) return;
             const checkEmail = async () => {
                 try {
-                    const response = await axios.get('http://localhost:8080/api/users/check-email', {
+                    const response = await axios.get(`${path}/users/check-email`, {
                         params: { email: formData.email }
                     });
                     if (response.data && emailOnFocus && !isReadOnly) {

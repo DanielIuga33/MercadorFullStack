@@ -12,6 +12,7 @@ import useSessionStorage from './hooks/useSessionStorage';
 import UserCars from './components/userCars/UserOwnCars';
 import { useEffect , useState} from 'react';
 import axios from 'axios';
+import path from './index'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -25,7 +26,6 @@ const darkTheme = createTheme({
 });
 
 function App() {
-
   const [userData, setUserData] = useSessionStorage('userData', {
     id: '',
     name: '',
@@ -94,8 +94,7 @@ function App() {
   useEffect(() =>{
     const cleanup = async () =>{
         try{
-            const response = await axios.delete('http://localhost:8080/api/cleanup-images');
-            console.log(response.data);
+          await axios.delete(`${path}/cleanup-images`);
         } catch (error){
           console.error('Error cleaning unused photos:', error);
         }
@@ -103,18 +102,19 @@ function App() {
     cleanup();
   },[])
 
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
         <div className='App.js'>
-          <Header userData={userData} setUserData={setUserData}/>
+          <Header userData={userData} setUserData={setUserData} unreadMessages={unreadMessages} setUnreadMessages={setUnreadMessages}/>
           <Routes>
             <Route path="/" element={<Home searchFilters={searchFilters} setSearchFilters={setSearchFilters} setCarData={setCarData}/>} />
 
             <Route path="/account" element={<Account userData={userData}/>} />
             <Route path="/account/details" element={<AccountDetails userData={userData} setUserData={setUserData}/>} />
-            <Route path="/account/conversations" element={<ConversationTab userData={userData} setUserData={setUserData}/>} />
+            <Route path="/account/conversations" element={<ConversationTab userData={userData} unreadMessages={unreadMessages} setUnreadMessages={setUnreadMessages}/>} />
             <Route path="/account/cars" element={<UserCars userData={userData}/>} />
             <Route path="/account/postACar" element={<PostACar userData={userData} setUserData={setUserData}/>}/>
 
@@ -125,7 +125,7 @@ function App() {
             <Route path="/register/account" element={<RegisterPage userData={userData} setUserData={setUserData} returning={1}/>} />
 
             <Route path="/carDetails" element={<CarDetails userData={userData} carDataId={carData.id}/>} />
-            <Route path="/conversations" element={<ConversationTab userData={userData} />} />
+            <Route path="/conversations" element={<ConversationTab userData={userData} unreadMessages={unreadMessages} setUnreadMessages={setUnreadMessages}/>} />
           </Routes>
         </div>
     </ThemeProvider>

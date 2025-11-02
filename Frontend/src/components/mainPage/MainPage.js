@@ -191,16 +191,15 @@ const MainPage = ({ searchFilters, setCarData }) => {
                                 <CardMedia
                                     component="img"
                                     sx={{
-                                        width: '100%', // Setează lățimea imaginii la 100% din containerul său
+                                        width: '100%',
                                         height: 'auto', 
-                                        maxHeight: '200px', // Setează înălțimea maximă
+                                        maxHeight: '200px',
                                     }}
-                                    image={`http://localhost:8080/api${car.image}`}
-                                     srcSet={`
-                                        http://localhost:8080/api${car.image}?w=400 1x,
-                                        http://localhost:8080/api${car.image}?w=800 2x
-                                    `}
+                                    // MODIFICARI AICI: Sintaxa pe o singură linie cu descriptori 'w'
+                                    image={`http://localhost:8080/api${car.image}?w=400`}
+                                    // srcSet={`http://localhost:8080/api${car.image}?w=400 400w, http://localhost:8080/api${car.image}?w=800 800w`}
                                     sizes="(max-width: 600px) 100vw, 600px"
+                                    // SFARSIT MODIFICARI
                                     alt={`Car ${car.title}`}
                                     loading="lazy"
                                 />
@@ -222,7 +221,7 @@ const MainPage = ({ searchFilters, setCarData }) => {
                                         textOverflow: "ellipsis", 
                                         overflow: "hidden", 
                                         whiteSpace: "nowrap",
-                                        fontSize: 'clamp(16px, 2vw, 20px)', // Ajustare automată a dimensiunii textului
+                                        fontSize: 'clamp(16px, 2vw, 20px)',
                                         }}
                                 >
                                     {car.title}

@@ -2,7 +2,6 @@ package dev.danieliuga.Mercador.controller;
 
 import dev.danieliuga.Mercador.dto.NotificationDTO;
 import dev.danieliuga.Mercador.model.Notification;
-import dev.danieliuga.Mercador.service.MessageService;
 import dev.danieliuga.Mercador.service.NotificationService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;

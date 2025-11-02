@@ -24,6 +24,14 @@ public class Conversation {
 
     private List<Message> messages;
 
+    public Boolean hasThisMessage(ObjectId idMessage){
+        for (Message mess : messages){
+            if (mess.getId().compareTo(idMessage) == 0)
+                return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
