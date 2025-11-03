@@ -5,6 +5,7 @@ import dev.danieliuga.Mercador.dto.MessageDTO;
 import dev.danieliuga.Mercador.model.*;
 import dev.danieliuga.Mercador.service.ConversationService;
 import dev.danieliuga.Mercador.service.NotificationService;
+import dev.danieliuga.Mercador.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,9 @@ public class ConversationController {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private UserService userService;
 
 
     @PostMapping("/message")

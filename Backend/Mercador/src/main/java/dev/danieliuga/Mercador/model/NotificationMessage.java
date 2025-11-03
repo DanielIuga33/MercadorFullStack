@@ -3,12 +3,18 @@ package dev.danieliuga.Mercador.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.experimental.SuperBuilder; // Import NOU
+import org.bson.types.ObjectId;
 
-@Document(collection = "notifications")
+// Deoarece Notification are deja @Document, nu-l mai pui aici.
 @Data
-@AllArgsConstructor
+@SuperBuilder // <-- ESENȚIAL: Moștenește Builder-ul de la părinte
 @NoArgsConstructor
-public class NotificationMessage extends  Notification{
+@AllArgsConstructor
+@org.springframework.data.annotation.TypeAlias("Message") // Alias specific
+public class NotificationMessage extends Notification {
+
+    // Numele câmpului 'sender' este mai clar ca 'idSender'
+    private ObjectId idSender;
 
 }

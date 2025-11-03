@@ -12,8 +12,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class NotificationDTO {
     private String id;
-    private String receiver; // utilizatorul care primește notificarea
+    private String receiver;
     private String message;
     private boolean read;
     private LocalDateTime timestamp;
+
+    // Câmpuri suplimentare pentru NotificationMessage
+    private String senderName; // Populat în Service Layer
+    private String senderId;   // Extras din NotificationMessage
+
+    // Câmpul 'conversationId' a fost eliminat
 }
