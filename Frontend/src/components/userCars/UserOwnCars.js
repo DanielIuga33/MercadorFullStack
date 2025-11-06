@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './UserOwnCars.css';
+import API_URL from '../..';
 
 const UserOwnCars = ({userData}) => {
   
@@ -12,7 +13,7 @@ const UserOwnCars = ({userData}) => {
         try {
             const tempCars = [];
             for (let elem of carIds) {
-                const response = await axios.get(`http://localhost:8080/api/cars/dto/${elem}`);
+                const response = await axios.get(`${API_URL}/cars/dto/${elem}`);
                 if (response.data !== null) {
                     tempCars.push(response.data);
                 }

@@ -15,6 +15,6 @@ import org.bson.types.ObjectId;
 public class NotificationMessage extends Notification {
 
     // Numele câmpului 'sender' este mai clar ca 'idSender'
-    private ObjectId idSender;
+    private ObjectId sender;
 
 }

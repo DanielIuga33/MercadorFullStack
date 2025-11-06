@@ -4,8 +4,7 @@ import axios from 'axios';
 import Step1 from './Step1';
 import Step2 from './Step2';
 import './RegisterPage.css';
-
-const API_URL = 'http://localhost:8080/api/users';
+import API_URL from '../..';
 
 const RegisterPage = ({ setUserData, returning}) => {
   const [formData, setFormData] = useState({
@@ -32,8 +31,8 @@ const RegisterPage = ({ setUserData, returning}) => {
 
   const sendData = async (formData) => {
     try {
-        await axios.post(API_URL, formData, {
-        headers: {
+        await axios.post(`${API_URL}/users`, formData, {
+        headers: {  
           'Content-Type': 'application/json'
         }
       });
@@ -45,7 +44,7 @@ const RegisterPage = ({ setUserData, returning}) => {
   const finalStep = async () => {
     try {
       await sendData(formData); // Trimite datele la server
-      const response = await axios.get('http://localhost:8080/api/users/findByEmail', {
+      const response = await axios.get(`${API_URL}/users/findByEmail`, {
           params: { email: formData.email }
       });
       if (response.status === 200)

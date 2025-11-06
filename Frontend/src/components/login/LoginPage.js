@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './LoginPage.css';
+import API_URL from '../..';
 
 function LoginPage({ setUserData, returning}) {
   const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ function LoginPage({ setUserData, returning}) {
     }
     setError('');
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', {
+      const response = await axios.post(`${API_URL}/auth/login`, {
           email,
           password
       });
@@ -36,7 +37,7 @@ function LoginPage({ setUserData, returning}) {
     }
 
     try {
-      const response = await axios.get('http://localhost:8080/api/users/findByEmail', {
+      const response = await axios.get(`${API_URL}/users/findByEmail`, {
         params: { email: email }
       });
       if (response.status === 200) {
@@ -46,7 +47,7 @@ function LoginPage({ setUserData, returning}) {
 
           try {
               for (let elem of user.carIds) {
-                  const response = await axios.get(`http://localhost:8080/api/cars/${elem}`);
+                  const response = await axios.get(`${API_URL}/cars/${elem}`);
                   if (response.data !== null) {
                       validCarIds.add(elem); // Adăugăm ID-uri valide în Set
                   }
@@ -60,7 +61,7 @@ function LoginPage({ setUserData, returning}) {
                     carIds: uniqueCarIds // Asigurăm că actualizăm doar carIds
                 }));
                 // Facem patch la server cu ID-uri unice
-                await axios.patch(`http://localhost:8080/api/users/${user.id}`, {
+                await axios.patch(`${API_URL}/users/${user.id}`, {
                     ...user,
                     carIds: uniqueCarIds
                 });

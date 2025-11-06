@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import path from "../..";
+import API_URL from "../..";
 
 // Stiluri pentru o bară de scroll subțire și invizibilă (apare la scroll/hover în Webkit)
 const scrollbarStyles = {
@@ -44,7 +44,7 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
         const fetchData = async () => {
             if (userData.id)
             try {
-                const response = await axios.get(`${path}/conversations/${userData.id}`);
+                const response = await axios.get(`${API_URL}/conversations/${userData.id}`);
                 if (!response.data) {
                     setConversations([]);
                     return;
@@ -55,7 +55,7 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
                 const usersMap = {};
                 for (const conversation of response.data) {
                     const id = conversation.user1 !== userData.id ? conversation.user1 : conversation.user2;
-                    const userRes = await axios.get(`${path}/users/${id}`);
+                    const userRes = await axios.get(`${API_URL}/users/${id}`);
                     usersMap[id] = userRes.data;
                 }
                 setUsers(usersMap);
@@ -74,7 +74,7 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
 
         try {
             const response = await axios.get(
-                `${path}/conversations/messages/${conversation.id}`
+                `${API_URL}/conversations/messages/${conversation.id}`
             );
             setMessages(response.data || []); 
         } catch (error) {
@@ -84,10 +84,14 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
         }
     };
 
-    const markMessageAsRead = async (id) => {
+    const markMessageAsRead = async (message) => {
         try {
-            const response = await axios.put(`${path}/conversations/markMessagesAsRead/${id}`);
-            console.log("Răspuns PUT:", response.data);
+            const response = await axios.put(`${API_URL}/conversations/markMessagesAsRead/${message.id}`);
+            
+            let params = {sender: message.sender, receiver: message.receiver}
+            console.log(params)
+
+            await axios.put(`${API_URL}/notifications/read/`, params);
             setUnreadMessages(unreadMessages - response.data);
         }   
         catch (error){
@@ -123,7 +127,7 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
 
             // Trimite mesajul la backend
             await axios.post(
-                `${path}/conversations/conversation/message/`,
+                `${API_URL}/conversations/conversation/message/`,
                 messageData
             );
 
@@ -287,7 +291,7 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
                                         const isOwn = msg.sender === userData.id;
                                         !userData.id && (navigate('/'));
                                         if (!isOwn && !msg.read){
-                                            markMessageAsRead(msg.id);
+                                            markMessageAsRead(msg);
                                             msg.read = true;
                                         }
                                         return (

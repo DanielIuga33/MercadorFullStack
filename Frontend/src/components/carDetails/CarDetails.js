@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../..';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -8,7 +9,6 @@ import './CarDetails.css';
 
 
 const CarDetails = ({userData, carDataId}) => {
-  const API_URL = "http://localhost:8080/api/conversations/message";
   const [car, setCar] = useState({});
   const [carImages, setCarImages] = useState([]); // Inițializează cu array gol
   const [loading, setLoading] = useState(true); // Stare pentru loading
@@ -22,10 +22,10 @@ const CarDetails = ({userData, carDataId}) => {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/cars/${carDataId}`);
+            const response = await axios.get(`${API_URL}/cars/${carDataId}`);
             setCar(response.data);
             setCarImages(response.data.images || []); // Asigură-te că este un array
-            let carOwnerId = await axios.get(`http://localhost:8080/api/cars/owner/${carDataId}`);
+            let carOwnerId = await axios.get(`${API_URL}/cars/owner/${carDataId}`);
             setCarOwnerId(carOwnerId.data);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -42,9 +42,9 @@ const CarDetails = ({userData, carDataId}) => {
         window.alert("You need to login or register first!");
         return;
     } else {
-        let ownerId = await axios.get(`http://localhost:8080/api/cars/owner/${carDataId}`)
+        let ownerId = await axios.get(`${API_URL}/cars/owner/${carDataId}`)
         let message = {user1: userData.id, user2: ownerId.data}
-        await axios.post(API_URL, message);
+        await axios.post(`${API_URL}/conversations/message/`, message);
         navigate('/account/conversations/')
     }
   }
@@ -62,9 +62,9 @@ const CarDetails = ({userData, carDataId}) => {
         window.alert("You need to write a message first");
         return;
     }
-    let ownerId = await axios.get(`http://localhost:8080/api/cars/owner/${carDataId}`)
+    let ownerId = await axios.get(`${API_URL}/cars/owner/${carDataId}`)
     let conv = {sender: userData.id, receiver: ownerId.data, message: message}
-    await axios.post(`http://localhost:8080/api/conversations/conversation/message/`, conv);
+    await axios.post(`${API_URL}/conversations/conversation/message/`, conv);
     setMessage("");
     window.alert("Message was sent succesfully")
   }
@@ -125,7 +125,7 @@ const CarDetails = ({userData, carDataId}) => {
                 <Slider ref={slider1Ref} {...settings1}>
                     {carImages.map((img, index) => (
                         <div className='image' key={index} onClick={() => handleImageClick(index)}>
-                            <img src={`http://localhost:8080/api${img}`} alt={`Car ${index + 1}`} />
+                            <img src={`${API_URL}${img}`} alt={`Car ${index + 1}`} />
                         </div>
                     ))}
                 </Slider>
@@ -133,7 +133,7 @@ const CarDetails = ({userData, carDataId}) => {
                     <Slider ref={slider2Ref} {...settings2}>
                         {carImages.map((img, index) => (
                             <div className='image' key={index} onClick={() => handleImageClick(index)}>
-                                <img src={`http://localhost:8080/api${img}`} alt={`Car ${index + 1}`} />
+                                <img src={`${API_URL}${img}`} alt={`Car ${index + 1}`} />
                             </div>
                         ))}
                     </Slider>
@@ -145,7 +145,7 @@ const CarDetails = ({userData, carDataId}) => {
                 {carOwnerId !== userData.id &&
                 <div className='messageBox'>
                     <div className='message'>
-                        <label for="message">Write a message</label>
+                        <label >Write a message</label>
                         <input type='text' value={message} onChange={handleChange} ></input>
                         <button id="sendButton" onClick={sendAMessage}>Send</button>
                     </div>

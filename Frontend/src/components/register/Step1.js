@@ -1,7 +1,7 @@
 import React, {useEffect, useState } from 'react'
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import axios from 'axios';
-import path from '../..';
+import API_URL from '../..';
 import './Step1.css';
 
 const Step1 = ({ formData, setFormData, nextStep }) => {
@@ -86,7 +86,7 @@ const Step1 = ({ formData, setFormData, nextStep }) => {
             if (!ok) return;
             const checkEmail = async () => {
                 try {
-                    const response = await axios.get(`${path}/users/check-email`, {
+                    const response = await axios.get(`${API_URL}/users/check-email`, {
                         params: { email: formData.email }
                     });
                     if (response.data) {

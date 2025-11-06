@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import path from '../..';
+import API_URL from '../..';
 import axios from 'axios';
 import {
   AppBar,
@@ -43,7 +43,7 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
 
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`${path}/notifications/${userData.id}`);
+        const response = await axios.get(`${API_URL}/notifications/${userData.id}`);
         setNotifications(response.data);
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -52,7 +52,7 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
 
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`${path}/conversations/unreadMessages/${userData.id}`)
+        const response = await axios.get(`${API_URL}/conversations/unreadMessages/${userData.id}`)
         setUnreadMessages(response.data);
       } catch (error) {
         console.error('Error fetching unread messages: ', error)
@@ -291,7 +291,7 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
         id={userData.id}
         refreshNotifications={() => {
           axios
-            .get(`${path}/notifications/${userData.id}`)
+            .get(`${API_URL}/notifications/${userData.id}`)
             .then((res) => setNotifications(res.data))
             .catch((err) => console.error(err));
         }}

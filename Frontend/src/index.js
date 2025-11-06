@@ -5,10 +5,9 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-const path = "http://localhost:8080/api"
-export default path;
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const API_URL = "http://localhost:8080/api";
+export default API_URL;
 root.render(
   <React.StrictMode>
     <BrowserRouter>

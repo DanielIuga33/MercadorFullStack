@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import SpeedIcon from '@mui/icons-material/Speed';
 import { Grid, Box, Card, CardContent, CardMedia, Typography, CircularProgress} from '@mui/material';
 import axios from 'axios';
+import API_URL from '../..'
 
 const MainPage = ({ searchFilters, setCarData }) => {
     const [cars, setCars] = useState([]);
@@ -147,7 +148,7 @@ const MainPage = ({ searchFilters, setCarData }) => {
 
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/cars');
+                const response = await axios.get(`${API_URL}/cars`);
                 if (response.data && Array.isArray(response.data)) {
                     setCars(applysearchFilters(response.data));
                 } else {
@@ -196,7 +197,7 @@ const MainPage = ({ searchFilters, setCarData }) => {
                                         maxHeight: '200px',
                                     }}
                                     // MODIFICARI AICI: Sintaxa pe o singură linie cu descriptori 'w'
-                                    image={`http://localhost:8080/api${car.image}?w=400`}
+                                    image={`${API_URL}${car.image}?w=400`}
                                     // srcSet={`http://localhost:8080/api${car.image}?w=400 400w, http://localhost:8080/api${car.image}?w=800 800w`}
                                     sizes="(max-width: 600px) 100vw, 600px"
                                     // SFARSIT MODIFICARI

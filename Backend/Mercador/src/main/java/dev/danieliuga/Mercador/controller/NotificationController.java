@@ -2,6 +2,7 @@ package dev.danieliuga.Mercador.controller;
 
 import dev.danieliuga.Mercador.dto.NotificationDTO;
 import dev.danieliuga.Mercador.model.Notification;
+import dev.danieliuga.Mercador.model.NotificationMessage;
 import dev.danieliuga.Mercador.service.NotificationService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,11 @@ public class NotificationController {
     @PutMapping("/read/{notificationId}")
     public ResponseEntity<Void> markAsRead(@PathVariable String notificationId) {
         notificationService.markAsRead(new ObjectId(notificationId));
+        return ResponseEntity.ok().build();
+    }
+    @PutMapping("/read/")
+    public ResponseEntity<Void> markAsRead(@RequestBody NotificationMessage notif) {
+        notificationService.markAsReadIds(notif.getSender(), notif.getReceiver());
         return ResponseEntity.ok().build();
     }
 

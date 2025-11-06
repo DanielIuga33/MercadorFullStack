@@ -4,11 +4,10 @@ import axios from 'axios';
 import { TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, TextareaAutosize, CircularProgress, Typography, Box, CardMedia } from '@mui/material';
 import { brands, modelsByBrand, bodies, colors } from '../ConstantData';
 import './PostACar.css';
+import API_URL from '../..';
 
 const PostACar = ({ userData, setUserData }) => {
     const MAX_IMAGES = 9;
-    const API_URL = 'http://localhost:8080/api/cars';
-    const IMAGE_UPLOAD_URL = 'http://localhost:8080/api/upload';
     const navigate = useNavigate();
     const [selectedBrand, setSelectedBrand] = useState('');
     const [filteredModels, setFilteredModels] = useState([]);
@@ -95,7 +94,7 @@ const PostACar = ({ userData, setUserData }) => {
         images.forEach((file) => formData.append('images', file));
 
         try {
-            const response = await axios.post(IMAGE_UPLOAD_URL, formData, {
+            const response = await axios.post(`${API_URL}/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
@@ -132,8 +131,8 @@ const PostACar = ({ userData, setUserData }) => {
             }
 
             const updatedCarData = { ...carData, images: imageUrls };
-            await axios.post(API_URL, updatedCarData);
-            const response = await axios.get('http://localhost:8080/api/users/findByEmail', {
+            await axios.post(`${API_URL}/cars`, updatedCarData);
+            const response = await axios.get(`${API_URL}/users/findByEmail`, {
                 params: { email: userData.email }
             });
             setUserData(response.data);
