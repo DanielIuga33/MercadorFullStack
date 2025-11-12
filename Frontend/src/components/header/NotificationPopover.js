@@ -2,7 +2,43 @@ import { Popover, Box, Typography, Divider, List, ListItem, ListItemText } from 
 import axios from 'axios';
 import API_URL from '../..'; 
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react'; // 👈 Adaugă useRef
+import { useState, useEffect, useRef } from 'react';
+
+// =========================================================================
+// 💡 FUNCȚIA HELPER PENTRU FORMATUL AVANSAT DE ORĂ/DATĂ (AZI, IERI, DD.MM.YYYY)
+// =========================================================================
+
+const formatNotificationTimestamp = (timestamp) => {
+    if (!timestamp) return '';
+
+    const now = new Date();
+    const notificationDate = new Date(timestamp);
+
+    // Funcție pentru a formata ora (HH:MM în 24h)
+    const formatTime = (date) => date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
+    // Verifică dacă este Azi
+    if (notificationDate.toDateString() === now.toDateString()) {
+        // Dacă este AZI, afișăm DOAR ORA
+        return formatTime(notificationDate); 
+    }
+
+    // Verifică dacă este Ieri (folosind doar data, ignorând ora)
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+
+    if (notificationDate.toDateString() === yesterday.toDateString()) {
+        // Dacă este IERI, afișăm "Ieri" + ora
+        return `Yesterday at ${formatTime(notificationDate)}`; 
+    }
+
+    // Dacă este mai veche, afișează data completă (DD.MM.YYYY) + ora
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    const datePart = notificationDate.toLocaleDateString('ro-RO', options);
+    
+    return `${datePart} la ${formatTime(notificationDate)}`; // Ex: 05.11.2025 la 14:30
+};
+
 
 const NotificationPopover = ({ 
     anchorEl, open, onClose, 
@@ -12,22 +48,26 @@ const NotificationPopover = ({
     
     const navigate = useNavigate();
     
-    // 💡 1. Referința pentru elementul de scroll
+    // 1. Referința pentru elementul de scroll
     const listRef = useRef(null); 
     
     const [sendersMap, setSendersMap] = useState({}); 
 
-    // 💡 2. Efectul de scroll: Rulează când se deschide sau când se primesc noi notificări
+    // Efectul de scroll
     useEffect(() => {
-        // Asigură-te că elementul există și că popover-ul este deschis
         if (open && listRef.current) {
-            // Setează scroll-ul la înălțimea maximă (jos de tot)
-            listRef.current.scrollTop = listRef.current.scrollHeight;
+            const scrollToBottom = () => {
+                if (listRef.current) {
+                    listRef.current.scrollTop = listRef.current.scrollHeight;
+                }
+            };
+            const timer = setTimeout(scrollToBottom, 50);
+            return () => clearTimeout(timer);
         }
-    }, [open, notifications]); // Rulează când Popover-ul se deschide sau notificările se actualizează
+    }, [open, notifications]); 
 
 
-    // 3. LOGICA ASINCRONĂ (păstrată din discuțiile anterioare)
+    // Logica asincronă (fetch senders)
     useEffect(() => {
         const fetchSenders = async () => {
             const uniqueSenderIds = [...new Set(notifications.map(n => n.sender))].filter(Boolean);
@@ -39,7 +79,7 @@ const NotificationPopover = ({
                 if (!sendersMap[senderId]) { 
                     try {
                         const response = await axios.get(`${API_URL}/users/${senderId}`);
-                        fetchedData[senderId] = response.data.surname || response.data.username || 'Utilizator necunoscut';
+                        fetchedData[senderId] = response.data.username || response.data.surname || 'Unknown user';
                         didUpdate = true;
                     } catch (error) {
                         console.error(`Error fetching user ${senderId}:`, error);
@@ -115,26 +155,21 @@ const NotificationPopover = ({
                         maxHeight: '260px', 
                         overflowY: 'auto',
                         
-                        // 💡 STILURI PENTRU SCROLL MIC ȘI VIZIBIL LA HOVER
+                        // STILURI PENTRU SCROLL MIC ȘI VIZIBIL LA HOVER
                         
-                        // Bara de scroll implicită (o ascundem sau o facem transparentă)
                         "&::-webkit-scrollbar": { 
-                            width: "6px", // Foarte subțire
-                            backgroundColor: "transparent", // Fundal transparent
+                            width: "6px", 
+                            backgroundColor: "transparent", 
                         },
-                        // Mânerul (thumb) pe care-l vezi
                         "&::-webkit-scrollbar-thumb": { 
-                            backgroundColor: "transparent", // 👈 Începe transparent
+                            backgroundColor: "transparent", 
                             borderRadius: "10px", 
                         },
-                        // La hover peste întreg containerul List
                         "&:hover": {
                             "&::-webkit-scrollbar-thumb": {
-                                // 👈 Devine vizibil la hover (o culoare semi-transparentă)
                                 backgroundColor: "rgba(255, 255, 255, 0.3)", 
                             },
                             "&::-webkit-scrollbar-thumb:hover": {
-                                // Un pic mai opac la hover direct pe bară
                                 backgroundColor: "rgba(255, 255, 255, 0.5)", 
                             }
                         }
@@ -160,20 +195,18 @@ const NotificationPopover = ({
                                 <ListItemText
                                     primary={
                                         <Typography variant="body2" fontWeight={!notif.read ? 600 : 400}>
-                                            **{senderName}** a trimis un mesaj.
+                                            {senderName} a trimis un mesaj.
                                         </Typography>
                                     }
                                     secondary={
                                         <Box>
                                             <Typography variant="caption" sx={{ display: 'block', color: notif.read ? 'gray' : 'lightgray' }} noWrap>
-                                                Mesaj: "{notif.message}"
+                                                Mesaj: "{notif.message && (notif.message < 50 ? notif.message :
+                                                notif.message.slice(0,50).concat("..."))}"
                                             </Typography>
                                             <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                                                {new Date(notif.timestamp).toLocaleTimeString([], {
-                                                    hour: '2-digit',
-                                                    minute: '2-digit',
-                                                    hour12: false // Format 24h
-                                                })}
+                                                {/* 💡 Aici apelăm funcția helper */}
+                                                **{formatNotificationTimestamp(notif.timestamp)}**
                                             </Typography>
                                         </Box>
                                     }

@@ -217,7 +217,10 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
                                 </Typography>
                                 <Typography sx={{ color: "gray", marginLeft: "2%" }}>
                                     {conversation.messages &&
-                                        conversation.messages[conversation.messages.length - 1]?.message}
+                                        (conversation.messages[conversation.messages.length - 1]?.message.length < 20 ?
+                                          conversation.messages[conversation.messages.length - 1]?.message  :
+                                          conversation.messages[conversation.messages.length -1]?.message.slice(0,20).concat("...")
+                                        )}
                                 </Typography>
                             </Box>
                         </Box>
