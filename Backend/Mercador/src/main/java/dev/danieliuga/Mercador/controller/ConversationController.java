@@ -5,7 +5,6 @@ import dev.danieliuga.Mercador.dto.MessageDTO;
 import dev.danieliuga.Mercador.model.*;
 import dev.danieliuga.Mercador.service.ConversationService;
 import dev.danieliuga.Mercador.service.NotificationService;
-import dev.danieliuga.Mercador.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/conversations")
@@ -27,11 +25,8 @@ public class ConversationController {
     @Autowired
     private NotificationService notificationService;
 
-    @Autowired
-    private UserService userService;
 
-
-    @PostMapping("/message")
+    @PostMapping("/create/")
     public ResponseEntity<Conversation> createConversation(@RequestBody Conversation conv) throws Exception {
         if (!conversationService.exists(conv.getUser1(), conv.getUser2())){
             Conversation savedConversation = conversationService.addConversation(conv);

@@ -17,7 +17,11 @@ const CarDetails = ({userData, carDataId}) => {
   const slider2Ref = useRef(null);
   const navigate = useNavigate();
   const [carOwnerId, setCarOwnerId] = useState("");
-  const [message, setMessage] = useState("")
+  const [message, setMessage] = useState("");
+  const [info, setInfo] = useState("");
+  const [info1, setInfo1] = useState("");
+  const [hadMessage, setHadMessage] = useState(false);
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,15 +41,36 @@ const CarDetails = ({userData, carDataId}) => {
     fetchData();
   },[carDataId]);
 
+
+
+  useEffect(() => {
+    const runDelayedAction = async() => {
+        // Folosește funcția 'delay' pentru a aștepta 3 secunde.
+        await delay(3000); 
+        
+        // După 3 secunde, setează starea.
+        setInfo("");
+        setInfo1("");
+        
+    }
+    if (info !== "" || info1 !== "") { // Rulează doar dacă 'info' nu este gol
+        runDelayedAction();
+    }
+  },[info, info1])
+
   const sendMessage = async() =>{
     if (!userData.id){
-        window.alert("You need to login or register first!");
+        setInfo1("You need to login or register first!");
         return;
     } else {
         let ownerId = await axios.get(`${API_URL}/cars/owner/${carDataId}`)
-        let message = {user1: userData.id, user2: ownerId.data}
-        await axios.post(`${API_URL}/conversations/message/`, message);
-        navigate('/account/conversations/')
+        let conv = {user1: userData.id, user2: ownerId.data}
+        try{
+            await axios.post(`${API_URL}/conversations/create/`, conv);
+            navigate('/account/conversations/');
+        } catch (error){
+            console.log(error)
+        }
     }
   }
 
@@ -55,18 +80,20 @@ const CarDetails = ({userData, carDataId}) => {
 
   const sendAMessage = async() =>{
     if (!userData.id){
-        window.alert("You need to login or register first!");
+        setInfo("You need to login or register first!");
         return;
     }
     if (message === ""){
-        window.alert("You need to write a message first");
+        setInfo("You need to write a message first");
         return;
     }
+    setHadMessage(false);
     let ownerId = await axios.get(`${API_URL}/cars/owner/${carDataId}`)
     let conv = {sender: userData.id, receiver: ownerId.data, message: message}
     await axios.post(`${API_URL}/conversations/conversation/message/`, conv);
+    setHadMessage(true);
     setMessage("");
-    window.alert("Message was sent succesfully")
+    setInfo("Message was sent succesfully")
   }
 
 
@@ -113,8 +140,14 @@ const CarDetails = ({userData, carDataId}) => {
     <div className='car-details'>
         <div className='content'>
             <div className="car-image-slider">
+                <h5 
+                className='message_status1'
+                style={{ 
+                    color: '#a51717ff' 
+                }}
+                >{info1}</h5>
                 <span className='title'>
-                    <h1 id='title'>{car.title}</h1>
+                    <h1 id='title'>{car.title ? car.title : navigate('/')}</h1>
                     <h1 id='price'>{car.price} {car.currency}</h1>
                     {carOwnerId !== userData.id &&
                     <div className='chatWithOwner'>
@@ -142,7 +175,12 @@ const CarDetails = ({userData, carDataId}) => {
             </div>
             <div className='car-info-box'>
                 <div className='spacer'></div>
-                {carOwnerId !== userData.id &&
+                <h5 className='message_status' 
+                style={{ 
+                    color: (!userData.id|| !hadMessage) ? '#ae0808ff' : '#0dc713ff' 
+                }}
+                >{info}</h5>
+                {carOwnerId !== userData.id && 
                 <div className='messageBox'>
                     <div className='message'>
                         <label >Write a message</label>

@@ -86,13 +86,15 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
 
     const markMessageAsRead = async (message) => {
         try {
+            if (message.receiver !== userData.id) return;
             const response = await axios.put(`${API_URL}/conversations/markMessagesAsRead/${message.id}`);
             
             let params = {sender: message.sender, receiver: message.receiver}
-            console.log(params)
-
+            if (!message.receiver || !message.sender){
+                return;
+            }
             await axios.put(`${API_URL}/notifications/read/`, params);
-            setUnreadMessages(unreadMessages - response.data);
+            setUnreadMessages((unreadMessages - response.data) > 0 ? (unreadMessages - response.data): 0);
         }   
         catch (error){
             console.log(`Eroare: ${error}`)

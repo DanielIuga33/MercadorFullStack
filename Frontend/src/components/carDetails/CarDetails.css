@@ -2,8 +2,7 @@
   min-height: 2000px;
   height: auto;
   display: flex;
-  background-color: rgb(31, 31, 31);
-  /* background-color: hsla(0, 0%, 5%, 0.993); */
+  background-color: #121212; /* Fundal Principal: Deep Slate */
   justify-content: center;
 }
 .car-details .content{
@@ -11,49 +10,64 @@
   max-width: 1400px;
   width: auto;
   height: auto;
-  border: 2px solid hsl(0, 0%, 15%);
-  box-shadow: 5px 2px 10px hsl(0, 0%, 20%);
-  background-color: hsl(0, 0%, 7%);
-  /*border-radius: 10px;*/
+  /* Bordură subtilă */
+  border: 1px solid #333333; 
+  /* Umbră profesională */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  background-color: #1E1E1E; /* Culoarea containerului interior: Dark Charcoal */
+  border-radius: 8px; /* Colțuri rotunjite */
 }
 .chatWithOwner{
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 20%;
 
 }
 .chatWithOwner button{
-  background-color: #424242;
+  /* Buton: Accent Electric Blue */
+  background-color: #bd3526;
   color:white;
   font-weight: 600;
   font-size: 18px;
-  border: 2px 5px 6px 5px solid rgb(62, 61, 61);
-  box-shadow: 2px 2px 5px rgba(154, 154, 154, 0.555);
-  /* box-shadow: 5px, 4px, 10px, 20px s red; */
+  border: none; /* Eliminăm bordurile vechi */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Umbră curată */
   width: 80%;
   height: 50px;
   border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
+
+/* Adaugă stilul de hover pentru butoane */
+.chatWithOwner button:hover {
+    background-color: #d2301e; 
+}
+
+
 .content .title{
   display: flex;
 }
 .content .title #title{
   text-align:left;
   margin-left: 10px;
+  color: #FFFFFF; /* Text alb */
 }
 .content .title #price{
   text-align: end;
   margin-right: 30px;
-  font-size: 2rem;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #FFFFFF; /* Accent vibrant pentru preț (Cyan) */
 }
 .car-details h1{
   margin-top: 15px;
   margin-bottom: 10px;
-  border-bottom: 2px solid rgb(12, 12, 12);
+  border-bottom: 2px solid #1E1E1E; /* Linie mai întunecată */
   width: 60%;
   text-align: center;
-  color: #e4e4e4;
+  color: #e0e0e0; /* Text Off-White */
 }
 .car-image-slider{
   margin-top: 40px;
@@ -66,9 +80,9 @@
   width: auto;
   margin: 0 auto;
   padding: 20px;
-  background-color: rgb(10, 11, 15);
+  background-color: #151515; /* Fundal foarte închis pentru slider */
   border-radius: 5px;
-  border: 2px solid rgb(83, 83, 83);
+  border: 2px solid #333333; /* Bordură subtilă */
 }
 
 .car-image-slider .image {
@@ -109,8 +123,8 @@
 
 .car-image-slider h5{
   text-align: center;
-  color: white;
-  font-weight: 350;
+  color: #A0A0A0; /* Gri deschis, subtil */
+  font-weight: 400;
   font-size: 1.1rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
@@ -119,10 +133,22 @@
 .content .car-info-box{
   margin-top: 50px;
   justify-content: center;
-  border-top: 2px solid rgb(6, 6, 6);
+  border-top: 1px solid #333333; /* Bordură subtilă */
   height: auto;
   width: 100%;
   padding: 15px;
+}
+.message_status{
+  text-align: end;
+  align-items: center;
+  margin: 0 auto;
+  width: 65%;
+}
+.message_status1{
+  text-align: end;
+  color: #ae0808ff;
+  width: 30%;
+  margin-left: 70%;
 }
 .messageBox{
   justify-content: center;
@@ -134,68 +160,84 @@
 .message{
   display: flex;
   width: 80%;
-  border-radius: 5px;
+  border-radius: 6px;
   height: 10vh;
   min-height: 30px;
   align-items: center;
   justify-content: center;
-  background-color: #202020;
+  background-color: #252525; /* Fundal secțiune mesaj */
 }
 .message label{
-  font-weight: 700;
-  font-size: 20px;
+  font-weight: 600;
+  font-size: 18px; /* Ajustat de la 20px */
   margin-right: 20px;
   align-items: center;
+  color: #E0E0E0; /* Text alb-gri */
 }
 .message input{
-  background-color: #4d4d4d;
+  background-color: #333333; /* Input mai închis */
   color: white;
   font-size: large;
-  font-weight: 600;
+  font-weight: 500;
   height: 40px;
   width: 700px;
   margin-right: 20px;
   border-radius: 4px;
-
+  border: 1px solid #444444;
+  padding: 0 10px;
 }
 .message #sendButton{
-  color:#fe7700;
+  /* Buton Send: Accent Electric Blue */
+  color:white; /* Culoare text */
   font-weight: 600;
-  font-size: 20px;
-  height: 70%;
-  width: 13%;
-  background-color: #191919;
+  font-size: 18px;
+  height: 40px; /* Aliniat cu input-ul */
+  width: 100px; /* Lățime fixă */
+  background-color: #b91a1a; 
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
+
+.message #sendButton:hover {
+    background-color: #d21313; 
+}
+
 
 .car-info-box .spacer{
   margin-bottom: 30px;
 }
 .content .row{
-  color: #7c7c7c;
+  color: #E0E0E0; /* Textul principal al rândului */
   justify-content: center;
-  font-weight: 500;
+  font-weight: 400;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  border: 2px solid rgba(223, 208, 1, 0.808); 
+  /* Bordura și fundalul rândului de informații */
+  border: 1px solid #333333; 
   border-radius: 5px;
-  background-color: rgb(10, 12, 16);
+  background-color: #1E1E1E; /* Același ca și containerul principal */
   width: 80%;
   margin: 0 auto;
   margin-bottom: 30px;
+  padding: 10px 0; /* Spațiu uniform */
 }
 
 .content .row .bar{
   width: 95%;
-  height: 2px;
-  background-color: rgb(51, 51, 51);
+  height: 1px; /* Subțire */
+  background-color: #333333; /* Gri închis pentru separator */
+  margin: 10px auto;
 }
 
 .content .row h4{
   margin-top: 10px;
   margin-left: 2.5%;
+  color: #9E9E9E; /* Sub-titluri discrete */
 }
 
 .content .row strong{
   margin-left: 2.5%;
+  color: #FFFFFF; /* Cheia (ex: Brand:) să fie mai vizibilă */
 }
 .content .align-right {
   display: inline-block;
@@ -203,6 +245,7 @@
   height: 30px;
   margin-right: 40%;
   margin-left: 2%;
+  color: #B0B0B0; /* Valoarea să fie mai deschisă decât cheia */
 }
 
 .content label{
@@ -210,22 +253,23 @@
 }
 
 .description {
+  color: #E0E0E0;
   margin-top: 20px;
   margin-left: 30px;
   white-space: pre-line;
-  line-height: 1.6; /* Ajustează spațierea între linii pentru lizibilitate */
+  line-height: 1.6;
   font-size: 1.1rem;
 }
 
 
 .bg{
-  background-color: hsla(0, 0%, 11%, 0.993);
+  background-color: #121212; /* Fundal Deep Slate */
   height: 90.6vh;
   display: flex;
 }
 .loader {
-  border: 8px solid #a7a7a7; 
-  border-top: 8px solid #a11919; 
+  border: 8px solid #333333; /* Gri închis */
+  border-top: 8px solid #b91a1a; /* Accent Electric Blue */
   border-radius: 50%;
   width: 50px; 
   height: 50px; 
@@ -240,56 +284,36 @@
 }
 
 
-.slick-prev {
-  left: -20px; 
+/* Stiluri Slick Carousel (modificate pentru a fi mai vizibile) */
+.slick-prev, .slick-next {
+  background: rgba(30, 30, 30, 0.7) !important; 
   z-index: 1;
-  background: rgb(58, 58, 58); 
-  border-top-right-radius: 20%;
-  border-bottom-right-radius: 20%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 1; 
+  width: 45px !important;
+  height: 45px !important;
+  border-radius: 50% !important;
   transition: background 0.3s ease; 
-}
-
-
-.slick-next {
-  right: -20px;
-  z-index: 1;
-  background: rgb(58, 58, 58);
-  border-top-left-radius: 20%;
-  border-bottom-left-radius: 20%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 1; 
-  transition: background 0.3s ease; 
+  opacity: 1 !important; 
 }
 
 
 .slick-prev:before, .slick-next:before {
   font-size: 20px;
-  color: white; 
+  color: white !important; 
 }
 
 
 .slick-prev:hover, .slick-next:hover {
-  background: rgb(58, 58, 58);
+  background: #b91a1a !important; /* Accent Blue la hover */
 }
 
 
 .slick-prev:focus, .slick-next:focus,
 .slick-prev:active, .slick-next:active {
-  background: rgb(58, 58, 58);
+  background: #b91a1a !important;
   outline: none; 
   box-shadow: none;
 }
-
-.slick-prev, .slick-next {
-  opacity: 1 !important;
-}
+/* Pozițiile rămân neschimbate */
+.slick-prev { left: -20px; }
+.slick-next { right: -20px; }
+.slick-prev:focus, .slick-next:focus, .slick-prev:active, .slick-next:active { outline: none; box-shadow: none; }

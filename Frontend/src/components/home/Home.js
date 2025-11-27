@@ -20,7 +20,7 @@ const Home = ({searchFilters, setSearchFilters, setCarData}) => {
       className="home"
     >
         {/* SearchBar Section - Stânga */}
-        <Box sx={{width: '18%', minWidth: '200px'}}>
+        <Box  sx={{width: '18%', minWidth: '320px', maxWidth: '500px'}}>
             <SearchBar 
               searchFilters={searchFilters} 
               setSearchFilters={setSearchFilters} 

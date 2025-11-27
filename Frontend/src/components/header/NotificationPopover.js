@@ -4,9 +4,6 @@ import API_URL from '../..';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 
-// =========================================================================
-// 💡 FUNCȚIA HELPER PENTRU FORMATUL AVANSAT DE ORĂ/DATĂ (AZI, IERI, DD.MM.YYYY)
-// =========================================================================
 
 const formatNotificationTimestamp = (timestamp) => {
     if (!timestamp) return '';
@@ -53,18 +50,6 @@ const NotificationPopover = ({
     
     const [sendersMap, setSendersMap] = useState({}); 
 
-    // Efectul de scroll
-    useEffect(() => {
-        if (open && listRef.current) {
-            const scrollToBottom = () => {
-                if (listRef.current) {
-                    listRef.current.scrollTop = listRef.current.scrollHeight;
-                }
-            };
-            const timer = setTimeout(scrollToBottom, 50);
-            return () => clearTimeout(timer);
-        }
-    }, [open, notifications]); 
 
 
     // Logica asincronă (fetch senders)
@@ -105,7 +90,7 @@ const NotificationPopover = ({
 
     // 1. Sortarea notificărilor (cele mai noi primele)
     const sortedNotifications = [...notifications].sort((b, a) => 
-        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
 
     const handleNotificationClick = async (notif) => {

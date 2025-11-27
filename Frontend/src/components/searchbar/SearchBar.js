@@ -81,6 +81,10 @@ const SearchBar = ({ searchFilters, setSearchFilters }) => {
                 maxHeight: '100vh', // Limitează înălțimea la dimensiunea vizibilă a paginii
                 padding: 2,
                 backgroundColor: 'hsl(0, 100%, 24%)',
+                transition: 'background-color 0.3s',
+                '&:hover': {
+                    backgroundColor: 'hsl(0, 100%, 25%)', // O nuanță puțin mai deschisă
+                },
                 color: 'white',
                 overflowY: 'auto', // Permite scroll vertical
                 boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)',
@@ -91,6 +95,7 @@ const SearchBar = ({ searchFilters, setSearchFilters }) => {
                     backgroundColor: 'hsla(0, 0%, 100%, 0.30)',
                     borderRadius: '10px',
                 },
+
             }}
 
         >

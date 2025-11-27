@@ -53,7 +53,8 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
     const fetchMessages = async () => {
       try {
         const response = await axios.get(`${API_URL}/conversations/unreadMessages/${userData.id}`)
-        setUnreadMessages(response.data);
+        if (response.data > 0) setUnreadMessages(response.data);
+        else setUnreadMessages(0);
       } catch (error) {
         console.error('Error fetching unread messages: ', error)
       }
@@ -192,7 +193,7 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
     >
       <MenuItem onClick={goToConversations}>
         <IconButton size="large" color="inherit">
-          <Badge badgeContent={unreadMessages} color="error">
+          <Badge badgeContent={unreadMessages >= 0 ? unreadMessages : 0} color="error">
             <MailIcon />
           </Badge>
         </IconButton>

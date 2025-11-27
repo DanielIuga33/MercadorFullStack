@@ -36,9 +36,9 @@ const Account = ({ userData }) => {
         <Button
           variant="contained"
           sx={{
-            backgroundColor: '#FF5722',
+            backgroundColor: 'hsla(0, 93%, 28%, 1.00)',
             color: 'white',
-            '&:hover': { backgroundColor: '#FF3D00' },
+            '&:hover': { backgroundColor: 'hsla(2, 96%, 32%, 1.00)' },
             padding: '14px 28px',
             borderRadius: '12px',
             boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.4)',
@@ -51,9 +51,9 @@ const Account = ({ userData }) => {
         <Button
           variant="contained"
           sx={{
-            backgroundColor: '#FF5722',
+            backgroundColor: 'hsla(0, 93%, 28%, 1.00)',
             color: 'white',
-            '&:hover': { backgroundColor: '#FF3D00' },
+            '&:hover': { backgroundColor: 'hsla(2, 100%, 32%, 1.00)' },
             padding: '14px 28px',
             borderRadius: '12px',
             boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.4)',

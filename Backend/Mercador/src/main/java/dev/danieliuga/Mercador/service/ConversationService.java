@@ -53,8 +53,11 @@ public class ConversationService {
     public int markMessageAsReadForConversation(Conversation conversation, ObjectId idMessage){
         List<Message> messages = new ArrayList<>();
         int counter = 0;
+        if (conversation.getId() == null){
+            return 0;
+        }
         for (Message mess: conversation.getMessages()){
-            if (mess.getId().compareTo(idMessage) == 0){
+            if (mess.getId().equals(idMessage)){
                 counter += 1;
                 mess.setRead(true);
             }
