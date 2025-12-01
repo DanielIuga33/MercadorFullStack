@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import SpeedIcon from '@mui/icons-material/Speed';
 import { Grid, Box, Card, CardContent, CardMedia, Typography, CircularProgress} from '@mui/material';
 import axios from 'axios';
-import API_URL from '../..'
+import API_URL from '../..';
 
 const MainPage = ({ searchFilters, setCarData }) => {
     const [cars, setCars] = useState([]);
@@ -182,76 +182,156 @@ const MainPage = ({ searchFilters, setCarData }) => {
         }
     };
 
-    return (
-        <Grid container rowGap={1} columnGap={5} sx={{backgroundColor: "hsl(0, 0%, 11%)",paddingLeft:"5%", minHeight: '100%'}}>
-            {cars.length > 0 ? (
-                cars.map((car) => (
-                    <Grid item xs={12} sm={6} md={4} lg={2} key={car.id} sx={{height: '360px', marginTop: "20px"}}>
-                        <Card onClick={() => accesCar(car.id)} sx={{cursor: 'pointer',maxWidth: "250px", height: '350px', display: 'flex', flexDirection: 'column', border: '1px solid black'}}>
-                            {car.image && (
-                                <CardMedia
-                                    component="img"
-                                    sx={{
-                                        width: '100%',
-                                        height: 'auto', 
-                                        maxHeight: '200px',
-                                    }}
-                                    // MODIFICARI AICI: Sintaxa pe o singură linie cu descriptori 'w'
-                                    image={`${API_URL}${car.image}?w=400`}
-                                    // srcSet={`http://localhost:8080/api${car.image}?w=400 400w, http://localhost:8080/api${car.image}?w=800 800w`}
-                                    sizes="(max-width: 600px) 100vw, 600px"
-                                    // SFARSIT MODIFICARI
-                                    alt={`Car ${car.title}`}
-                                    loading="lazy"
-                                />
-                            )}
-                            <CardContent 
+   return (
+    <Grid 
+        container 
+        rowGap={2} 
+        // MODIFICARE: Un gap mic (1 = 8px) pe mobil între cele 2 coloane
+        columnGap={{ xs: 1, md: 5 }} 
+        sx={{
+            backgroundColor: "hsl(0, 0%, 11%)",
+            // MODIFICARE: Puțin padding pe mobil ca să nu fie lipite de marginea ecranului
+            paddingLeft: { xs: "10px", md: "5%" }, 
+            paddingRight: { xs: "10px", md: 0 }, // Adaugat padding dreapta pt simetrie pe mobil
+            justifyContent: { xs: 'center', md: 'flex-start' },
+            minHeight: '100%',
+            paddingBottom: '20px'
+        }}
+    >
+        {cars.length > 0 ? (
+            cars.map((car) => (
+                <Grid 
+                    item 
+                    // MODIFICARE MAJORĂ: xs={6} înseamnă 2 carduri pe rând (50% fiecare)
+                    xs={5} sm={6} md={4} lg={2} 
+                    key={car.id} 
+                    sx={{
+                        // Înălțime mai mică pe mobil pentru container
+                        height: { xs: '180px', md: '360px' }, 
+                        marginTop: "20px",
+                        display: 'flex',
+                        justifyContent: 'center' 
+                    }}
+                >
+                    <Card 
+                        onClick={() => accesCar(car.id)} 
+                        sx={{
+                            cursor: 'pointer',
+                            // Pe mobil ocupă 100% din spațiul celor 2 coloane
+                            width: '100%', 
+                            maxWidth: { xs: '100%', md: '250px' }, 
+                            minWidth: {xs: '80px'},
+                            
+                            // MODIFICARE: Card mai scund pe mobil
+                            height: { xs: '200px', md: '320px' }, 
+                            
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            border: '1px solid black'
+                        }}
+                    >
+                        {car.image && (
+                            <CardMedia
+                                component="img"
+                                sx={{
+                                    width: '100%',
+                                    // MODIFICARE: Poza mai mică pe mobil
+                                    height: { xs: '60px', md: 'auto' }, 
+                                    maxHeight: '150px',
+                                    objectFit: 'cover' 
+                                }}
+                                image={`${API_URL}${car.image}?w=400`}
+                                sizes="(max-width: 600px) 50vw, 600px"
+                                alt={`Car ${car.title}`}
+                                loading="lazy"
+                            />
+                        )}
+                        <CardContent 
+                            sx={{ 
+                                backgroundColor: 'rgb(17, 18, 20)',
+                                color: 'lightgray',
+                                flexGrow: 1,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                // Padding mai mic în interiorul cardului pe mobil
+                                padding: { xs: '8px', md: '16px' },
+                                "&:last-child": { paddingBottom: { xs: '8px', md: '16px' } }
+                            }}
+                        >
+                            <Typography 
+                                variant="h6" 
+                                noWrap 
+                                gutterBottom
                                 sx={{ 
-                                    backgroundColor: 'rgb(17, 18, 20)',
-                                    color: 'lightgray',
-                                    flexGrow: 1,
-                                    display: 'flex',
-                                    flexDirection: 'column',
+                                    textOverflow: "ellipsis", 
+                                    overflow: "hidden", 
+                                    whiteSpace: "nowrap",
+                                    // Font mai mic pe mobil
+                                    fontSize: { xs: '14px', md: 'clamp(16px, 2vw, 20px)' },
+                                    fontWeight: 'bold'
                                 }}
                             >
+                                {car.title}
+                            </Typography>
+                            
+                            <Typography 
+                                variant="h5" 
+                                sx={{ 
+                                    // Prețul mai mic pe mobil
+                                    fontSize: { xs: '16px', md: '1.5rem' },
+                                    color: '#f2f2f2ff' // Opțional: verde pentru preț să iasă în evidență
+                                }}
+                            >
+                                {car.price} {car.currency}
+                            </Typography>
+
+                            <Box sx={{marginTop: 'auto'}}>
+                                {car.year && car.mileage &&
                                 <Typography 
-                                    variant="h6" 
-                                    noWrap 
-                                    gutterBottom
+                                    color="textSecondary"
+                                    flex={1}
                                     sx={{ 
-                                        textOverflow: "ellipsis", 
-                                        overflow: "hidden", 
-                                        whiteSpace: "nowrap",
-                                        fontSize: 'clamp(16px, 2vw, 20px)',
-                                        }}
+                                        display: 'flex', 
+                                        alignItems: 'center',
+                                        // Textul de jos mult mai mic pe mobil
+                                        fontSize: { xs: '10px', md: '1rem' } 
+                                    }} 
                                 >
-                                    {car.title}
-                                </Typography>
-                                <Typography variant="h5">
-                                    {car.price} {car.currency}
-                                </Typography>
-                                <Box sx={{marginTop: 'auto',marginBottom:'-15px'}}>
-                                    {car.year && car.mileage &&
-                                    <Typography 
-                                        color="textSecondary"
-                                        flex={1}
+                                    <SpeedIcon 
+                                        sx={{ 
+                                            // Iconița mai mică pe mobil
+                                            fontSize: { xs: '0.7rem', md: '1.2rem' }, 
+                                            color: 'white', 
+                                            marginRight: '3px' 
+                                        }} 
+                                    /> 
+                                    <Typography
+                                        sx={{
+                                            fontSize: {xs: '0.6rem', lg: '15px'}
+                                        }}
                                     >
-                                        <SpeedIcon 
-                                            sx={{ fontSize: '1.2rem', color: 'white' }} 
-                                        /> {car.year} - {car.mileage} km
-                                    </Typography>}
-                                </Box>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))
-            ) : (
-                <Grid item xs={12}>
-                    <Typography variant="h6" color="textSecondary">No cars available.</Typography>
+                                            {car.year}
+                                    </Typography>
+                                    <Typography
+                                        sx={{
+                                            fontSize: {xs: '0.6rem', lg: '15px'}
+                                        }}
+                                    >
+                                    - {car.mileage} km
+                                    </Typography>
+                                </Typography>}
+                            </Box>
+                        </CardContent>
+                    </Card>
                 </Grid>
-            )}
-        </Grid>
+            ))
+        ) : (
+            <Grid item xs={12} sx={{ textAlign: 'center', mt: 4 }}>
+                <Typography variant="h6" color="textSecondary">No cars available.</Typography>
+            </Grid>
+        )}
+    </Grid>
     );
-};
+}
 
 export default MainPage;

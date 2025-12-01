@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"; 
+import React, { useState, useEffect, useRef, useCallback} from "react"; 
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
@@ -36,49 +36,69 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
     const [newMessage, setNewMessage] = useState("");
     const messagesEndRef = useRef(null); 
 
-    // 🔹 Fetch conversațiile utilizatorului
-    useEffect(() => {
-        if (!userData.id) {
-            navigate('/');
-        }
-        const fetchData = async () => {
-            if (userData.id)
-            try {
-                const response = await axios.get(`${API_URL}/conversations/${userData.id}`);
-                if (!response.data) {
-                    setConversations([]);
-                    return;
-                }
-                setConversations(response.data);
+    const fetchConversations = useCallback(async () => {
+        if (!userData.id) return;
+        try {
+            const response = await axios.get(`${API_URL}/conversations/${userData.id}`);
+            const convData = response.data || [];
+            
+            // Actualizăm conversațiile
+            setConversations(convData);
 
-                // 🔹 Fetch info pentru fiecare utilizator din conversații
-                const usersMap = {};
-                for (const conversation of response.data) {
-                    const id = conversation.user1 !== userData.id ? conversation.user1 : conversation.user2;
-                    const userRes = await axios.get(`${API_URL}/users/${id}`);
-                    usersMap[id] = userRes.data;
-                }
-                setUsers(usersMap);
-            } catch (error) {
-                console.error("❌ Error fetching conversations:", error);
+            // Actualizăm userii (opțional, poți pune un if să nu facă request mereu dacă ai deja userii)
+            const usersMap = {};
+            for (const conversation of convData) {
+                const id = conversation.user1 !== userData.id ? conversation.user1 : conversation.user2;
+                const userRes = await axios.get(`${API_URL}/users/${id}`);
+                usersMap[id] = userRes.data;
             }
-        };
-        fetchData();
-    }, [userData.id, navigate]);
+            setUsers(prev => ({ ...prev, ...usersMap }));
+        } catch (error) {
+            console.error("Error fetching conversations:", error);
+        }
+    }, [userData.id]);
 
-    // 🔹 Când selectezi o conversație
+    // 2. Funcția care aduce mesajele unei conversații specifice
+    const fetchMessages = useCallback(async (conversationId) => {
+        if (!conversationId) return;
+        try {
+            const response = await axios.get(`${API_URL}/conversations/messages/${conversationId}`);
+            setMessages(response.data || []);
+        } catch (error) {
+            console.error("Error fetching messages:", error);
+        }
+    }, []);
+
+    // 3. TIMERUL (Interval de 5 secunde)
+    useEffect(() => {
+        // Rulăm o dată imediat la început
+        fetchConversations();
+        if (selectedConversation) {
+            fetchMessages(selectedConversation.id);
+        }
+
+        const intervalId = setInterval(() => {
+            // Verificăm lista de conversații
+            fetchConversations();
+            
+            // Dacă utilizatorul are un chat deschis, verificăm mesajele noi din el
+            if (selectedConversation) {
+                fetchMessages(selectedConversation.id);
+            }
+        }, 2000);
+
+        // Curățăm intervalul când componenta se închide sau schimbi conversația
+        return () => clearInterval(intervalId);
+    }, [userData.id, selectedConversation, fetchConversations, fetchMessages]);
+
+    // 4. Funcția modificată pentru click pe conversație
     const handleSelectConversation = async (conversation) => {
         setSelectedConversation(conversation);
         setMessages([]); 
-        setLoadingMessages(true);
-
+        setLoadingMessages(true); // Arătăm loading doar la click manual
+        
         try {
-            const response = await axios.get(
-                `${API_URL}/conversations/messages/${conversation.id}`
-            );
-            setMessages(response.data || []); 
-        } catch (error) {
-            console.error("❌ Error fetching messages:", error);
+            await fetchMessages(conversation.id);
         } finally {
             setLoadingMessages(false);
         }
@@ -156,7 +176,6 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
 
     return (
         <Box sx={{ width: "100%", backgroundColor: "#bcbcc0ff", display: "flex" }}>
-            {/* 🔹 Sidebar cu conversațiile - MODIFICARE 1 APLICATĂ AICI */}
             <Box
                 sx={{
                     alignItems: "center",
@@ -165,7 +184,7 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
                     width: "25%",
                     borderRight: "4px solid black",
                     overflowY: "auto",
-                    ...scrollbarStyles, // <-- Aplicarea stilurilor de scroll
+                    ...scrollbarStyles,
                 }}
             >
                 <Typography textAlign="center" fontSize={35} fontWeight={400} marginBottom={6}>

@@ -63,8 +63,9 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
 
     fetchNotifications();
     fetchMessages();
-    const interval = setInterval(fetchNotifications, 10000); // refresh la 10 secunde
-    return () => clearInterval(interval);
+    const interval = setInterval(fetchNotifications, 3000); // refresh la 10 secunde
+    const interval1 = setInterval(fetchMessages, 3000);
+    return () => {clearInterval(interval); clearInterval(interval1)};
   }, [userData, setUnreadMessages]);
 
   useEffect(() => {
@@ -108,7 +109,13 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
 
   const headerTitleStyles = {
     margin: '0 auto',
-    width: { lg: '60%', md: '70%' },
+    // AICI E MODIFICAREA:
+    width: { 
+        xs: '95%', // Telefon (0-600px) -> Vrei să fie lat, să se vadă bine
+        sm: '85%', // Tabletă (600-900px)
+        md: '70%', // Laptop (900-1200px) - Cum aveai tu
+        lg: '60%'  // Desktop mare (1200px+) - Cum aveai tu
+    }, 
     textAlign: 'center',
     border: '1px solid hsl(0, 0%, 2.7%)',
     borderRadius: '10px',
@@ -118,8 +125,10 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
-    fontSize: 'clamp(16px, 2vw, 30px)'
-  };
+    // Clamp-ul e ok, dar dacă vrei control total și aici:
+    // fontSize: { xs: '16px', md: '20px', lg: '30px' } 
+    fontSize: 'clamp(16px, 2vw, 30px)' 
+};
 
   // ✅ FIX: fără <></>, folosim array cu key-uri
   const renderMenu = (

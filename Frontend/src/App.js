@@ -12,7 +12,7 @@ import useSessionStorage from './hooks/useSessionStorage';
 import UserCars from './components/userCars/UserOwnCars';
 import { useEffect , useState} from 'react';
 import axios from 'axios';
-import path from './index'
+import API_URL from '../src/index'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -94,7 +94,7 @@ function App() {
   useEffect(() =>{
     const cleanup = async () =>{
         try{
-          await axios.delete(`${path}/cleanup-images`);
+          await axios.delete(`${API_URL}/cleanup-images`);
         } catch (error){
           console.error('Error cleaning unused photos:', error);
         }

@@ -1,4 +1,100 @@
-/*Rezolutie Laptop* (min-width: 1301px) and */
+/*
+########################################################
+    Rezolutie Telefon* 
+########################################################
+*/
+@media (max-width: 768px) {
+    .no-account-container, .account-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 91vh;
+        background-color: #2B2B2B;
+        color: white;
+    }
+    .no-account-container span{
+        display: flex;
+    }
+    .no-account-container h2{
+        margin-bottom: 30px;
+    }
+    .no-account-container button{
+        width: 250px;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 6px;
+        background-color: hsl(0, 85%, 36%, 75%);
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-bottom: 10px;
+        margin-right: 30px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .no-account-container button:hover{
+        background-color: hsl(0, 77%, 29%);
+        transition: 1.5s smooth;
+        box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .account-container{
+        background-color: hsl(0, 0%, 19%);
+    }
+    
+    .account-container .display{
+        border: 5px solid rgb(150, 35, 0);
+        border-style:groove;
+        border-radius: 5px;
+        background-color: #2B2B2B;
+        padding: 100px 50px 50px 50px;
+        box-shadow: 10px 20px 200px  rgb(243, 0, 0), 10px 10px 5px 8px black;
+        height: 78%;
+        width: 50%;
+        min-width: 600px;
+    }
+    .account-container span{
+        display: flex;
+        border: 2px solid hsl(0, 0%, 12%);
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        padding: 10px;
+    }
+    .account-container span:hover{
+        box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .account-container h1{
+        text-align:center;
+        font-size: 3.2rem;
+        margin-bottom: 30px;
+    }
+    .account-container .firstPart button{
+        margin-left: auto;
+    }
+    
+    .account-container .divider{
+        height: 200px;
+        width: 3px;
+    }
+    .account-container button{
+        padding: 0.75rem;
+        border: none;
+        border-radius: 6px;
+        background-color: hsla(0, 1%, 50%, 0.808);
+        color: white;
+        font-size: 1.3rem;
+        cursor: pointer;
+        margin-bottom: 10px;
+        margin-right: 30px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        display: flex;
+    }
+}
+
+/*
+########################################################
+    Rezolutie Laptop* (min-width: 1301px)
+########################################################
+*/
 @media (max-width: 1549px) {
     .no-account-container, .account-container {
         display: flex;
@@ -85,6 +181,11 @@
         display: flex;
     }
 }
+/*
+########################################################
+    Rezolutie PC* (min-width: 1301px)
+########################################################
+*/
 @media (min-width: 1550px){
     .no-account-container, .account-container {
         display: flex;

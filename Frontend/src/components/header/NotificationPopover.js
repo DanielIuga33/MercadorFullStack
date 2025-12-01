@@ -135,13 +135,10 @@ const NotificationPopover = ({
                 
                 {/* Containerul List cu referința de scroll și stilurile noi */}
                 <List 
-                    ref={listRef} // 👈 Atașează referința
+                    ref={listRef}
                     sx={{ 
                         maxHeight: '260px', 
                         overflowY: 'auto',
-                        
-                        // STILURI PENTRU SCROLL MIC ȘI VIZIBIL LA HOVER
-                        
                         "&::-webkit-scrollbar": { 
                             width: "6px", 
                             backgroundColor: "transparent", 
