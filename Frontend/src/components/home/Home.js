@@ -1,11 +1,19 @@
-import React from 'react';
-import { Box} from '@mui/material';
+import {useState} from 'react'
+import { Box, Button} from '@mui/material';
 import './Home.css';
 import '../searchbar/SearchBar';
 import SearchBar from '../searchbar/SearchBar';
 import MainPage from '../mainPage/MainPage';
 
 const Home = ({searchFilters, setSearchFilters, setCarData}) => {
+  const [shown , setShown] = useState(false);
+
+  const changeValue = () => {
+      if (shown) {
+        setShown(false);
+      } else {
+        setShown(true)}; 
+  }
 
   return (
     <Box 
@@ -16,11 +24,43 @@ const Home = ({searchFilters, setSearchFilters, setCarData}) => {
         padding: 0, // Spațiere interioară
         backgroundColor: '#2B2B2B', 
         width: 'auto',
-        minHeight: '100vh',
+        minHeight: '70vh'
       }}
       className="home"
     >
+      <Box>
+          <Button 
+            onClick={() => {changeValue();}}
+            sx={{
+                // 1. Resetăm lățimea minimă a MUI pentru a permite butonul subțire
+                minWidth: '30px', 
+                width: '30px',
+                
+                // 2. Stiluri pentru text vertical
+                writingMode: 'vertical-rl', // Scrie de sus în jos
+                textOrientation: 'upright', // Ține literele drepte (nu le rotește la 90 de grade)
+                
+                // 3. Estetică (ca să arate ca în exemplul tău)
+                textTransform: 'uppercase', // Transformă totul în MAJUSCULE
+                letterSpacing: '2px',       // Spațiu între litere
+                padding: '10px 0',          // Padding sus-jos
+                
+                // 4. Stilurile tale vechi
+                border: '2px solid red',
+                borderRadius: '10px',
+                backgroundColor: 'rgba(48, 47, 47, 0.78)', // Opțional: puțin fundal
+                height: '90vh',
+                borderColor: 'rgba(190, 190, 190, 0.92)',
+                color: 'rgba(190, 190, 190, 0.92)',
+                "&:hover": {backgroundColor: 'rgba(35, 35, 35, 0.78)'},
+            }}
+          > 
+          {shown ?
+          "Hide" : "Show"} Filters
+          </Button>
+        </Box>
         {/* SearchBar Section - Stânga */}
+        {shown &&
         <Box 
             sx={{
                 // 1. Lățimea (Width)
@@ -44,7 +84,7 @@ const Home = ({searchFilters, setSearchFilters, setCarData}) => {
                 searchFilters={searchFilters} 
                 setSearchFilters={setSearchFilters} 
             />
-        </Box>
+        </Box>}
 
         {/* Divider Vertical */}
         {/* MainPage Section - Dreapta */}

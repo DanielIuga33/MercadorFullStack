@@ -9,11 +9,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
     /* IP LOCAL */
 // const API_URL = "http://localhost:8080/api";
     /*TESTE PT PC*/
-const API_URL = "http://192.168.1.128:8080/api";
+// const API_URL = "http://192.168.1.128:8080/api";
     /*IP HAMACHI PC*/
 // const API_URL = "http://25.37.228.158:8080/api";
     /*IP HAMACHI LAPTOP*/
-// const API_URL = "http://25.37.211.179:8080/api";
+const API_URL = "http://25.37.211.179:8080/api";
 export default API_URL;
 root.render(
   <React.StrictMode>

@@ -78,7 +78,7 @@ const SearchBar = ({ searchFilters, setSearchFilters }) => {
                 top: 0,
                 width: '100%',
                 maxWidth: 350,
-                maxHeight: '100vh', // Limitează înălțimea la dimensiunea vizibilă a paginii
+                maxHeight: '90vh', // Limitează înălțimea la dimensiunea vizibilă a paginii
                 padding: 2,
                 backgroundColor: 'hsl(0, 100%, 24%)',
                 transition: 'background-color 0.3s',
