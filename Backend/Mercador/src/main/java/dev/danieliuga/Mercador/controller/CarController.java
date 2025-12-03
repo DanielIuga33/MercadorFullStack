@@ -63,11 +63,21 @@ public class CarController {
             return new ResponseEntity<>(Optional.empty(), HttpStatus.NOT_FOUND);
         }
     }
-
+    @PatchMapping("/increaseView/{id}")
+    public ResponseEntity<Car> increaseViewCount(@PathVariable String id) throws Exception {
+        ObjectId objectId = new ObjectId(id);
+        Optional<Car> optionalCar = carService.singleCar(objectId);
+        Car car =  optionalCar.orElse(new Car());
+        if (!car.equals(new Car())){
+            car.setViews(car.getViews() + 1);
+            carService.addCar(car);
+            return new ResponseEntity<>(car, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new Car(), HttpStatus.NOT_FOUND);
+    }
 
     @PostMapping
     public ResponseEntity<Car> addCar(@RequestBody Car carData) throws Exception {
-        carData.setRegistrationDate(LocalDate.now());
         Car savedCar = carService.addCar(carData);
         return new ResponseEntity<>(savedCar, HttpStatus.CREATED);
     }

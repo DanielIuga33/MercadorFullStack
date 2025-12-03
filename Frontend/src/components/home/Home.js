@@ -8,13 +8,6 @@ import MainPage from '../mainPage/MainPage';
 const Home = ({searchFilters, setSearchFilters, setCarData}) => {
   const [shown , setShown] = useState(false);
 
-  const changeValue = () => {
-      if (shown) {
-        setShown(false);
-      } else {
-        setShown(true)}; 
-  }
-
   return (
     <Box 
       sx={{ 
@@ -30,7 +23,7 @@ const Home = ({searchFilters, setSearchFilters, setCarData}) => {
     >
       <Box>
           <Button 
-            onClick={() => {changeValue();}}
+            onClick={() => {shown ? setShown(false) : setShown(true)}}
             sx={{
                 // 1. Resetăm lățimea minimă a MUI pentru a permite butonul subțire
                 minWidth: '30px', 
@@ -47,10 +40,10 @@ const Home = ({searchFilters, setSearchFilters, setCarData}) => {
                 
                 // 4. Stilurile tale vechi
                 border: '2px solid red',
-                borderRadius: '10px',
-                backgroundColor: 'rgba(48, 47, 47, 0.78)', // Opțional: puțin fundal
+                borderRadius: '2px',
+                backgroundColor: 'rgba(36, 36, 36, 0.78)', // Opțional: puțin fundal
                 height: '90vh',
-                borderColor: 'rgba(190, 190, 190, 0.92)',
+                borderColor: 'rgba(91, 89, 89, 0.92)',
                 color: 'rgba(190, 190, 190, 0.92)',
                 "&:hover": {backgroundColor: 'rgba(35, 35, 35, 0.78)'},
             }}

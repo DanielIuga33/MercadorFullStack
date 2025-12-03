@@ -1,10 +1,44 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, TextareaAutosize, CircularProgress, Typography, Box, CardMedia } from '@mui/material';
+import { 
+    TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, 
+    TextareaAutosize, CircularProgress, Typography, Box, CardMedia, 
+    FormControlLabel, Checkbox, FormGroup 
+} from '@mui/material'; 
 import { brands, modelsByBrand, bodies, colors } from '../ConstantData';
 import './PostACar.css';
 import API_URL from '../..';
+
+// Listele pentru dropdown-uri
+const pollutionStandards = ["Non-Euro", "Euro 1", "Euro 2", "Euro 3", "Euro 4", "Euro 5", "Euro 6"];
+const driveTypes = ["Front Wheel Drive (FWD)", "Rear Wheel Drive (RWD)", "All Wheel Drive (4x4)"];
+
+// Lista extinsă de dotări
+const availableFeatures = [
+    "ABS", "ESP", "Alloy Wheels", "Tow Hook", "Tire Pressure Monitoring",
+    "LED Headlights", "Matrix / Laser Headlights", "Fog Lights", 
+    "Sunroof", "Panoramic Roof", "Tinted Windows", "Air Suspension",
+    "Air Conditioning", "Automatic Climate Control (2 Zones)", "Automatic Climate Control (4 Zones)",
+    "Leather Interior", "Alcantara Interior", "Heated Front Seats", "Heated Rear Seats", 
+    "Ventilated Seats", "Electric Seats with Memory", "Massage Seats", 
+    "Heated Steering Wheel", "Multifunction Steering Wheel",
+    "Keyless Entry", "Keyless Go", "Soft Close", "Electric Tailgate", "Webasto",
+    "Navigation System", "Bluetooth", "Apple CarPlay / Android Auto", 
+    "Digital Cockpit", "Head-up Display", "Wireless Charging", "Premium Sound System",
+    "Cruise Control", "Adaptive Cruise Control (Distronic)", 
+    "Lane Assist", "Blind Spot Monitor", "Traffic Sign Recognition",
+    "Parking Sensors", "Rear View Camera", "360° Camera", "Self-Parking System"
+];
+
+// Componentă mică pentru titlurile de secțiuni
+const SectionHeader = ({ title }) => (
+    <Grid item xs={12} sx={{ mt: 3, mb: 1 }}>
+        <Typography variant="h5" sx={{ color: '#90caf9', fontWeight: 500, borderBottom: '1px solid #444', paddingBottom: '5px' }}>
+            {title}
+        </Typography>
+    </Grid>
+);
 
 const PostACar = ({ userData, setUserData }) => {
     const MAX_IMAGES = 9;
@@ -20,33 +54,17 @@ const PostACar = ({ userData, setUserData }) => {
     const descriptionRef = useRef();
 
     const [carData, setCarData] = useState({
-        title: '',
-        brand: '',
-        model: '',
-        body: '',
-        vin: '',
-        year: '',
-        cm3: '',
-        hp: '',
-        mileage: '',
-        price: '',
-        currency: '',
-        color: '',
-        fuelType: '',
-        numberOfDoors: '',
-        transmission: '',
-        condition: '',
-        registrationDate: '',
-        description: '',
-        steeringwheel: '',
-        ownerId: userData.id,
-        images: []
+        title: '', brand: '', model: '', body: '', vin: '',
+        year: '', cm3: '', hp: '', mileage: '', price: '', currency: '',
+        color: '', fuelType: '', numberOfDoors: '', transmission: '', condition: '',
+        description: '', steeringwheel: '', ownerId: userData.id,
+        images: [], city: '', county: '', pollutionStandard: '', driveType: '',
+        negotiable: false, exchange: false, features: [],
+        createdAt: '', active: '', sold: '', views: '',
     });
 
     useEffect(() => {
-        if (!userData.id){
-            navigate('/');
-        }
+        if (!userData.id) navigate('/');
     }, [userData, navigate]);
 
     const handleChange = (e) => {
@@ -54,9 +72,24 @@ const PostACar = ({ userData, setUserData }) => {
         setCarData({ ...carData, [name]: value });
     };
 
+    const handleCheckboxChange = (e) => {
+        const { name, checked } = e.target;
+        setCarData({ ...carData, [name]: checked });
+    };
+
+    const handleFeatureChange = (feature) => {
+        let updatedFeatures = [...carData.features];
+        if (updatedFeatures.includes(feature)) {
+            updatedFeatures = updatedFeatures.filter(f => f !== feature);
+        } else {
+            updatedFeatures.push(feature);
+        }
+        setCarData({ ...carData, features: updatedFeatures });
+    };
+
     const verifyDescription =() => {
         if (carData.description.length < 40 && carData.description.length > 0) {
-            setDescError('Invalid description size !');          
+            setDescError('Description is too short (min 40 chars)!');          
         } else if (carData.description.length === 0){
             setDescError('You need to complete the description !');
         } else {
@@ -95,9 +128,7 @@ const PostACar = ({ userData, setUserData }) => {
 
         try {
             const response = await axios.post(`${API_URL}/upload`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
             return response.data.imageUrls;
         } catch (error) {
@@ -110,26 +141,19 @@ const PostACar = ({ userData, setUserData }) => {
         carData.title = titleRef.current.value;
         carData.description = descriptionRef.current.value;
         verifyDescription();
-        if (carData.title === '' || carData.brand === '' || carData.model === '' || carData.year === '' || carData.price === '') {
+        
+        if (carData.title === '' || carData.brand === '' || carData.model === '' || carData.year === '' || carData.price === '' || carData.city === '') {
             setErrors('You need to complete all the required fields!');
             return;
-        }else{
+        } else {
             setErrors('');
         }
-        if (descError) {
-            console.log(descError);
-            return;
-        }
+        if (descError) { return; }
+        
         setLoading(true);
 
         try {
             const imageUrls = await uploadImages();
-            if (imageUrls.length === 0) {
-                alert("Error uploading images");
-                setLoading(false);
-                return;
-            }
-
             const updatedCarData = { ...carData, images: imageUrls };
             await axios.post(`${API_URL}/cars`, updatedCarData);
             const response = await axios.get(`${API_URL}/users/findByEmail`, {
@@ -144,15 +168,13 @@ const PostACar = ({ userData, setUserData }) => {
         }
     };
 
-    if (loading) {
-        return <div className="loader"><CircularProgress /></div>;
-    }
+    if (loading) return <div className="loader"><CircularProgress /></div>;
 
     if (done) {
         return (
             <div className='finished-posting-car'>
                 <h1>Car successfully posted!</h1>
-                <Button variant="contained" color="success" onClick={() => navigate("/account")}>Click here to proceed</Button>
+                <Button variant="contained" color="success" onClick={() => navigate("/account")}>Go to Account</Button>
             </div>
         );
     }
@@ -177,42 +199,51 @@ const PostACar = ({ userData, setUserData }) => {
                 backgroundColor: 'hsl(0, 0%, 12%)',
                 boxShadow: '10px 20px 200px  rgb(243, 0, 0), 10px 10px 5px 8px rgb(31, 31, 31)',
             }}>
+                
+                {/* --- AICI ESTE TITLUL STILIZAT PE CARE L-AI CERUT --- */}
                 <Typography 
                     variant='h3' 
                     sx={{
-                        fontSize: {
-                        xs: '4vw', // Dimensiune pentru ecrane mici
-                        sm: '2vw', // Dimensiune pentru ecrane medii
-                        md: '2.5vw', // Dimensiune pentru ecrane mai mari
-                        },
+                        fontSize: { xs: '7vw', md: '2.5vw' },
+                        color: 'white',
+                        fontWeight: 'bold',
+                        marginBottom: '10px'
                     }}
-                    gutterBottom
                 >
-                    Add your car details:
+                    Sell your car
                 </Typography>
+                <Typography variant='body1' sx={{ color: 'gray', mb: 4 }}>
+                    Fill in the details below to create your listing.
+                </Typography>
+
                 <Grid container spacing={3} sx={{justifyContent: 'center'}}>
-                    <TextField
-                        variant='outlined'
-                        label="Title"
-                        name="title"
-                        ref={titleRef}
-                        placeholder="Write a descriptive title for your car"
-                        sx={{width: '60%', marginTop: '20px',marginBottom: 2 }}
-                    />
+                    
+                    {/* --- 1. GENERAL INFO --- */}
+                    <SectionHeader title="1. General Information" />
+
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            variant='outlined'
+                            label="Title"
+                            name="title"
+                            inputRef={titleRef}
+                            placeholder="Write a descriptive title for your car"
+                            sx={{width: '60%', marginTop: '20px',marginBottom: 2 }}
+                        />
+                    </Grid>
+                    
                     <Grid item xs={12} sm={6}>
                         <FormControl fullWidth>
                             <InputLabel>Brand</InputLabel>
                             <Select
                                 name="brand"
                                 label="Brand"
-                                variant='outlined'
                                 value={carData.brand}
                                 onChange={(e) => { setSelectedBrand(e.target.value); handleChange(e); }}
                             >   
                                 <MenuItem value="">Choose</MenuItem>
-                                {brands.map((brand) => (
-                                    <MenuItem key={brand} value={brand}>{brand}</MenuItem>
-                                ))}
+                                {brands.map((brand) => <MenuItem key={brand} value={brand}>{brand}</MenuItem>)}
                             </Select>
                         </FormControl>
                     </Grid>
@@ -221,212 +252,182 @@ const PostACar = ({ userData, setUserData }) => {
                             <InputLabel>Model</InputLabel>
                             <Select
                                 name="model"
-                                label="model"
+                                label="Model"
                                 value={carData.model}
                                 onChange={handleChange}
                             >   
-                                {carData.brand ? (
-                                <MenuItem value="">Choose</MenuItem>) :
-                                <MenuItem value="">Choose the brand first</MenuItem>}
-                                {filteredModels.map((model) => (
-                                    <MenuItem key={model} value={model}>{model}</MenuItem>
-                                ))}
+                                {carData.brand ? <MenuItem value="">Choose</MenuItem> : <MenuItem value="">Select Brand First</MenuItem>}
+                                {filteredModels.map((model) => <MenuItem key={model} value={model}>{model}</MenuItem>)}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth>
+                            <InputLabel>Body Type</InputLabel>
+                            <Select name="body" label="Body Type" value={carData.body} onChange={handleChange}>   
+                                <MenuItem value="">Choose</MenuItem>
+                                {bodies.map((body) => <MenuItem key={body} value={body}>{body}</MenuItem>)}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField fullWidth label="VIN" name="vin" value={carData.vin} onChange={handleChange} />
+                    </Grid>
+
+                    {/* --- 2. PRICE & DEAL --- */}
+                    <SectionHeader title="2. Price & Deal" />
+
+                    <Grid item xs={12} sm={4}>
+                        <TextField fullWidth label="Price" name="price" type="number" value={carData.price} onChange={handleChange} />
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <FormControl fullWidth>
+                            <InputLabel>Currency</InputLabel>
+                            <Select label="Currency" name="currency" value={carData.currency} onChange={handleChange}>   
+                                <MenuItem value="€">€</MenuItem>
+                                <MenuItem value="Ron">Ron</MenuItem>
+                                <MenuItem value="£">£</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6} sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+                         <FormControlLabel 
+                            control={<Checkbox checked={carData.negotiable} onChange={handleCheckboxChange} name="negotiable" sx={{color: 'gray', '&.Mui-checked': {color: 'green'}}} />} 
+                            label="Negotiable" 
+                        />
+                        <FormControlLabel 
+                            control={<Checkbox checked={carData.exchange} onChange={handleCheckboxChange} name="exchange" sx={{color: 'gray', '&.Mui-checked': {color: 'blue'}}} />} 
+                            label="Accept Exchange" 
+                        />
+                    </Grid>
+
+                    {/* --- 3. SPECIFICATIONS --- */}
+                    <SectionHeader title="3. Specifications" />
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField fullWidth label="Year" name="year" type="number" value={carData.year} onChange={handleChange} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField fullWidth label="Mileage" name="mileage" type="number" value={carData.mileage} onChange={handleChange} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth>
+                            <InputLabel>Condition</InputLabel>
+                            <Select label="Condition" name="condition" value={carData.condition} onChange={handleChange}>   
+                                <MenuItem value="USED">Used</MenuItem>
+                                <MenuItem value="NEW">New</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <FormControl fullWidth>
-                            <InputLabel>Body Type</InputLabel>
-                            <Select
-                                name="body"
-                                label="Body Type"
-                                variant='outlined'
-                                value={carData.body}
-                                onChange={handleChange}
-                            >   
-                                <MenuItem value="">Choose</MenuItem>
-                                {bodies.map((body) => (
-                                    <MenuItem key={body} value={body}>{body}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            fullWidth
-                            label="VIN"
-                            name="vin"
-                            value={carData.vin}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            fullWidth
-                            label="Mileage"
-                            name="mileage"
-                            type="number"
-                            value={carData.mileage}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            fullWidth
-                            label="Year"
-                            name="year"
-                            type="number"
-                            value={carData.year}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            fullWidth
-                            label="Price"
-                            name="price"
-                            type="number"
-                            value={carData.price}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl sx={{ width: "110px" }}>
-                            <InputLabel>Currency</InputLabel>
-                            <Select
-                                fullWidth
-                                label="Currency"
-                                name="currency"
-                                value={carData.currency}
-                                onChange={handleChange}
-                            >   
-                                <MenuItem value="">Choose</MenuItem>
-                                <MenuItem value="€">€</MenuItem>
-                                <MenuItem value="Ron">Ron</MenuItem>
-                                <MenuItem value="£">£</MenuItem>
-                                
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth sx={{}}>
-                            <InputLabel>Condition</InputLabel>
-                            <Select
-                                fullWidth
-                                label="Condition"
-                                name="condition"
-                                value={carData.condition}
-                                onChange={handleChange}
-                            >   
-                                <MenuItem value="">Choose</MenuItem>
-                                <MenuItem value="NEW">New</MenuItem>
-                                <MenuItem value="USED">Used</MenuItem>
-                                
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth sx={{}}>
                             <InputLabel>Color</InputLabel>
-                            <Select
-                                fullWidth
-                                label="Color"
-                                name="color"
-                                value={carData.color}
-                                onChange={handleChange}
-                            >   
+                            <Select label="Color" name="color" value={carData.color} onChange={handleChange}>   
                                 <MenuItem value="">Choose</MenuItem>
-                                {colors.map((color) => 
-                                    <MenuItem key={color} value={color}>{color}</MenuItem>
-                                    )}
-                                
+                                {colors.map((color) => <MenuItem key={color} value={color}>{color}</MenuItem>)}
                             </Select>
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <TextField
-                            fullWidth
-                            label="Engine capacity(cm³)"
-                            name="cm3"
-                            type="number"
-                            value={carData.cm3}
-                            onChange={handleChange}
-                        />
+                         <TextField fullWidth label="Number of doors" name="numberOfDoors" type="number" value={carData.numberOfDoors} onChange={handleChange} />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <TextField
-                            fullWidth
-                            label="Engine displacement(hp)"
-                            name="hp"
-                            type="number"
-                            value={carData.hp}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth sx={{}}>
-                            <InputLabel>Fuel Type</InputLabel>
-                            <Select
-                                fullWidth
-                                label="Fuel Type"
-                                name="fuelType"
-                                value={carData.fuelType}
-                                onChange={handleChange}
-                            >   
-                                <MenuItem value="">Choose</MenuItem>
-                                <MenuItem value="PETROL">Petrol</MenuItem>
-                                <MenuItem value="DIESEL">Diesel</MenuItem>
-                                <MenuItem value="GPL">GPL</MenuItem>
-                                <MenuItem value="HYBRID">Hybrid</MenuItem>
-                                <MenuItem value="ELECTRIC">Electric</MenuItem>
-                                
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth sx={{}}>
-                            <InputLabel>Gearbox</InputLabel>
-                            <Select
-                                fullWidth
-                                label="Gearbox"
-                                name="transmission"
-                                value={carData.transmission}
-                                onChange={handleChange}
-                            >   
-                                <MenuItem value="">Choose</MenuItem>
-                                <MenuItem value="MANUAL">Manual</MenuItem>
-                                <MenuItem value="AUTOMATIC">Automatic</MenuItem>
-                                
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth sx={{}}>
+                        <FormControl fullWidth>
                             <InputLabel>Steeringwheel</InputLabel>
-                            <Select
-                                fullWidth
-                                label="Steeringwheel"
-                                name="steeringwheel"
-                                value={carData.steeringwheel}
-                                onChange={handleChange}
-                            >   
-                                <MenuItem value="">Choose</MenuItem>
+                            <Select label="Steeringwheel" name="steeringwheel" value={carData.steeringwheel} onChange={handleChange}>   
                                 <MenuItem value="LEFT">Left Side</MenuItem>
                                 <MenuItem value="RIGHT">Right Side</MenuItem>
-                                
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    {/* --- 4. ENGINE & PERFORMANCE --- */}
+                    <SectionHeader title="4. Engine & Performance" />
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField fullWidth label="Engine capacity(cm³)" name="cm3" type="number" value={carData.cm3} onChange={handleChange} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField fullWidth label="Engine displacement(hp)" name="hp" type="number" value={carData.hp} onChange={handleChange} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth>
+                            <InputLabel>Fuel Type</InputLabel>
+                            <Select label="Fuel Type" name="fuelType" value={carData.fuelType} onChange={handleChange}>   
+                                <MenuItem value="DIESEL">Diesel</MenuItem>
+                                <MenuItem value="PETROL">Petrol</MenuItem>
+                                <MenuItem value="HYBRID">Hybrid</MenuItem>
+                                <MenuItem value="ELECTRIC">Electric</MenuItem>
+                                <MenuItem value="GPL">GPL</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <TextField
-                            fullWidth
-                            label="Number of doors"
-                            name="numberOfDoors"
-                            type="number"
-                            value={carData.numberOfDoors}
-                            onChange={handleChange}
-                        />
+                        <FormControl fullWidth>
+                            <InputLabel>Pollution Standard</InputLabel>
+                            <Select label="Pollution Standard" name="pollutionStandard" value={carData.pollutionStandard} onChange={handleChange}>   
+                                {pollutionStandards.map((std) => <MenuItem key={std} value={std}>{std}</MenuItem>)}
+                            </Select>
+                        </FormControl>
                     </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth>
+                            <InputLabel>Gearbox</InputLabel>
+                            <Select label="Gearbox" name="transmission" value={carData.transmission} onChange={handleChange}>   
+                                <MenuItem value="MANUAL">Manual</MenuItem>
+                                <MenuItem value="AUTOMATIC">Automatic</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                         <FormControl fullWidth>
+                            <InputLabel>Drive Type</InputLabel>
+                            <Select label="Drive Type" name="driveType" value={carData.driveType} onChange={handleChange}>   
+                                {driveTypes.map((dt) => <MenuItem key={dt} value={dt}>{dt}</MenuItem>)}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    {/* --- 5. LOCATION --- */}
+                    <SectionHeader title="5. Location" />
+
+                    <Grid item xs={12} sm={6}>
+                        <TextField fullWidth label="City" name="city" value={carData.city} onChange={handleChange} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField fullWidth label="County" name="county" value={carData.county} onChange={handleChange} />
+                    </Grid>
+
+                    {/* --- 6. FEATURES --- */}
+                    <SectionHeader title="6. Features & Options" />
+
+                    <Grid item xs={12}>
+                        <Box sx={{ border: '1px solid gray', borderRadius: '5px', padding: '10px' }}>
+                            <Typography variant="h6" gutterBottom>Select Features</Typography>
+                            <FormGroup row>
+                                {availableFeatures.map((feature) => (
+                                    <FormControlLabel
+                                        key={feature}
+                                        control={
+                                            <Checkbox 
+                                                checked={carData.features.includes(feature)} 
+                                                onChange={() => handleFeatureChange(feature)} 
+                                                name={feature}
+                                                sx={{color: 'gray', '&.Mui-checked': {color: 'red'}}}
+                                            />
+                                        }
+                                        label={feature}
+                                        sx={{ width: { xs: '100%', sm: '45%', md: '30%' } }} 
+                                    />
+                                ))}
+                            </FormGroup>
+                        </Box>
+                    </Grid>
+
+                    {/* --- 7. DESCRIPTION (Stil Original) --- */}
+                    <SectionHeader title="7. Description" />
+
                     <Grid item xs={12}>
                         <TextareaAutosize
                             minRows={3}
@@ -436,6 +437,10 @@ const PostACar = ({ userData, setUserData }) => {
                             style={{ width: '90%', minHeight: '100px' , backgroundColor: 'hsla(0, 0%, 7%, 0.658)' , color: 'white'}}
                         />
                     </Grid>
+
+                    {/* --- 8. IMAGES (Stil Original) --- */}
+                    <SectionHeader title="8. Photos" />
+
                     <Grid item xs={12}>
                         <Button variant="outlined" component="label">
                             Upload Images
@@ -444,7 +449,7 @@ const PostACar = ({ userData, setUserData }) => {
                     </Grid>
                     <Grid 
                         container
-                        spacing={2} // Spațiu între elemente
+                        spacing={2} 
                         sx={{
                             backgroundColor: 'hsl(0, 2%, 12%)',
                             maxWidth: '80%',
@@ -453,7 +458,7 @@ const PostACar = ({ userData, setUserData }) => {
                             padding: '5px',
                             border: '2px solid black',
                         }}
-                        >
+                    >
                         {images.length > 0 ? 
                         images.map((image, index) => (
                             <Grid 
@@ -488,17 +493,17 @@ const PostACar = ({ userData, setUserData }) => {
                         </Box>}
                     </Grid>
 
-
                 </Grid>
+                
                 <Button
                     variant="contained"
                     color="primary"
                     onClick={handleSubmit}
-                    // disabled={!agreed || errors || descError}
                     style={{ marginTop: '20px' }}
                 >
                     Submit
                 </Button>
+
                 {errors &&
                 <Box>
                     <span className="error"><i className="fas fa-times" style={{ color: "red" }}></i><i> {errors}</i></span>

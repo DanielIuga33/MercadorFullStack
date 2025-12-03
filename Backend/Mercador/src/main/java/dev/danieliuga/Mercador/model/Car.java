@@ -12,6 +12,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -66,8 +67,6 @@ public class Car {
     @NotNull(message = "Condition is mandatory")
     private Condition condition;
 
-    private LocalDate registrationDate;
-
     private String description;
 
     private String steeringwheel;
@@ -76,6 +75,30 @@ public class Car {
 
     // O listă de imagini asociate cu mașina, sub formă de URL-uri
     private List<String> images;
+
+    @NotBlank(message = "City is mandatory")
+    private String city;
+
+    @NotBlank(message = "County is mandatory")
+    private String county;
+
+    // 2. Detalii Tehnice Extra
+    @NotBlank(message = "Pollution standard is mandatory")
+    private String pollutionStandard; // Euro 6, Euro 5...
+
+    private String driveType; // FWD, RWD, AWD
+
+    // 3. Detalii Vânzare
+    private boolean negotiable; // Preț negociabil
+    private boolean exchange;   // Acceptă schimburi
+
+    // 4. Dotări (pentru filtrare avansată)
+    private List<String> features;
+
+    private LocalDateTime createdAt = LocalDateTime.now(); // Inițializat automat
+    private boolean active = true; // Implicit activ la creare
+    private boolean sold = false;
+    private int views = 0;
 
     // Enum-uri pentru valori limitate
     public enum FuelType {

@@ -25,10 +25,18 @@ public class CarMapper {
                 car.getTransmission().name(),
                 car.getCondition().name(),
                 car.getSteeringwheel(),
-                car.getRegistrationDate(),
                 car.getMileage(),
                 car.getNumberOfDoors(),
-                car.getImages().get(0)
+                car.getImages().getFirst(),
+                car.getCity(),
+                car.getCounty(),
+                car.getPollutionStandard(),
+                car.getDriveType(),
+                car.isNegotiable(),
+                car.isExchange(),
+                car.getFeatures(),
+                car.getCreatedAt(),
+                car.getViews()
         );
     }
 }
