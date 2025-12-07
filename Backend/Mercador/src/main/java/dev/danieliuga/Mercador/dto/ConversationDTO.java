@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data // Generează automat getter și setter pentru toate câmpurile
@@ -16,5 +17,6 @@ public class ConversationDTO {
     private String id;
     private String user1;
     private String user2;
-    private List<Message> messages;
+    private List<MessageDTO> messages;
+    private LocalDateTime createdAt;
 }

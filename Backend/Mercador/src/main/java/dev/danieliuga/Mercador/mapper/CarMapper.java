@@ -27,7 +27,7 @@ public class CarMapper {
                 car.getSteeringwheel(),
                 car.getMileage(),
                 car.getNumberOfDoors(),
-                car.getImages().getFirst(),
+                car.getImages().get(0),
                 car.getCity(),
                 car.getCounty(),
                 car.getPollutionStandard(),

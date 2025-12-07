@@ -114,8 +114,11 @@ public class ConversationService {
     }
 
     public Boolean hasUnreadMessages(ConversationDTO conversation, ObjectId idUser){
-        for (Message message : conversation.getMessages()){
-            if (!message.isRead() && message.getReceiver().equals(idUser)){
+        if (conversation.getMessages() == null){
+            return false;
+        }
+        for (MessageDTO message : conversation.getMessages()){
+            if (!message.isRead() && message.getReceiver().equals(idUser.toHexString())){
                 return true;
             }
         }
@@ -123,6 +126,9 @@ public class ConversationService {
     }
     public List<MessageDTO> getMessagesFromAConversation(ObjectId id){
         List<MessageDTO> result = new ArrayList<>();
+        if (findConversationById(id) == null || findConversationById(id).getMessages() == null){
+            return result;
+        }
         for (Message message : findConversationById(id).getMessages()){
             result.add(messageMapper.convertToMessageDTO(message));
         }

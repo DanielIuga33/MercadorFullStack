@@ -266,12 +266,12 @@ const CarDetails = ({userData, carDataId}) => {
                     <h4>Price Details</h4>
                     <div className='bar'></div>
                     <div style={gridRowStyle}>
-                        <span style={{color: '#aaa'}}>Price in RON (approx)</span>
-                        <span>{Math.floor(car.price * (car.currency === "€" ? 4.97 : 1))} RON</span>
+                        <span style={{color: '#aaa', marginLeft: '2%'}}>Price in RON (approx)</span>
+                        <span style={{marginRight: '2%'}}>{Math.floor(car.price * (car.currency === "€" ? 4.97 : 1))} RON</span>
                     </div>
                     <div style={gridRowStyle}>
-                        <span style={{color: '#aaa'}}>Negotiable</span>
-                        <span style={{color: car.negotiable ? '#4caf50' : 'white'}}>{car.negotiable ? "Yes" : "No"}</span>
+                        <span style={{color: '#aaa', marginLeft: '2%'}}>Negotiable</span>
+                        <span style={{color: car.negotiable ? '#4caf50' : 'white', marginRight: '2%'}}>{car.negotiable ? "Yes" : "No"}</span>
                     </div>
                 </div>
 
@@ -288,27 +288,39 @@ const CarDetails = ({userData, carDataId}) => {
                     }}>
                         {/* Coloana Stânga */}
                         <div style={{display: 'flex', flexDirection: 'column'}}>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}>Brand</span><span>{car.brand}</span></div>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}>Model</span><span>{car.model}</span></div>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}><CalendarToday sx={iconStyle}/>Year</span><span>{car.year}</span></div>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}><Speed sx={iconStyle}/>Mileage</span><span>{car.mileage} km</span></div>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}><Engineering sx={iconStyle}/>Power</span><span>{car.hp} CP</span></div>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}><Settings sx={iconStyle}/>Engine</span><span>{car.cm3} cm³</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}>Brand</span>
+                            <span style={{marginRight: '2%'}}>{car.brand}</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}>Model</span>
+                            <span style={{marginRight: '2%'}}>{car.model}</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}><CalendarToday sx={iconStyle}/>Year</span>
+                            <span style={{marginRight: '2%'}}>{car.year}</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}><Speed sx={iconStyle}/>Mileage</span>
+                            <span style={{marginRight: '2%'}}>{car.mileage} km</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}><Engineering sx={iconStyle}/>Power</span>
+                            <span style={{marginRight: '2%'}}>{car.hp} CP</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}><Settings sx={iconStyle}/>Engine</span>
+                            <span style={{marginRight: '2%'}}>{car.cm3} cm³</span></div>
                         </div>
 
                         {/* Coloana Dreapta */}
                         <div style={{display: 'flex', flexDirection: 'column'}}>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}><LocalGasStation sx={iconStyle}/>Fuel</span><span>{car.fuelType}</span></div>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}><Settings sx={iconStyle}/>Transm.</span><span>{car.transmission}</span></div>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}>Pollution</span><span>{car.pollutionStandard || '-'}</span></div>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}>Drive</span><span>{car.driveType || '-'}</span></div>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}><Palette sx={iconStyle}/>Color</span><span>{car.color}</span></div>
-                            <div style={gridRowStyle}><span style={{color: '#aaa'}}><VpnKey sx={iconStyle}/>Doors</span><span>{car.numberOfDoors}</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}><LocalGasStation sx={iconStyle}/>Fuel</span>
+                            <span style={{marginRight: '2%'}}>{car.fuelType}</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}><Settings sx={iconStyle}/>Transm.</span>
+                            <span style={{marginRight: '2%'}}>{car.transmission}</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}>Pollution</span>
+                            <span  style={{marginRight: '2%'}}>{car.pollutionStandard || '-'}</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}>Drive</span>
+                            <span  style={{marginRight: '2%'}}>{car.driveType || '-'}</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}><Palette sx={iconStyle}/>Color</span>
+                            <span  style={{marginRight: '2%'}}>{car.color}</span></div>
+                            <div style={gridRowStyle}><span style={{color: '#aaa', marginLeft: '1%'}}><VpnKey sx={iconStyle}/>Doors</span>
+                            <span  style={{marginRight: '2%'}}>{car.numberOfDoors}</span></div>
                         </div>
                     </div>
                     
-                    <div style={{...gridRowStyle, marginTop: '10px'}}>
-                        <span style={{color: '#aaa'}}>VIN</span>
+                    <div style={{marginTop: '10px', justifyContent: 'center', display: 'flex'}}>
+                        <span style={{color: '#aaa', marginRight: '1%'}}>VIN: </span>
                         <span style={{fontFamily: 'monospace', letterSpacing: '1px'}}>{car.vin || 'N/A'}</span>
                     </div>
                 </div>

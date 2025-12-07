@@ -7,7 +7,10 @@ import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Component
 public class MessageMapper {
@@ -27,5 +30,15 @@ public class MessageMapper {
                 formattedTime,
                 mess.isRead()
         );
+    }
+
+    public List<MessageDTO> convertListToMessageDTO(List<Message> messages) {
+        if (messages == null) {
+            return new ArrayList<>(); // Protecție anti-crash dacă lista e null
+        }
+
+        return messages.stream()
+                .map(this::convertToMessageDTO) // Apelează funcția ta pentru fiecare element
+                .collect(Collectors.toList());  // Adună rezultatele într-o listă nouă
     }
 }

@@ -41,9 +41,20 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
         try {
             const response = await axios.get(`${API_URL}/conversations/${userData.id}`);
             const convData = response.data || [];
-            
+            const sortedConvData = [...convData].sort((a, b) => {
+                //console.log(b);
+                const lastMsgA = a.messages?.at(-1);
+                const lastMsgB = b.messages?.at(-1);
+
+                // Transformăm String-ul în număr (milisecunde) folosind new Date().getTime()
+                // Dacă nu există mesaj, folosim valoarea 0 (pentru a le pune la coadă)
+                const timeA = lastMsgA?.timestamp ? new Date(lastMsgA.timestamp).getTime() : new Date(a.createdAt).getTime();
+                const timeB = lastMsgB?.timestamp ? new Date(lastMsgB.timestamp).getTime() : 0;
+                // Acum scădem două numere, ceea ce funcționează perfect
+                return timeB - timeA;
+            });
             // Actualizăm conversațiile
-            setConversations(convData);
+            setConversations(sortedConvData);
 
             // Actualizăm userii (opțional, poți pune un if să nu facă request mereu dacă ai deja userii)
             const usersMap = {};
@@ -69,7 +80,6 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
         }
     }, []);
 
-    // 3. TIMERUL (Interval de 5 secunde)
     useEffect(() => {
         // Rulăm o dată imediat la început
         fetchConversations();
@@ -236,7 +246,11 @@ const ConversationTab = ({ userData, unreadMessages, setUnreadMessages }) => {
                                 <Typography sx={{ color: "#fff", marginLeft: "2%" }}>
                                     {otherUser ? otherUser.username : "Loading..."}
                                 </Typography>
-                                <Typography sx={{ color: "gray", marginLeft: "2%" }}>
+                                <Typography sx= {{
+                                    fontWeight: conversation.messages?.at(-1).receiver === userData.id && conversation.messages?.at(-1).read === false ? "540" : "400",
+                                    color: conversation.messages?.at(-1).receiver === userData.id && conversation.messages?.at(-1).read === false ? "hsla(0, 2%, 82%, 1.00)" : 'gray',
+                                    marginLeft: "2%" 
+                                }}>
                                     {conversation.messages &&
                                         (conversation.messages[conversation.messages.length - 1]?.message.length < 20 ?
                                           conversation.messages[conversation.messages.length - 1]?.message  :
