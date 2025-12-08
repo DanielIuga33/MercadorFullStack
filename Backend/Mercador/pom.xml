@@ -82,6 +82,20 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>jakarta.annotation</groupId>
+			<artifactId>jakarta.annotation-api</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+			<dependency>
+				<groupId>org.jgap</groupId>
+				<artifactId>jgap</artifactId>
+				<version>3.6.2</version>
+				<scope>system</scope>
+				<systemPath>${project.basedir}/src/main/java/dev/danieliuga/Mercador/ai/fuzzy/jgap.jar</systemPath>
+			</dependency>
+
+
 	</dependencies>
 
 	<build>
@@ -100,5 +114,12 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>local-fuzzylogic-repo</id>
+			<url>file://${project.basedir}/.lib-repo</url>
+		</repository>
+	</repositories>
 
 </project>
