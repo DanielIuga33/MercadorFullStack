@@ -87,14 +87,18 @@
 			<artifactId>jakarta.annotation-api</artifactId>
 			<version>2.1.1</version>
 		</dependency>
-			<dependency>
-				<groupId>org.jgap</groupId>
-				<artifactId>jgap</artifactId>
-				<version>3.6.2</version>
-				<scope>system</scope>
-				<systemPath>${project.basedir}/src/main/java/dev/danieliuga/Mercador/ai/fuzzy/jgap.jar</systemPath>
-			</dependency>
-
+		<dependency>
+			<groupId>org.jgap</groupId>
+			<artifactId>jgap</artifactId>
+			<version>3.6.2</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/java/dev/danieliuga/Mercador/ai/fuzzy/jgap.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>core</groupId>
+			<artifactId>fuzzypetrilogic</artifactId>
+			<version>1.0</version>
+		</dependency>
 
 	</dependencies>
 

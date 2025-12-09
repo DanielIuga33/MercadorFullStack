@@ -30,11 +30,9 @@ public class FuzzyRuleOptimizer {
 
     @PostConstruct
     public void optimizeRulesAtStartup() {
-        System.out.println("--- Starting Genetic Algorithm Optimization ---");
         try {
             List<Car> trainingData = carRepository.findAll();
             if (trainingData.isEmpty()) {
-                System.out.println("Skipping GA: No training data found. Using default/fallback rules.");
                 return;
             }
 
@@ -53,7 +51,7 @@ public class FuzzyRuleOptimizer {
             conf.setSampleChromosome(sampleChromosome);
 
             // Rularea Evoluției
-            Genotype population = Genotype.gcreate(conf);
+            Genotype population = Genotype.randomInitialGenotype(conf);
             for (int i = 0; i < NUM_GENERATIONS; i++) {
                 population.evolve();
             }
@@ -61,8 +59,6 @@ public class FuzzyRuleOptimizer {
             // Salvarea celui mai bun rezultat
             IChromosome bestChromosome = population.getFittestChromosome();
             this.bestFuzzyRules = convertChromosomeToRules(bestChromosome);
-
-            System.out.println("--- Optimization Finished. Best Rules saved. ---");
         } catch (Exception e) {
             System.err.println("GA Optimization Failed.");
             e.printStackTrace();

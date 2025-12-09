@@ -19,6 +19,11 @@
     <remote-repository>
       <option name="id" value="local-fuzzylogic-repo" />
       <option name="name" value="local-fuzzylogic-repo" />
+      <option name="url" value="file://D:\Programare\GithubProjects\MercadorFullStack\Backend\Mercador/.lib-repo" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="local-fuzzylogic-repo" />
+      <option name="name" value="local-fuzzylogic-repo" />
       <option name="url" value="file://D:\Programare\GithubProjects\MercadorFullStack\Backend\Mercador/repo" />
     </remote-repository>
   </component>

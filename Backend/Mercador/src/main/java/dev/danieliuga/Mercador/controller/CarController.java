@@ -86,10 +86,10 @@ public class CarController {
         return new ResponseEntity<>(savedCar, HttpStatus.CREATED);
     }
 
-    @PostMapping("/estimatePrice")
+        @PostMapping("/estimatePrice")
     public ResponseEntity<Double> estimateCarPrice(@RequestBody PriceEstimationDTO dto) {
         try {
-            double estimatedPrice = priceEstimationService.estimatePrice(dto);
+            double estimatedPrice = priceEstimationService.predictCarPrice(dto);
             return new ResponseEntity<>(estimatedPrice, HttpStatus.OK);
         } catch (Exception e) {
             System.err.println("Error estimating price: " + e.getMessage());

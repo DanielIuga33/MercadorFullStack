@@ -43,6 +43,8 @@ const SectionHeader = ({ title }) => (
 const PostACar = ({ userData, setUserData }) => {
     const MAX_IMAGES = 9;
     const navigate = useNavigate();
+    
+    // --- STATE-URI ---
     const [selectedBrand, setSelectedBrand] = useState('');
     const [filteredModels, setFilteredModels] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -50,6 +52,11 @@ const PostACar = ({ userData, setUserData }) => {
     const [images, setImages] = useState([]);
     const [errors, setErrors] = useState('');
     const [descError, setDescError] = useState('');
+    
+    // State pentru Predictia Pretului
+    const [estimatedPrice, setEstimatedPrice] = useState(null);
+    const [isPredicting, setIsPredicting] = useState(false);
+
     const titleRef = useRef();
     const descriptionRef = useRef();
 
@@ -89,7 +96,7 @@ const PostACar = ({ userData, setUserData }) => {
 
     const verifyDescription =() => {
         if (carData.description.length < 40 && carData.description.length > 0) {
-            setDescError('Description is too short (min 40 chars)!');          
+            setDescError('Description is too short (min 40 chars)!');           
         } else if (carData.description.length === 0){
             setDescError('You need to complete the description !');
         } else {
@@ -111,6 +118,40 @@ const PostACar = ({ userData, setUserData }) => {
             setCarData((c) => ({ ...c, vin: carVin }));
         }
     }, [carData.vin]);
+
+    // --- FUNCȚIA DE PREDICȚIE PREȚ ---
+    const handlePredictPrice = async () => {
+        if (!carData.brand || !carData.model || !carData.year || !carData.mileage) {
+            alert("To estimate the price, please select at least: Brand, Model, Year, and Mileage.");
+            return;
+        }
+
+        setIsPredicting(true);
+        setEstimatedPrice(null);
+
+        try {
+            const predictionPayload = {
+                brand: carData.brand,
+                model: carData.model,
+                year: parseInt(carData.year),
+                mileage: parseInt(carData.mileage),
+                features: carData.features,
+                hp: carData.hp ? parseInt(carData.hp) : 0,
+                fuelType: carData.fuelType,
+                transmission: carData.transmission
+            };
+
+            const response = await axios.post(`${API_URL}/cars/estimatePrice`, predictionPayload);
+            const predictedValue = Math.round(response.data);
+            setEstimatedPrice(predictedValue);
+
+        } catch (error) {
+            console.error("Error predicting price:", error);
+            alert("Could not estimate price. Make sure the backend is running and the endpoint exists.");
+        } finally {
+            setIsPredicting(false);
+        }
+    };
 
     const handleImageUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -200,7 +241,6 @@ const PostACar = ({ userData, setUserData }) => {
                 boxShadow: '10px 20px 200px  rgb(243, 0, 0), 10px 10px 5px 8px rgb(31, 31, 31)',
             }}>
                 
-                {/* --- AICI ESTE TITLUL STILIZAT PE CARE L-AI CERUT --- */}
                 <Typography 
                     variant='h3' 
                     sx={{
@@ -275,35 +315,8 @@ const PostACar = ({ userData, setUserData }) => {
                         <TextField fullWidth label="VIN" name="vin" value={carData.vin} onChange={handleChange} />
                     </Grid>
 
-                    {/* --- 2. PRICE & DEAL --- */}
-                    <SectionHeader title="2. Price & Deal" />
-
-                    <Grid item xs={12} sm={4}>
-                        <TextField fullWidth label="Price" name="price" type="number" value={carData.price} onChange={handleChange} />
-                    </Grid>
-                    <Grid item xs={12} sm={2}>
-                        <FormControl fullWidth>
-                            <InputLabel>Currency</InputLabel>
-                            <Select label="Currency" name="currency" value={carData.currency} onChange={handleChange}>   
-                                <MenuItem value="€">€</MenuItem>
-                                <MenuItem value="Ron">Ron</MenuItem>
-                                <MenuItem value="£">£</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6} sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
-                         <FormControlLabel 
-                            control={<Checkbox checked={carData.negotiable} onChange={handleCheckboxChange} name="negotiable" sx={{color: 'gray', '&.Mui-checked': {color: 'green'}}} />} 
-                            label="Negotiable" 
-                        />
-                        <FormControlLabel 
-                            control={<Checkbox checked={carData.exchange} onChange={handleCheckboxChange} name="exchange" sx={{color: 'gray', '&.Mui-checked': {color: 'blue'}}} />} 
-                            label="Accept Exchange" 
-                        />
-                    </Grid>
-
-                    {/* --- 3. SPECIFICATIONS --- */}
-                    <SectionHeader title="3. Specifications" />
+                    {/* --- 2. SPECIFICATIONS (Fosta sectiune 3) --- */}
+                    <SectionHeader title="2. Specifications" />
 
                     <Grid item xs={12} sm={6}>
                         <TextField fullWidth label="Year" name="year" type="number" value={carData.year} onChange={handleChange} />
@@ -342,8 +355,8 @@ const PostACar = ({ userData, setUserData }) => {
                         </FormControl>
                     </Grid>
 
-                    {/* --- 4. ENGINE & PERFORMANCE --- */}
-                    <SectionHeader title="4. Engine & Performance" />
+                    {/* --- 3. ENGINE & PERFORMANCE (Fosta sectiune 4) --- */}
+                    <SectionHeader title="3. Engine & Performance" />
 
                     <Grid item xs={12} sm={6}>
                         <TextField fullWidth label="Engine capacity(cm³)" name="cm3" type="number" value={carData.cm3} onChange={handleChange} />
@@ -389,8 +402,8 @@ const PostACar = ({ userData, setUserData }) => {
                         </FormControl>
                     </Grid>
 
-                    {/* --- 5. LOCATION --- */}
-                    <SectionHeader title="5. Location" />
+                    {/* --- 4. LOCATION (Fosta sectiune 5) --- */}
+                    <SectionHeader title="4. Location" />
 
                     <Grid item xs={12} sm={6}>
                         <TextField fullWidth label="City" name="city" value={carData.city} onChange={handleChange} />
@@ -399,8 +412,8 @@ const PostACar = ({ userData, setUserData }) => {
                         <TextField fullWidth label="County" name="county" value={carData.county} onChange={handleChange} />
                     </Grid>
 
-                    {/* --- 6. FEATURES --- */}
-                    <SectionHeader title="6. Features & Options" />
+                    {/* --- 5. FEATURES (Fosta sectiune 6) --- */}
+                    <SectionHeader title="5. Features & Options" />
 
                     <Grid item xs={12}>
                         <Box sx={{ border: '1px solid gray', borderRadius: '5px', padding: '10px' }}>
@@ -425,8 +438,8 @@ const PostACar = ({ userData, setUserData }) => {
                         </Box>
                     </Grid>
 
-                    {/* --- 7. DESCRIPTION (Stil Original) --- */}
-                    <SectionHeader title="7. Description" />
+                    {/* --- 6. DESCRIPTION (Fosta sectiune 7) --- */}
+                    <SectionHeader title="6. Description" />
 
                     <Grid item xs={12}>
                         <TextareaAutosize
@@ -438,8 +451,8 @@ const PostACar = ({ userData, setUserData }) => {
                         />
                     </Grid>
 
-                    {/* --- 8. IMAGES (Stil Original) --- */}
-                    <SectionHeader title="8. Photos" />
+                    {/* --- 7. IMAGES (Fosta sectiune 8) --- */}
+                    <SectionHeader title="7. Photos" />
 
                     <Grid item xs={12}>
                         <Button variant="outlined" component="label">
@@ -493,13 +506,77 @@ const PostACar = ({ userData, setUserData }) => {
                         </Box>}
                     </Grid>
 
+                    {/* --- 8. PRICE & DEAL (AICI AI VRUT SĂ FIE) --- */}
+                    <SectionHeader title="8. Price & Deal" />
+
+                    <Grid item xs={12} sm={4}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                            <TextField 
+                                fullWidth 
+                                label="Price" 
+                                name="price" 
+                                type="number" 
+                                value={carData.price} 
+                                onChange={handleChange} 
+                            />
+                            
+                            {/* Butonul de Estimare */}
+                            <Button 
+                                variant="outlined" 
+                                size="small"
+                                onClick={handlePredictPrice}
+                                disabled={isPredicting}
+                                sx={{ color: '#90caf9', borderColor: '#90caf9', textTransform: 'none' }}
+                            >
+                                {isPredicting ? <CircularProgress size={20} color="inherit" /> : "Check Recommended Price (AI)"}
+                            </Button>
+
+                            {/* Afișarea rezultatului */}
+                            {estimatedPrice && (
+                                <Box sx={{ backgroundColor: 'rgba(0, 128, 0, 0.1)', border: '1px solid green', borderRadius: 1, p: 1, mt: 1 }}>
+                                    <Typography variant="body2" sx={{ color: '#66bb6a', fontWeight: 'bold' }}>
+                                        AI Estimate: {estimatedPrice} {carData.currency || '€'}
+                                    </Typography>
+                                    <Button 
+                                        size="small" 
+                                        sx={{ color: 'white', fontSize: '0.7rem' }}
+                                        onClick={() => setCarData({...carData, price: estimatedPrice})}
+                                    >
+                                        Use this price
+                                    </Button>
+                                </Box>
+                            )}
+                        </Box>
+                    </Grid>
+
+                    <Grid item xs={12} sm={2}>
+                        <FormControl fullWidth>
+                            <InputLabel>Currency</InputLabel>
+                            <Select label="Currency" name="currency" value={carData.currency} onChange={handleChange}>   
+                                <MenuItem value="€">€</MenuItem>
+                                <MenuItem value="Ron">Ron</MenuItem>
+                                <MenuItem value="£">£</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6} sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+                         <FormControlLabel 
+                            control={<Checkbox checked={carData.negotiable} onChange={handleCheckboxChange} name="negotiable" sx={{color: 'gray', '&.Mui-checked': {color: 'green'}}} />} 
+                            label="Negotiable" 
+                        />
+                        <FormControlLabel 
+                            control={<Checkbox checked={carData.exchange} onChange={handleCheckboxChange} name="exchange" sx={{color: 'gray', '&.Mui-checked': {color: 'blue'}}} />} 
+                            label="Accept Exchange" 
+                        />
+                    </Grid>
+
                 </Grid>
                 
                 <Button
                     variant="contained"
                     color="primary"
                     onClick={handleSubmit}
-                    style={{ marginTop: '20px' }}
+                    style={{ marginTop: '70px' }}
                 >
                     Submit
                 </Button>
