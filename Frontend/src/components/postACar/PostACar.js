@@ -119,8 +119,9 @@ const PostACar = ({ userData, setUserData }) => {
         }
     }, [carData.vin]);
 
-    // --- FUNCȚIA DE PREDICȚIE PREȚ ---
+    // --- FUNCȚIA DE PREDICȚIE PREȚ (MODIFICATĂ) ---
     const handlePredictPrice = async () => {
+        // Validare de bază
         if (!carData.brand || !carData.model || !carData.year || !carData.mileage) {
             alert("To estimate the price, please select at least: Brand, Model, Year, and Mileage.");
             return;
@@ -130,15 +131,20 @@ const PostACar = ({ userData, setUserData }) => {
         setEstimatedPrice(null);
 
         try {
+            // Construim obiectul complet pentru DTO-ul Java
             const predictionPayload = {
                 brand: carData.brand,
                 model: carData.model,
                 year: parseInt(carData.year),
                 mileage: parseInt(carData.mileage),
                 features: carData.features,
+                // Trimitem și specificațiile tehnice (convertim la int unde trebuie)
                 hp: carData.hp ? parseInt(carData.hp) : 0,
+                cm3: carData.cm3 ? parseInt(carData.cm3) : 0, // <--- NOU
                 fuelType: carData.fuelType,
-                transmission: carData.transmission
+                transmission: carData.transmission,
+                pollutionStandard: carData.pollutionStandard, // <--- NOU
+                driveType: carData.driveType // <--- NOU (Opțional)
             };
 
             const response = await axios.post(`${API_URL}/cars/estimatePrice`, predictionPayload);
@@ -315,7 +321,7 @@ const PostACar = ({ userData, setUserData }) => {
                         <TextField fullWidth label="VIN" name="vin" value={carData.vin} onChange={handleChange} />
                     </Grid>
 
-                    {/* --- 2. SPECIFICATIONS (Fosta sectiune 3) --- */}
+                    {/* --- 2. SPECIFICATIONS --- */}
                     <SectionHeader title="2. Specifications" />
 
                     <Grid item xs={12} sm={6}>
@@ -355,7 +361,7 @@ const PostACar = ({ userData, setUserData }) => {
                         </FormControl>
                     </Grid>
 
-                    {/* --- 3. ENGINE & PERFORMANCE (Fosta sectiune 4) --- */}
+                    {/* --- 3. ENGINE & PERFORMANCE --- */}
                     <SectionHeader title="3. Engine & Performance" />
 
                     <Grid item xs={12} sm={6}>
@@ -402,7 +408,7 @@ const PostACar = ({ userData, setUserData }) => {
                         </FormControl>
                     </Grid>
 
-                    {/* --- 4. LOCATION (Fosta sectiune 5) --- */}
+                    {/* --- 4. LOCATION --- */}
                     <SectionHeader title="4. Location" />
 
                     <Grid item xs={12} sm={6}>
@@ -412,7 +418,7 @@ const PostACar = ({ userData, setUserData }) => {
                         <TextField fullWidth label="County" name="county" value={carData.county} onChange={handleChange} />
                     </Grid>
 
-                    {/* --- 5. FEATURES (Fosta sectiune 6) --- */}
+                    {/* --- 5. FEATURES --- */}
                     <SectionHeader title="5. Features & Options" />
 
                     <Grid item xs={12}>
@@ -438,7 +444,7 @@ const PostACar = ({ userData, setUserData }) => {
                         </Box>
                     </Grid>
 
-                    {/* --- 6. DESCRIPTION (Fosta sectiune 7) --- */}
+                    {/* --- 6. DESCRIPTION --- */}
                     <SectionHeader title="6. Description" />
 
                     <Grid item xs={12}>
@@ -451,7 +457,7 @@ const PostACar = ({ userData, setUserData }) => {
                         />
                     </Grid>
 
-                    {/* --- 7. IMAGES (Fosta sectiune 8) --- */}
+                    {/* --- 7. IMAGES --- */}
                     <SectionHeader title="7. Photos" />
 
                     <Grid item xs={12}>
@@ -506,7 +512,7 @@ const PostACar = ({ userData, setUserData }) => {
                         </Box>}
                     </Grid>
 
-                    {/* --- 8. PRICE & DEAL (AICI AI VRUT SĂ FIE) --- */}
+                    {/* --- 8. PRICE & DEAL --- */}
                     <SectionHeader title="8. Price & Deal" />
 
                     <Grid item xs={12} sm={4}>

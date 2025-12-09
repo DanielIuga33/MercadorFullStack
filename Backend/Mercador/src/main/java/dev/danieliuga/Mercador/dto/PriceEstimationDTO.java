@@ -15,6 +15,9 @@ public class PriceEstimationDTO {
     private double mileage;
     private int hp;
     private int cm3;
+    private String fuelType;
+    private String transmission;
+    private String pollutionStandard;
+    private String driveType;
     private List<String> features;
-    private double basePrice;
 }

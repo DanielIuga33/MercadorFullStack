@@ -86,7 +86,7 @@ public class CarController {
         return new ResponseEntity<>(savedCar, HttpStatus.CREATED);
     }
 
-        @PostMapping("/estimatePrice")
+    @PostMapping("/estimatePrice")
     public ResponseEntity<Double> estimateCarPrice(@RequestBody PriceEstimationDTO dto) {
         try {
             double estimatedPrice = priceEstimationService.predictCarPrice(dto);

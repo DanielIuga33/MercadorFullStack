@@ -4,6 +4,7 @@ import dev.danieliuga.Mercador.dto.PriceEstimationDTO;
 import dev.danieliuga.Mercador.model.Car;
 import org.jgap.FitnessFunction;
 import org.jgap.IChromosome;
+import java.time.Year;
 import java.util.List;
 
 public class PriceEstimationFitnessFunction extends FitnessFunction {
@@ -11,7 +12,6 @@ public class PriceEstimationFitnessFunction extends FitnessFunction {
     private final List<Car> trainingData;
     private final FuzzyInferenceEngine fuzzyEngine;
 
-    // Constructorul primește datele de antrenament și motorul de inferență
     public PriceEstimationFitnessFunction(List<Car> trainingData, FuzzyInferenceEngine engine) {
         this.trainingData = trainingData;
         this.fuzzyEngine = engine;
@@ -20,36 +20,49 @@ public class PriceEstimationFitnessFunction extends FitnessFunction {
     @Override
     protected double evaluate(IChromosome chr) {
         if (trainingData == null || trainingData.isEmpty()) {
-            return 0.0; // Fitness minim (sau 0.0)
+            return 0.0;
         }
 
         double totalSquaredError = 0;
+
+        // Convertim cromozomul curent în reguli fuzzy
         int[] rules = convertChromosomeToRules(chr);
 
         for (Car car : trainingData) {
-
-            // 1. Pregătește DTO și Prețul Real
+            // 1. Convertim Entitatea Car în DTO
             PriceEstimationDTO dto = createDtoFromCar(car);
-            double realPrice = car.getPrice(); // Prețul real din DB
-            double basePrice = dto.getBasePrice(); // Prețul de bază/mediu
 
-            // 2. Calculează Factorul de Preț prezis
-            double predictedPriceFactor = fuzzyEngine.predictPriceFactor(dto, rules);
+            // 2. Obținem prețul REAL din baza de date (ȚINTA noastră)
+            double realPrice = car.getPrice();
 
-            // 3. Calculează Prețul Prezis: Preț de Bază * Factorul Fuzzy
-            double predictedPrice = basePrice * predictedPriceFactor;
+            // 3. Calculăm un Preț de Bază (Catalog) estimativ
+            // (Asta înlocuiește "dto.get()" care îți dădea eroare)
+            double estimatedBasePrice = calculateMockBasePrice(car.getBrand(), car.getYear());
 
-            // 4. Calculează Eroarea Pătratică (MSE)
+            // 4. Cerem motorului Fuzzy să ne dea factorul de ajustare (ex: 0.8 sau 1.2)
+            // folosind regulile din acest cromozom
+            double predictedFactor = fuzzyEngine.predictPriceFactor(dto, rules);
+
+            // 5. Calculăm prețul final prezis de acest set de reguli
+            double predictedPrice = estimatedBasePrice * predictedFactor;
+
+            // 6. Calculăm cât de mult a greșit algoritmul (Eroarea)
+            // MSE (Mean Squared Error) penalizează greșelile mari
             double error = realPrice - predictedPrice;
             totalSquaredError += (error * error);
         }
 
+        // Calculăm eroarea medie
         double mse = totalSquaredError / trainingData.size();
-        // JGAP MAXIMIZEAZĂ: Returnează inversul MSE pentru a face eroarea mică să însemne fitness mare.
-        return 1.0 / (1.0 + mse);
+
+        // JGAP vrea un fitness MARE pentru soluții bune.
+        // Dacă eroarea (mse) e mică, fitness-ul e mare.
+        // Adăugăm 1.0 la numitor pentru a evita împărțirea la 0.
+        return 1000000.0d / (1.0d + mse);
     }
 
-    // Metodă helper pentru a converti IChromosome în array de int[]
+    // --- METODE AJUTĂTOARE ---
+
     private int[] convertChromosomeToRules(IChromosome chr) {
         int numGenes = chr.size();
         int[] rules = new int[numGenes];
@@ -59,8 +72,11 @@ public class PriceEstimationFitnessFunction extends FitnessFunction {
         return rules;
     }
 
-    // Metodă helper: Creează DTO din Entitatea Car (TREBUIE adaptată la câmpurile tale reale din Car)
+    /**
+     * Construiește DTO-ul complet necesar pentru noul algoritm complex.
+     */
     private PriceEstimationDTO createDtoFromCar(Car car) {
+        // Atenție: Asigură-te că entitatea Car are toate aceste gettere!
         return new PriceEstimationDTO(
                 car.getBrand(),
                 car.getModel(),
@@ -68,8 +84,58 @@ public class PriceEstimationFitnessFunction extends FitnessFunction {
                 car.getMileage(),
                 car.getHp(),
                 car.getCm3(),
-                car.getFeatures(), // Presupune că Car are getFeatures()
-                car.getPrice()  // Presupune că Car are getBasePrice()
+                // Adăugăm câmpurile noi necesare pentru algoritmul actualizat
+                car.getFuelType().toString(),
+                car.getTransmission().toString(),
+                car.getPollutionStandard(),
+                car.getDriveType(),
+                car.getFeatures()
         );
+    }
+
+    /**
+     * Această metodă simulează un preț de catalog.
+     * Algoritmul genetic va învăța să corecteze erorile acestei estimări brute.
+     */
+    private double calculateMockBasePrice(String brand, int year) {
+        double startPrice = 20000; // Valoare default
+
+        if (brand != null) {
+            switch (brand.toUpperCase()) {
+                case "BMW":
+                case "MERCEDES-BENZ":
+                case "AUDI":
+                case "PORSCHE":
+                case "LAND ROVER":
+                    startPrice = 45000;
+                    break;
+                case "VOLKSWAGEN":
+                case "VOLVO":
+                case "TOYOTA":
+                    startPrice = 28000;
+                    break;
+                case "FORD":
+                case "SKODA":
+                case "RENAULT":
+                case "OPEL":
+                    startPrice = 19000;
+                    break;
+                case "DACIA":
+                case "FIAT":
+                    startPrice = 13000;
+                    break;
+            }
+        }
+
+        // Calculăm deprecierea standard (fără a ține cont de KM sau stare, de aia se ocupă Fuzzy)
+        int currentYear = Year.now().getValue();
+        int age = currentYear - year;
+
+        double depreciationRate = 0.12;
+
+        // Scădem maxim 90% din valoare (să nu ajungă la 0)
+        double depreciation = Math.min(age * depreciationRate, 0.90);
+
+        return startPrice * (1.0 - depreciation);
     }
 }

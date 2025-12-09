@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jgap (2)">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Mercador/lib-repo/core/fuzzypetrilogic/jgap.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
