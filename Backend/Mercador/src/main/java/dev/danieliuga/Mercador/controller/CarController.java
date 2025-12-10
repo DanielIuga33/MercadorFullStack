@@ -6,6 +6,7 @@ import dev.danieliuga.Mercador.mapper.CarMapper;
 import dev.danieliuga.Mercador.model.Car;
 import dev.danieliuga.Mercador.service.CarService;
 import dev.danieliuga.Mercador.service.PriceEstimationService;
+import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,18 @@ public class CarController {
         // Returnăm lista de CarDTO într-un ResponseEntity
         return ResponseEntity.ok(carDTOs);
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCar(@PathVariable String id){
+        try {
+            carService.deleteCar(new ObjectId(id));
+            return ResponseEntity.ok().build();
+        } catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 
+//    @PutMapping("/{car}")
+//    public ResponseEntity<Car> updateCar(@)
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Car>> getSingleCar(@PathVariable String id){
         ObjectId objectId = new ObjectId(id);
@@ -49,7 +61,7 @@ public class CarController {
     @GetMapping("/owner/{id}")
     public ResponseEntity<Optional<String>> getOwnerId(@PathVariable String id){
         ObjectId objectId = new ObjectId(id);
-        return new ResponseEntity<Optional<String>>(Optional.of(carService.getIdOwner(objectId).toHexString()), HttpStatus.OK);
+        return new ResponseEntity<>(Optional.of(carService.getIdOwner(objectId).toHexString()), HttpStatus.OK);
     }
 
     @GetMapping("dto/{id}")

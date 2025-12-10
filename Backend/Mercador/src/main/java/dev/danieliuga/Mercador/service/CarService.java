@@ -45,7 +45,7 @@ public class CarService {
 
     public void deleteCar(ObjectId id){carRepository.deleteById(id); }
 
-//    public Car update(Car car, ObjectId id){
-//        return carRepository.
-//    }
+    public Car update(Car car){
+        return carRepository.save(car);
+   }
 }
