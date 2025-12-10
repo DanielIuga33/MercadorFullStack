@@ -150,6 +150,14 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
             >
               Profile
             </MenuItem>,
+             <MenuItem
+              key="post"
+              component={Link}
+              to="/account/postACar"
+              onClick={handleMenuClose}
+            >
+              Sell Your Car
+            </MenuItem>,
             <MenuItem
               key="details"
               component={Link}

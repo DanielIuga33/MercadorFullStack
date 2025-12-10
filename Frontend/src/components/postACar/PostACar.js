@@ -1,20 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import img1 from '../../images/img1.jpeg';
 import { 
-    TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, 
-    TextareaAutosize, CircularProgress, Typography, Box, CardMedia, 
-    FormControlLabel, Checkbox, FormGroup 
+    TextField, Button, Grid, MenuItem, Typography, Box, CardMedia, 
+    FormControlLabel, Checkbox, FormGroup, CircularProgress, 
+    Container, Paper, InputAdornment, IconButton, Collapse, Alert
 } from '@mui/material'; 
+import { 
+    CloudUpload, Delete, AutoFixHigh, CheckCircle, 
+    Title, DirectionsCar, Speed, 
+    LocationOn, FeaturedPlayList, Description, PhotoCamera,
+    AttachMoney
+} from '@mui/icons-material';
 import { brands, modelsByBrand, bodies, colors } from '../ConstantData';
-import './PostACar.css';
 import API_URL from '../..';
 
-// Listele pentru dropdown-uri
+// --- CONSTANTE DE DATE ---
 const pollutionStandards = ["Non-Euro", "Euro 1", "Euro 2", "Euro 3", "Euro 4", "Euro 5", "Euro 6"];
 const driveTypes = ["Front Wheel Drive (FWD)", "Rear Wheel Drive (RWD)", "All Wheel Drive (4x4)"];
-
-// Lista extinsă de dotări
 const availableFeatures = [
     "ABS", "ESP", "Alloy Wheels", "Tow Hook", "Tire Pressure Monitoring",
     "LED Headlights", "Matrix / Laser Headlights", "Fog Lights", 
@@ -31,15 +35,86 @@ const availableFeatures = [
     "Parking Sensors", "Rear View Camera", "360° Camera", "Self-Parking System"
 ];
 
-// Componentă mică pentru titlurile de secțiuni
-const SectionHeader = ({ title }) => (
-    <Grid item xs={12} sx={{ mt: 3, mb: 1 }}>
-        <Typography variant="h5" sx={{ color: '#90caf9', fontWeight: 500, borderBottom: '1px solid #444', paddingBottom: '5px' }}>
-            {title}
-        </Typography>
-    </Grid>
+// --- STILURI ---
+const themeColors = {
+    gradient: 'linear-gradient(135deg, hsl(0, 100%, 24%) 0%, hsl(0, 80%, 40%) 100%)',
+    glass: 'rgba(20, 20, 20, 0.75)',
+    border: 'rgba(255, 255, 255, 0.1)',
+    textSecondary: 'rgba(255, 255, 255, 0.7)',
+    error: '#f44336',
+    success: '#4caf50'
+};
+
+const inputStyle = {
+    '& .MuiOutlinedInput-root': {
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        color: 'white',
+        borderRadius: '12px',
+        '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+        '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.5)' },
+        '&.Mui-focused fieldset': { borderColor: '#ff4d4d' },
+    },
+    '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.6)' },
+    '& .MuiInputLabel-root.Mui-focused': { color: '#ff4d4d' },
+    '& .MuiSvgIcon-root': { color: 'rgba(255,255,255,0.6)' },
+    '& .MuiSelect-icon': { color: 'rgba(255,255,255,0.6)' },
+    marginBottom: 2
+};
+
+const menuProps = {
+    PaperProps: {
+        sx: {
+            backgroundColor: 'rgb(40, 40, 40)',
+            color: 'white',
+            '& .MuiMenuItem-root:hover': { backgroundColor: 'rgba(255, 77, 77, 0.2)' },
+            '& .MuiMenuItem-root.Mui-selected': { backgroundColor: 'rgba(255, 77, 77, 0.4)' }
+        }
+    }
+};
+
+const buttonStyle = {
+    background: themeColors.gradient,
+    color: 'white',
+    padding: '12px 30px',
+    borderRadius: '12px',
+    fontWeight: 'bold',
+    textTransform: 'none',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+    '&:hover': {
+        background: 'linear-gradient(135deg, hsl(0, 100%, 30%) 0%, hsl(0, 90%, 50%) 100%)',
+    }
+};
+
+const BackgroundWrapper = ({ children }) => (
+    <Box sx={{
+        minHeight: '100vh',
+        width: '100%',
+        backgroundImage: `url(${img1})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        py: 4
+    }}>
+        <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 1 }} />
+        <Box sx={{ position: 'relative', zIndex: 2, width: '100%' }}>{children}</Box>
+    </Box>
 );
 
+const SectionHeader = ({ title, icon }) => (
+    <Box sx={{ display: 'flex', alignItems: 'center', mt: 4, mb: 2, borderBottom: `1px solid ${themeColors.border}`, pb: 1 }}>
+        <Box sx={{ color: '#ff4d4d', mr: 1, display: 'flex' }}>{icon}</Box>
+        <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold' }}>
+            {title}
+        </Typography>
+    </Box>
+);
+
+// --- COMPONENTA PRINCIPALĂ ---
 const PostACar = ({ userData, setUserData }) => {
     const MAX_IMAGES = 9;
     const navigate = useNavigate();
@@ -53,18 +128,19 @@ const PostACar = ({ userData, setUserData }) => {
     const [errors, setErrors] = useState('');
     const [descError, setDescError] = useState('');
     
-    // State pentru Predictia Pretului
     const [estimatedPrice, setEstimatedPrice] = useState(null);
     const [isPredicting, setIsPredicting] = useState(false);
 
-    const titleRef = useRef();
-    const descriptionRef = useRef();
+    // --- REFS PENTRU INPUT-URILE DE TEXT (Zero Lag) ---
+    const descriptionRef = useRef(null);
+    const titleRef = useRef(null);
 
     const [carData, setCarData] = useState({
-        title: '', brand: '', model: '', body: '', vin: '',
-        year: '', cm3: '', hp: '', mileage: '', price: '', currency: '',
+        // Title și Description scoase din state pentru a nu randa la fiecare tastă
+        brand: '', model: '', body: '', vin: '',
+        year: '', cm3: '', hp: '', mileage: '', price: '', currency: '€',
         color: '', fuelType: '', numberOfDoors: '', transmission: '', condition: '',
-        description: '', steeringwheel: '', ownerId: userData.id,
+        steeringwheel: '', ownerId: userData.id,
         images: [], city: '', county: '', pollutionStandard: '', driveType: '',
         negotiable: false, exchange: false, features: [],
         createdAt: '', active: '', sold: '', views: '',
@@ -74,9 +150,24 @@ const PostACar = ({ userData, setUserData }) => {
         if (!userData.id) navigate('/');
     }, [userData, navigate]);
 
+    useEffect(() => {
+        if (selectedBrand && modelsByBrand[selectedBrand]) {
+            setFilteredModels(modelsByBrand[selectedBrand]);
+        } else {
+            setFilteredModels([]);
+        }
+    }, [selectedBrand]);
+
+    useEffect(() => {
+        if (carData.vin && carData.vin !== carData.vin.toUpperCase()) {
+            setCarData((c) => ({ ...c, vin: c.vin.toUpperCase() }));
+        }
+    }, [carData.vin]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCarData({ ...carData, [name]: value });
+        setErrors('');
     };
 
     const handleCheckboxChange = (e) => {
@@ -94,34 +185,7 @@ const PostACar = ({ userData, setUserData }) => {
         setCarData({ ...carData, features: updatedFeatures });
     };
 
-    const verifyDescription =() => {
-        if (carData.description.length < 40 && carData.description.length > 0) {
-            setDescError('Description is too short (min 40 chars)!');           
-        } else if (carData.description.length === 0){
-            setDescError('You need to complete the description !');
-        } else {
-            setDescError('');
-        }
-    };
-
-    useEffect(() => {
-        if (selectedBrand && modelsByBrand[selectedBrand]) {
-            setFilteredModels(modelsByBrand[selectedBrand]);
-        } else {
-            setFilteredModels([]);
-        }
-    }, [selectedBrand]);
-
-    useEffect(() => {
-        const carVin = carData.vin.toUpperCase();
-        if (carData.vin && carData.vin !== carData.vin.toUpperCase()) {
-            setCarData((c) => ({ ...c, vin: carVin }));
-        }
-    }, [carData.vin]);
-
-    // --- FUNCȚIA DE PREDICȚIE PREȚ (MODIFICATĂ) ---
     const handlePredictPrice = async () => {
-        // Validare de bază
         if (!carData.brand || !carData.model || !carData.year || !carData.mileage) {
             alert("To estimate the price, please select at least: Brand, Model, Year, and Mileage.");
             return;
@@ -131,29 +195,25 @@ const PostACar = ({ userData, setUserData }) => {
         setEstimatedPrice(null);
 
         try {
-            // Construim obiectul complet pentru DTO-ul Java
             const predictionPayload = {
                 brand: carData.brand,
                 model: carData.model,
                 year: parseInt(carData.year),
                 mileage: parseInt(carData.mileage),
                 features: carData.features,
-                // Trimitem și specificațiile tehnice (convertim la int unde trebuie)
                 hp: carData.hp ? parseInt(carData.hp) : 0,
-                cm3: carData.cm3 ? parseInt(carData.cm3) : 0, // <--- NOU
+                cm3: carData.cm3 ? parseInt(carData.cm3) : 0,
                 fuelType: carData.fuelType,
                 transmission: carData.transmission,
-                pollutionStandard: carData.pollutionStandard, // <--- NOU
-                driveType: carData.driveType // <--- NOU (Opțional)
+                pollutionStandard: carData.pollutionStandard,
+                driveType: carData.driveType
             };
 
             const response = await axios.post(`${API_URL}/cars/estimatePrice`, predictionPayload);
             const predictedValue = Math.round(response.data);
             setEstimatedPrice(predictedValue);
-
         } catch (error) {
             console.error("Error predicting price:", error);
-            alert("Could not estimate price. Make sure the backend is running and the endpoint exists.");
         } finally {
             setIsPredicting(false);
         }
@@ -163,7 +223,6 @@ const PostACar = ({ userData, setUserData }) => {
         const files = Array.from(event.target.files);
         if (files.length + images.length > MAX_IMAGES) {
             alert(`You can only upload a maximum of ${MAX_IMAGES} images.`);
-            setImages(files);
             return;
         }
         setImages((prev) => [...prev, ...files]);
@@ -179,424 +238,398 @@ const PostACar = ({ userData, setUserData }) => {
             });
             return response.data.imageUrls;
         } catch (error) {
-            console.error('Error uploading images:', error.response ? error.response.data : error.message);
+            console.error('Error uploading images:', error);
             return [];
         }
     };
 
     const handleSubmit = async () => {
-        carData.title = titleRef.current.value;
-        carData.description = descriptionRef.current.value;
-        verifyDescription();
-        
-        if (carData.title === '' || carData.brand === '' || carData.model === '' || carData.year === '' || carData.price === '' || carData.city === '') {
-            setErrors('You need to complete all the required fields!');
+        // --- 1. CITIM VALORILE DIN REFS (Nu din state) ---
+        const descriptionValue = descriptionRef.current.value;
+        const titleValue = titleRef.current.value;
+
+        // --- 2. VALIDĂRI ---
+        if (!descriptionValue || descriptionValue.length === 0) {
+            setDescError('You need to complete the description!');
+            return;
+        } else if (descriptionValue.length < 40) {
+            setDescError('Description is too short (min 40 chars)!');
             return;
         } else {
-            setErrors('');
+            setDescError('');
         }
-        if (descError) { return; }
-        
+
+        if (!titleValue || !carData.brand || !carData.model || !carData.year || !carData.price || !carData.city) {
+            setErrors('You need to complete all the required fields!');
+            return;
+        }
+
         setLoading(true);
 
         try {
             const imageUrls = await uploadImages();
-            const updatedCarData = { ...carData, images: imageUrls };
+            
+            // --- 3. CONSTRUIM OBIECTUL FINAL ---
+            const updatedCarData = { 
+                ...carData, 
+                title: titleValue,          // Adăugăm titlul citit manual
+                description: descriptionValue, // Adăugăm descrierea citită manual
+                images: imageUrls 
+            };
+            
             await axios.post(`${API_URL}/cars`, updatedCarData);
+            
             const response = await axios.get(`${API_URL}/users/findByEmail`, {
                 params: { email: userData.email }
             });
             setUserData(response.data);
             setDone(true);
         } catch (error) {
-            console.error('Error:', error.response ? error.response.data : error.message);
+            console.error('Error:', error);
+            setErrors('An error occurred while posting the car.');
         } finally {
             setLoading(false);
         }
     };
 
-    if (loading) return <div className="loader"><CircularProgress /></div>;
+    if (loading) {
+        return (
+            <BackgroundWrapper>
+                <CircularProgress sx={{ color: '#ff4d4d' }} />
+            </BackgroundWrapper>
+        );
+    }
 
     if (done) {
         return (
-            <div className='finished-posting-car'>
-                <h1>Car successfully posted!</h1>
-                <Button variant="contained" color="success" onClick={() => navigate("/account")}>Go to Account</Button>
-            </div>
+            <BackgroundWrapper>
+                <Paper sx={{ p: 5, textAlign: 'center', backgroundColor: themeColors.glass, color: 'white', borderRadius: 4 }}>
+                    <CheckCircle sx={{ fontSize: 60, color: themeColors.success, mb: 2 }} />
+                    <Typography variant="h4" fontWeight="bold" gutterBottom>Success!</Typography>
+                    <Typography variant="body1" sx={{ mb: 4, color: themeColors.textSecondary }}>Your car has been successfully listed.</Typography>
+                    <Button variant="contained" sx={buttonStyle} onClick={() => navigate("/account")}>Go to Dashboard</Button>
+                </Paper>
+            </BackgroundWrapper>
         );
     }
 
     return (
-        <Box className='postCar-main-container' sx={{
-            display: 'flex',
-            minHeight: '94vh',
-            backgroundColor: 'hsl(0, 0%, 7%)',
-            justifyContent: 'center',
-            alignItems: 'center',
-        }}>
-            <Box className='frame' sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                minHeight: '90vh',
-                width: '80%',
-                padding: '5%',
-                border: '3px solid hsl(0, 0%, 0%)',
-                borderRadius: '5px',
-                backgroundColor: 'hsl(0, 0%, 12%)',
-                boxShadow: '10px 20px 200px  rgb(243, 0, 0), 10px 10px 5px 8px rgb(31, 31, 31)',
-            }}>
-                
-                <Typography 
-                    variant='h3' 
-                    sx={{
-                        fontSize: { xs: '7vw', md: '2.5vw' },
-                        color: 'white',
-                        fontWeight: 'bold',
-                        marginBottom: '10px'
-                    }}
-                >
-                    Sell your car
-                </Typography>
-                <Typography variant='body1' sx={{ color: 'gray', mb: 4 }}>
-                    Fill in the details below to create your listing.
-                </Typography>
+        <BackgroundWrapper>
+            <Container maxWidth="lg">
+                <Paper elevation={24} sx={{
+                    backgroundColor: themeColors.glass,
+                    backdropFilter: 'blur(16px)',
+                    borderRadius: 4,
+                    border: `1px solid ${themeColors.border}`,
+                    padding: { xs: 3, md: 5 },
+                    color: 'white'
+                }}>
+                    <Box sx={{ textAlign: 'center', mb: 5 }}>
+                        <Typography variant="h3" fontWeight="bold" sx={{ fontSize: { xs: '2rem', md: '3rem' } }}>
+                            Sell Your <span style={{ color: '#ff4d4d' }}>Car</span>
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: themeColors.textSecondary }}>
+                            Fill in the details below to create your premium listing.
+                        </Typography>
+                    </Box>
 
-                <Grid container spacing={3} sx={{justifyContent: 'center'}}>
-                    
                     {/* --- 1. GENERAL INFO --- */}
-                    <SectionHeader title="1. General Information" />
-
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            variant='outlined'
-                            label="Title"
-                            name="title"
-                            inputRef={titleRef}
-                            placeholder="Write a descriptive title for your car"
-                            sx={{width: '60%', marginTop: '20px',marginBottom: 2 }}
-                        />
-                    </Grid>
+                    <SectionHeader title="General Information" icon={<Title />} />
                     
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                            <InputLabel>Brand</InputLabel>
-                            <Select
-                                name="brand"
-                                label="Brand"
-                                value={carData.brand}
-                                onChange={(e) => { setSelectedBrand(e.target.value); handleChange(e); }}
-                            >   
-                                <MenuItem value="">Choose</MenuItem>
+                    {/* INPUT TITLU OPTIMIZAT CU REF */}
+                    <TextField
+                        fullWidth
+                        label="Title"
+                        name="title"
+                        inputRef={titleRef} // Folosim REF, nu state
+                        defaultValue={carData.title} // Doar valoare inițială
+                        placeholder="e.g. BMW M4 Competition Pack 2021"
+                        sx={inputStyle}
+                        InputProps={{ startAdornment: (<InputAdornment position="start"><Title sx={{color:'rgba(255,255,255,0.5)'}}/></InputAdornment>) }}
+                    />
+
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField select fullWidth label="Brand" name="brand" value={carData.brand} 
+                                onChange={(e) => { setSelectedBrand(e.target.value); handleChange(e); }} sx={inputStyle} SelectProps={{ MenuProps: menuProps }}>
                                 {brands.map((brand) => <MenuItem key={brand} value={brand}>{brand}</MenuItem>)}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                            <InputLabel>Model</InputLabel>
-                            <Select
-                                name="model"
-                                label="Model"
-                                value={carData.model}
-                                onChange={handleChange}
-                            >   
-                                {carData.brand ? <MenuItem value="">Choose</MenuItem> : <MenuItem value="">Select Brand First</MenuItem>}
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField select fullWidth label="Model" name="model" value={carData.model} 
+                                onChange={handleChange} sx={inputStyle} disabled={!carData.brand} SelectProps={{ MenuProps: menuProps }}>
                                 {filteredModels.map((model) => <MenuItem key={model} value={model}>{model}</MenuItem>)}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                            <InputLabel>Body Type</InputLabel>
-                            <Select name="body" label="Body Type" value={carData.body} onChange={handleChange}>   
-                                <MenuItem value="">Choose</MenuItem>
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField select fullWidth label="Body Type" name="body" value={carData.body} 
+                                onChange={handleChange} sx={inputStyle} SelectProps={{ MenuProps: menuProps }}>
                                 {bodies.map((body) => <MenuItem key={body} value={body}>{body}</MenuItem>)}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField fullWidth label="VIN" name="vin" value={carData.vin} onChange={handleChange} />
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth label="VIN" name="vin" value={carData.vin} onChange={handleChange} sx={inputStyle} />
+                        </Grid>
                     </Grid>
 
+                    {/* ... Restul câmpurilor (dropdown-uri, numerice) rămân la fel deoarece nu cauzează lag ... */}
                     {/* --- 2. SPECIFICATIONS --- */}
-                    <SectionHeader title="2. Specifications" />
-
-                    <Grid item xs={12} sm={6}>
-                        <TextField fullWidth label="Year" name="year" type="number" value={carData.year} onChange={handleChange} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField fullWidth label="Mileage" name="mileage" type="number" value={carData.mileage} onChange={handleChange} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                            <InputLabel>Condition</InputLabel>
-                            <Select label="Condition" name="condition" value={carData.condition} onChange={handleChange}>   
+                    <SectionHeader title="Specifications" icon={<DirectionsCar />} />
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <TextField fullWidth type="number" label="Year" name="year" value={carData.year} onChange={handleChange} sx={inputStyle} />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <TextField fullWidth type="number" label="Mileage" name="mileage" value={carData.mileage} onChange={handleChange} sx={inputStyle} 
+                                InputProps={{ endAdornment: <InputAdornment position="end" sx={{color:'white'}}>km</InputAdornment> }} />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <TextField select fullWidth label="Condition" name="condition" value={carData.condition} onChange={handleChange} sx={inputStyle} SelectProps={{ MenuProps: menuProps }}>
                                 <MenuItem value="USED">Used</MenuItem>
                                 <MenuItem value="NEW">New</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                            <InputLabel>Color</InputLabel>
-                            <Select label="Color" name="color" value={carData.color} onChange={handleChange}>   
-                                <MenuItem value="">Choose</MenuItem>
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <TextField select fullWidth label="Color" name="color" value={carData.color} onChange={handleChange} sx={inputStyle} SelectProps={{ MenuProps: menuProps }}>
                                 {colors.map((color) => <MenuItem key={color} value={color}>{color}</MenuItem>)}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                         <TextField fullWidth label="Number of doors" name="numberOfDoors" type="number" value={carData.numberOfDoors} onChange={handleChange} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                            <InputLabel>Steeringwheel</InputLabel>
-                            <Select label="Steeringwheel" name="steeringwheel" value={carData.steeringwheel} onChange={handleChange}>   
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth type="number" label="Number of Doors" name="numberOfDoors" value={carData.numberOfDoors} onChange={handleChange} sx={inputStyle} />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField select fullWidth label="Steering Wheel" name="steeringwheel" value={carData.steeringwheel} onChange={handleChange} sx={inputStyle} SelectProps={{ MenuProps: menuProps }}>
                                 <MenuItem value="LEFT">Left Side</MenuItem>
                                 <MenuItem value="RIGHT">Right Side</MenuItem>
-                            </Select>
-                        </FormControl>
+                            </TextField>
+                        </Grid>
                     </Grid>
 
                     {/* --- 3. ENGINE & PERFORMANCE --- */}
-                    <SectionHeader title="3. Engine & Performance" />
-
-                    <Grid item xs={12} sm={6}>
-                        <TextField fullWidth label="Engine capacity(cm³)" name="cm3" type="number" value={carData.cm3} onChange={handleChange} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField fullWidth label="Engine displacement(hp)" name="hp" type="number" value={carData.hp} onChange={handleChange} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                            <InputLabel>Fuel Type</InputLabel>
-                            <Select label="Fuel Type" name="fuelType" value={carData.fuelType} onChange={handleChange}>   
+                    <SectionHeader title="Engine & Performance" icon={<Speed />} />
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TextField fullWidth type="number" label="Engine Capacity" name="cm3" value={carData.cm3} onChange={handleChange} sx={inputStyle} 
+                                InputProps={{ endAdornment: <InputAdornment position="end" sx={{color:'white'}}>cm³</InputAdornment> }} />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TextField fullWidth type="number" label="Power" name="hp" value={carData.hp} onChange={handleChange} sx={inputStyle}
+                                InputProps={{ endAdornment: <InputAdornment position="end" sx={{color:'white'}}>HP</InputAdornment> }} />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TextField select fullWidth label="Fuel Type" name="fuelType" value={carData.fuelType} onChange={handleChange} sx={inputStyle} SelectProps={{ MenuProps: menuProps }}>
                                 <MenuItem value="DIESEL">Diesel</MenuItem>
                                 <MenuItem value="PETROL">Petrol</MenuItem>
                                 <MenuItem value="HYBRID">Hybrid</MenuItem>
                                 <MenuItem value="ELECTRIC">Electric</MenuItem>
                                 <MenuItem value="GPL">GPL</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                            <InputLabel>Pollution Standard</InputLabel>
-                            <Select label="Pollution Standard" name="pollutionStandard" value={carData.pollutionStandard} onChange={handleChange}>   
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TextField select fullWidth label="Pollution Standard" name="pollutionStandard" value={carData.pollutionStandard} onChange={handleChange} sx={inputStyle} SelectProps={{ MenuProps: menuProps }}>
                                 {pollutionStandards.map((std) => <MenuItem key={std} value={std}>{std}</MenuItem>)}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                            <InputLabel>Gearbox</InputLabel>
-                            <Select label="Gearbox" name="transmission" value={carData.transmission} onChange={handleChange}>   
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TextField select fullWidth label="Gearbox" name="transmission" value={carData.transmission} onChange={handleChange} sx={inputStyle} SelectProps={{ MenuProps: menuProps }}>
                                 <MenuItem value="MANUAL">Manual</MenuItem>
                                 <MenuItem value="AUTOMATIC">Automatic</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                         <FormControl fullWidth>
-                            <InputLabel>Drive Type</InputLabel>
-                            <Select label="Drive Type" name="driveType" value={carData.driveType} onChange={handleChange}>   
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TextField select fullWidth label="Drive Type" name="driveType" value={carData.driveType} onChange={handleChange} sx={inputStyle} SelectProps={{ MenuProps: menuProps }}>
                                 {driveTypes.map((dt) => <MenuItem key={dt} value={dt}>{dt}</MenuItem>)}
-                            </Select>
-                        </FormControl>
+                            </TextField>
+                        </Grid>
                     </Grid>
 
                     {/* --- 4. LOCATION --- */}
-                    <SectionHeader title="4. Location" />
-
-                    <Grid item xs={12} sm={6}>
-                        <TextField fullWidth label="City" name="city" value={carData.city} onChange={handleChange} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField fullWidth label="County" name="county" value={carData.county} onChange={handleChange} />
+                    <SectionHeader title="Location" icon={<LocationOn />} />
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth label="City" name="city" value={carData.city} onChange={handleChange} sx={inputStyle} />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth label="County" name="county" value={carData.county} onChange={handleChange} sx={inputStyle} />
+                        </Grid>
                     </Grid>
 
                     {/* --- 5. FEATURES --- */}
-                    <SectionHeader title="5. Features & Options" />
+                    <SectionHeader title="Features & Options" icon={<FeaturedPlayList />} />
+                    <Paper elevation={0} sx={{ 
+                        backgroundColor: 'rgba(255,255,255,0.02)', 
+                        border: '1px solid rgba(255,255,255,0.1)', 
+                        borderRadius: 2, 
+                        p: 2 
+                    }}>
+                        <FormGroup row>
+                            {availableFeatures.map((feature) => (
+                                <FormControlLabel
+                                    key={feature}
+                                    control={
+                                        <Checkbox 
+                                            checked={carData.features.includes(feature)} 
+                                            onChange={() => handleFeatureChange(feature)} 
+                                            sx={{ color: 'rgba(255,255,255,0.5)', '&.Mui-checked': { color: '#ff4d4d' } }} 
+                                        />
+                                    }
+                                    label={<Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>{feature}</Typography>}
+                                    sx={{ width: { xs: '100%', sm: '45%', md: '30%' }, m: 0.5 }}
+                                />
+                            ))}
+                        </FormGroup>
+                    </Paper>
 
-                    <Grid item xs={12}>
-                        <Box sx={{ border: '1px solid gray', borderRadius: '5px', padding: '10px' }}>
-                            <Typography variant="h6" gutterBottom>Select Features</Typography>
-                            <FormGroup row>
-                                {availableFeatures.map((feature) => (
-                                    <FormControlLabel
-                                        key={feature}
-                                        control={
-                                            <Checkbox 
-                                                checked={carData.features.includes(feature)} 
-                                                onChange={() => handleFeatureChange(feature)} 
-                                                name={feature}
-                                                sx={{color: 'gray', '&.Mui-checked': {color: 'red'}}}
-                                            />
-                                        }
-                                        label={feature}
-                                        sx={{ width: { xs: '100%', sm: '45%', md: '30%' } }} 
-                                    />
-                                ))}
-                            </FormGroup>
-                        </Box>
-                    </Grid>
-
-                    {/* --- 6. DESCRIPTION --- */}
-                    <SectionHeader title="6. Description" />
-
-                    <Grid item xs={12}>
-                        <TextareaAutosize
-                            minRows={3}
-                            ref={descriptionRef}
-                            name="description"
-                            placeholder="Describe the car"
-                            style={{ width: '90%', minHeight: '100px' , backgroundColor: 'hsla(0, 0%, 7%, 0.658)' , color: 'white'}}
-                        />
-                    </Grid>
+                    {/* --- 6. DESCRIPTION (OPTIMIZED WITH REF) --- */}
+                    <SectionHeader title="Description" icon={<Description />} />
+                    <TextField
+                        fullWidth
+                        multiline
+                        minRows={4}
+                        placeholder="Describe the car in detail (min 40 characters)..."
+                        inputRef={descriptionRef} 
+                        defaultValue={carData.description}
+                        sx={inputStyle}
+                        error={!!descError}
+                        helperText={descError}
+                    />
 
                     {/* --- 7. IMAGES --- */}
-                    <SectionHeader title="7. Photos" />
-
-                    <Grid item xs={12}>
-                        <Button variant="outlined" component="label">
-                            Upload Images
+                    <SectionHeader title="Photos" icon={<PhotoCamera />} />
+                    <Box sx={{ border: '2px dashed rgba(255,255,255,0.2)', borderRadius: 2, p: 4, textAlign: 'center', mb: 2 }}>
+                        <Button
+                            variant="outlined"
+                            component="label"
+                            startIcon={<CloudUpload />}
+                            sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.5)', '&:hover': { borderColor: 'white', backgroundColor: 'rgba(255,255,255,0.1)' } }}
+                        >
+                            Select Images (Max {MAX_IMAGES})
                             <input type="file" multiple accept="image/*" hidden onChange={handleImageUpload} />
                         </Button>
-                    </Grid>
-                    <Grid 
-                        container
-                        spacing={2} 
-                        sx={{
-                            backgroundColor: 'hsl(0, 2%, 12%)',
-                            maxWidth: '80%',
-                            marginTop: '50px',
-                            height: 'auto',
-                            padding: '5px',
-                            border: '2px solid black',
-                        }}
-                    >
-                        {images.length > 0 ? 
-                        images.map((image, index) => (
-                            <Grid 
-                            item 
-                            xs={4} sm={6} md={4} lg={4}
-                            key={index}
-                            >
-                            <CardMedia
-                                sx={{
-                                    width: 'auto',
-                                    maxWidth: "100%",
-                                    maxHeight: '180px',
-                                    objectFit: 'cover', 
-                                    border: '2px solid black'
-                                }}
-                                component="img"
-                                image={URL.createObjectURL(image)}
-                                onClick={() => setImages(images.filter((_, i) => i !== index))}
-                                alt={`img-${index}`}
-                            />
-                            </Grid>
-                        )) :
-                        <Box
-                            fullWidth
-                            sx={{
-                                height: "190px",
-                                alignContent: 'center',
-                                margin: '0 auto',
-                            }}
-                        >
-                            <Typography variant='h4' color={'gray'}> There are no images for now</Typography>
-                        </Box>}
-                    </Grid>
+                        <Typography variant="caption" display="block" sx={{ mt: 1, color: 'gray' }}>
+                            Supported formats: JPG, PNG
+                        </Typography>
+                    </Box>
+
+                    {images.length > 0 && (
+                        <Grid container spacing={2}>
+                            {images.map((image, index) => (
+                                <Grid item xs={6} sm={4} md={3} key={index}>
+                                    <Box sx={{ position: 'relative' }}>
+                                        <CardMedia
+                                            component="img"
+                                            image={URL.createObjectURL(image)}
+                                            alt={`img-${index}`}
+                                            sx={{ height: 140, borderRadius: 2, border: '1px solid rgba(255,255,255,0.2)' }}
+                                        />
+                                        <IconButton 
+                                            size="small"
+                                            onClick={() => setImages(images.filter((_, i) => i !== index))}
+                                            sx={{ position: 'absolute', top: 5, right: 5, backgroundColor: 'rgba(0,0,0,0.7)', color: '#ff4d4d', '&:hover': { backgroundColor: 'white' } }}
+                                        >
+                                            <Delete fontSize="small" />
+                                        </IconButton>
+                                    </Box>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    )}
 
                     {/* --- 8. PRICE & DEAL --- */}
-                    <SectionHeader title="8. Price & Deal" />
+                    <SectionHeader title="Price & Deal" icon={<AttachMoney />} />
+                    <Grid container spacing={3} alignItems="flex-start">
+                        <Grid item xs={12} md={6}>
+                            <Box sx={{ display: 'flex', gap: 2 }}>
+                                <TextField 
+                                    fullWidth 
+                                    label="Price" 
+                                    name="price" 
+                                    type="number" 
+                                    value={carData.price} 
+                                    onChange={handleChange} 
+                                    sx={inputStyle}
+                                />
+                                <TextField
+                                    select
+                                    label="Currency"
+                                    name="currency"
+                                    value={carData.currency}
+                                    onChange={handleChange}
+                                    sx={{ ...inputStyle, width: '120px' }}
+                                    SelectProps={{ MenuProps: menuProps }}
+                                >
+                                    <MenuItem value="€">€</MenuItem>
+                                    <MenuItem value="Ron">Ron</MenuItem>
+                                    <MenuItem value="£">£</MenuItem>
+                                </TextField>
+                            </Box>
 
-                    <Grid item xs={12} sm={4}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                            <TextField 
-                                fullWidth 
-                                label="Price" 
-                                name="price" 
-                                type="number" 
-                                value={carData.price} 
-                                onChange={handleChange} 
-                            />
-                            
-                            {/* Butonul de Estimare */}
+                            {/* AI Predict Button */}
                             <Button 
+                                fullWidth
                                 variant="outlined" 
-                                size="small"
+                                startIcon={isPredicting ? <CircularProgress size={20} color="inherit"/> : <AutoFixHigh />}
                                 onClick={handlePredictPrice}
                                 disabled={isPredicting}
-                                sx={{ color: '#90caf9', borderColor: '#90caf9', textTransform: 'none' }}
+                                sx={{ 
+                                    color: '#64b5f6', 
+                                    borderColor: 'rgba(100, 181, 246, 0.5)', 
+                                    mb: 2,
+                                    '&:hover': { borderColor: '#64b5f6', backgroundColor: 'rgba(100, 181, 246, 0.1)' } 
+                                }}
                             >
-                                {isPredicting ? <CircularProgress size={20} color="inherit" /> : "Check Recommended Price (AI)"}
+                                {isPredicting ? "Calculating..." : "Check AI Recommended Price"}
                             </Button>
+                            
+                            <Collapse in={!!estimatedPrice}>
+                                <Alert 
+                                    severity="info" 
+                                    sx={{ backgroundColor: 'rgba(33, 150, 243, 0.1)', color: '#90caf9', border: '1px solid rgba(33, 150, 243, 0.3)' }}
+                                    action={
+                                        <Button color="inherit" size="small" onClick={() => setCarData({...carData, price: estimatedPrice})}>
+                                            Apply
+                                        </Button>
+                                    }
+                                >
+                                    Estimated Value: {estimatedPrice} {carData.currency}
+                                </Alert>
+                            </Collapse>
+                        </Grid>
 
-                            {/* Afișarea rezultatului */}
-                            {estimatedPrice && (
-                                <Box sx={{ backgroundColor: 'rgba(0, 128, 0, 0.1)', border: '1px solid green', borderRadius: 1, p: 1, mt: 1 }}>
-                                    <Typography variant="body2" sx={{ color: '#66bb6a', fontWeight: 'bold' }}>
-                                        AI Estimate: {estimatedPrice} {carData.currency || '€'}
-                                    </Typography>
-                                    <Button 
-                                        size="small" 
-                                        sx={{ color: 'white', fontSize: '0.7rem' }}
-                                        onClick={() => setCarData({...carData, price: estimatedPrice})}
-                                    >
-                                        Use this price
-                                    </Button>
-                                </Box>
-                            )}
-                        </Box>
+                        <Grid item xs={12} md={6}>
+                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2, border: '1px solid rgba(255,255,255,0.1)', borderRadius: 2 }}>
+                                <FormControlLabel 
+                                    control={<Checkbox checked={carData.negotiable} onChange={handleCheckboxChange} name="negotiable" sx={{color: 'gray', '&.Mui-checked': {color: themeColors.success}}} />} 
+                                    label="Price is Negotiable" 
+                                />
+                                <FormControlLabel 
+                                    control={<Checkbox checked={carData.exchange} onChange={handleCheckboxChange} name="exchange" sx={{color: 'gray', '&.Mui-checked': {color: '#2196f3'}}} />} 
+                                    label="Accept Exchange / Buy-Back" 
+                                />
+                             </Box>
+                        </Grid>
                     </Grid>
 
-                    <Grid item xs={12} sm={2}>
-                        <FormControl fullWidth>
-                            <InputLabel>Currency</InputLabel>
-                            <Select label="Currency" name="currency" value={carData.currency} onChange={handleChange}>   
-                                <MenuItem value="€">€</MenuItem>
-                                <MenuItem value="Ron">Ron</MenuItem>
-                                <MenuItem value="£">£</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6} sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
-                         <FormControlLabel 
-                            control={<Checkbox checked={carData.negotiable} onChange={handleCheckboxChange} name="negotiable" sx={{color: 'gray', '&.Mui-checked': {color: 'green'}}} />} 
-                            label="Negotiable" 
-                        />
-                        <FormControlLabel 
-                            control={<Checkbox checked={carData.exchange} onChange={handleCheckboxChange} name="exchange" sx={{color: 'gray', '&.Mui-checked': {color: 'blue'}}} />} 
-                            label="Accept Exchange" 
-                        />
-                    </Grid>
+                    {/* --- ACTIONS --- */}
+                    <Box sx={{ mt: 6, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <Collapse in={!!errors}>
+                            <Alert severity="error" onClose={() => setErrors('')}>{errors}</Alert>
+                        </Collapse>
+                        
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            size="large"
+                            onClick={handleSubmit}
+                            sx={{ ...buttonStyle, fontSize: '1.2rem', py: 2 }}
+                        >
+                            Publish Listing
+                        </Button>
+                    </Box>
 
-                </Grid>
-                
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSubmit}
-                    style={{ marginTop: '70px' }}
-                >
-                    Submit
-                </Button>
-
-                {errors &&
-                <Box>
-                    <span className="error"><i className="fas fa-times" style={{ color: "red" }}></i><i> {errors}</i></span>
-                </Box>}
-                {descError && 
-                <Box>
-                    <span className="error"><i className="fas fa-times" style={{ color: "red" }}></i><i> {descError}</i></span>
-                </Box>}
-            </Box>
-        </Box>
+                </Paper>
+            </Container>
+        </BackgroundWrapper>
     );
 };
 

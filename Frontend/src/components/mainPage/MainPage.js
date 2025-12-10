@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Box, Card, CardContent, CardMedia, Typography, CircularProgress } from '@mui/material';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; 
+import { Grid, Box, Card, CardContent, CardMedia, Typography, CircularProgress, Chip } from '@mui/material';
 import axios from 'axios';
 import API_URL from '../..';
 
@@ -10,6 +9,7 @@ const MainPage = ({ searchFilters, setCarData }) => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
+    // --- LOGICA TA ORIGINALĂ DE FILTRARE (NESCHIMBATĂ) ---
     function normalizeText(text) {
         return text.toLowerCase().replace(/[^a-z0-9ăâîșț ]/gi, '').replace(/\s+/g, ' ').trim();
     }
@@ -31,6 +31,7 @@ const MainPage = ({ searchFilters, setCarData }) => {
                 .map(([key, value]) => ({ [key]: value }));
 
             for (let elem in filteredSearchFilters) {
+                // ... (Filtrele tale rămân exact la fel) ...
                 if (filteredSearchFilters[elem]["title"]) {
                     const keywords = normalizeText(filteredSearchFilters[elem]["title"]).split(" ");
                     carData = Object.values(carData).filter((item) => {
@@ -103,23 +104,24 @@ const MainPage = ({ searchFilters, setCarData }) => {
     return (
         <Box 
             sx={{
+                // Păstrăm containerul tău, doar ajustăm puțin scrollbar-ul
                 height: 'calc(100vh - 70px)', 
                 width: '100%',
                 overflowY: 'auto', 
                 overflowX: 'hidden',
-                bgcolor: "hsl(0, 0%, 11%)", 
+                bgcolor: "#121212", // Gri puțin mai închis și mai neutru decât HSL-ul original
                 "&::-webkit-scrollbar": { width: "8px" },
-                "&::-webkit-scrollbar-track": { backgroundColor: "transparent" },
-                "&::-webkit-scrollbar-thumb": { backgroundColor: "rgba(255, 255, 255, 0.2)", borderRadius: "4px" },
-                "&::-webkit-scrollbar-thumb:hover": { backgroundColor: "rgba(255, 255, 255, 0.4)" },
+                "&::-webkit-scrollbar-track": { backgroundColor: "#1e1e1e" },
+                "&::-webkit-scrollbar-thumb": { backgroundColor: "#444", borderRadius: "4px" },
+                "&::-webkit-scrollbar-thumb:hover": { backgroundColor: "#555" },
             }}
         >
             <Grid 
                 container 
                 spacing={2} 
                 sx={{
-                    padding: { xs: "10px", md: "20px 2%" }, // Padding mai mic pe margine
-                    justifyContent: 'flex-start', // Important: Aliniere la stânga
+                    padding: { xs: "10px", md: "20px 2%" },
+                    justifyContent: 'flex-start',
                     margin: 0,
                     width: '100%'
                 }}
@@ -128,84 +130,68 @@ const MainPage = ({ searchFilters, setCarData }) => {
                     cars.map((car) => (
                         <Grid 
                             item 
-                            // AICI E SECRETUL PENTRU PC:
-                            xs={12}     // Mobil: 1 pe rând
-                            sm={6}      // Tableta mică: 2 pe rând
-                            md={4}      // Tabletă mare: 3 pe rând
-                            lg={3}      // Laptop: 4 pe rând
-                            xl={2.4}    // PC Mare: 5 pe rând (folosind 2.4 unități din 12)
+                            xs={12} sm={6} md={4} lg={3} xl={2.4} 
                             key={car.id} 
-                            sx={{ 
-                                display: 'flex', 
-                                justifyContent: 'center',
-                                minWidth: '280px' // Asigură că nu devin prea mici
-                            }}
+                            sx={{ display: 'flex', justifyContent: 'center', minWidth: '280px' }}
                         >
                             <Card 
                                 onClick={() => accesCar(car.id)} 
                                 sx={{
                                     cursor: 'pointer',
                                     width: '100%', 
-                                    // LIMITA MAXIMĂ - Astfel cardul nu se mai lăbărțează pe PC
-                                    maxWidth: '300px', 
-                                    backgroundColor: 'rgb(35, 37, 40)', 
-                                    borderRadius: '4px',
+                                    maxWidth: '320px', // Limită puțin mai mare
+                                    bgcolor: '#1e1e1e', // Un gri mai "material design" decât 'rgb(35, 37, 40)'
+                                    borderRadius: '12px', // Colțuri mai rotunjite
                                     display: 'flex', 
                                     flexDirection: 'column',
-                                    transition: 'all 0.2s',
-                                    boxShadow: '0 2px 5px rgba(0,0,0,0.3)',
+                                    transition: 'transform 0.2s, box-shadow 0.2s',
+                                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+                                    position: 'relative',
                                     "&:hover": {
-                                        transform: 'translateY(-3px)',
-                                        boxShadow: '0 8px 15px rgba(0,0,0,0.5)'
+                                        transform: 'translateY(-4px)',
+                                        boxShadow: '0 10px 20px rgba(0,0,0,0.5)',
+                                        // Border subtil la hover
+                                        outline: '1px solid rgba(255, 77, 77, 0.3)' 
                                     }
                                 }}
                             >
                                 {/* Zona de imagine */}
-                                <Box sx={{ position: 'relative', overflow: 'hidden' }}>
+                                <Box sx={{ position: 'relative', height: '180px', overflow: 'hidden' }}>
                                     {car.image ? (
                                         <CardMedia
                                             component="img"
                                             sx={{
                                                 width: '100%',
-                                                // Înălțime fixă mai mică = Rezoluție percepută mai bună
-                                                maxHeight: '180px',
-                                                minHeight: '100px',
-                                                height: 'auto', 
+                                                height: '100%',
                                                 objectFit: 'cover' 
                                             }}
-                                            // Încărcăm originalul
                                             image={`${API_URL}${car.image}`} 
                                             alt={car.title}
                                             loading="lazy"
                                         />
                                     ) : (
-                                        <Box sx={{
-                                            width: '100%', 
-                                            height: '180px',
-                                            bgcolor: '#2a2a2a', 
-                                            display:'flex', 
-                                            alignItems:'center', 
-                                            justifyContent:'center'
-                                        }}>
+                                        <Box sx={{ width: '100%', height: '100%', bgcolor: '#2a2a2a', display:'flex', alignItems:'center', justifyContent:'center' }}>
                                             <Typography variant="caption" color="gray">No Image</Typography>
                                         </Box>
                                     )}
                                     
+                                    {/* Etichetă Negotiable (Stilizată mai bine) */}
                                     {car.negotiable && (
-                                        <Box sx={{
-                                            position: 'absolute', 
-                                            bottom: '5px', 
-                                            left: '5px', 
-                                            bgcolor: 'rgba(0,0,0,0.8)', 
-                                            color: '#4caf50', 
-                                            fontSize: '10px', 
-                                            padding: '2px 6px', 
-                                            borderRadius: '3px',
-                                            fontWeight: 'bold',
-                                            border: '1px solid #4caf50'
-                                        }}>
-                                            Negotiable
-                                        </Box>
+                                        <Chip 
+                                            label="Neg." 
+                                            size="small" 
+                                            sx={{
+                                                position: 'absolute',
+                                                top: 8,
+                                                right: 8,
+                                                backgroundColor: 'rgba(0,0,0,0.7)',
+                                                color: '#4caf50',
+                                                border: '1px solid #4caf50',
+                                                height: '20px',
+                                                fontSize: '0.65rem',
+                                                fontWeight: 'bold'
+                                            }}
+                                        />
                                     )}
                                 </Box>
 
@@ -214,74 +200,63 @@ const MainPage = ({ searchFilters, setCarData }) => {
                                         flexGrow: 1,
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        padding: '10px 12px',
-                                        "&:last-child": { paddingBottom: '12px' }
+                                        padding: '16px', // Padding puțin mai mare
+                                        "&:last-child": { paddingBottom: '16px' }
                                     }}
                                 >
                                     {/* Titlu */}
                                     <Typography 
                                         variant="subtitle1" 
                                         sx={{ 
-                                            color: '#fff',
-                                            fontWeight: 600,
-                                            fontSize: '15px',
-                                            lineHeight: 1.25,
-                                            height: '2.5em', 
+                                            color: '#f0f0f0', // Alb mai luminos
+                                            fontWeight: 700,
+                                            fontSize: '1rem',
+                                            lineHeight: 1.3,
+                                            height: '2.6em', 
                                             overflow: "hidden", 
                                             textOverflow: "ellipsis",
                                             display: "-webkit-box",
                                             WebkitLineClamp: 2,
                                             WebkitBoxOrient: "vertical",
-                                            marginBottom: '6px'
+                                            mb: 1
                                         }}
                                     >
                                         {car.title}
                                     </Typography>
 
-                                    {/* Detalii tehnice */}
+                                    {/* Detalii tehnice - Gri mai deschis pentru lizibilitate */}
                                     <Typography 
-                                        variant="caption" 
+                                        variant="body2" 
                                         sx={{ 
-                                            color: '#bbb', 
-                                            fontSize: '12px',
-                                            marginBottom: '10px',
+                                            color: '#aaa', 
+                                            fontSize: '0.8rem',
+                                            mb: 2,
                                             display: 'block'
                                         }}
                                     >
-                                        {car.year} • {car.fuelType ? car.fuelType.toLowerCase() : '-'} • {car.mileage} km
+                                        {car.year} • {car.fuelType ? car.fuelType.toLowerCase() : '-'} • {parseInt(car.mileage).toLocaleString()} km
                                     </Typography>
                                     
                                     <Box sx={{ flexGrow: 1 }} />
 
-                                    {/* Preț */}
-                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                                    {/* Preț și Iconiță */}
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px' }}>
                                         <Typography 
                                             variant="h6" 
                                             sx={{ 
-                                                fontSize: '17px',
+                                                fontSize: '1.1rem',
                                                 fontWeight: 'bold',
-                                                color: '#fff'
+                                                color: '#f5f5f5ff' // Accent roșu pentru preț
                                             }}
                                         >
-                                            {car.price} {car.currency}
+                                            {parseInt(car.price).toLocaleString()} {car.currency}
                                         </Typography>
-                                        <FavoriteBorderIcon sx={{ color: '#666', fontSize: '20px', transition: '0.2s', "&:hover": { color: '#ff4081' } }} />
+                                        
+                                        {/* Locație mică în dreapta */}
+                                        <Typography variant="caption" sx={{ color: '#666' }}>
+                                            {car.city || "RO"}
+                                        </Typography>
                                     </Box>
-
-                                    {/* Locație */}
-                                    <Typography 
-                                        variant="caption" 
-                                        sx={{ 
-                                            color: '#888', 
-                                            fontSize: '11px', 
-                                            marginTop: '6px',
-                                            whiteSpace: 'nowrap',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis'
-                                        }}
-                                    >
-                                        {car.city ? car.city : "Romania"} {car.county ? `, ${car.county}` : ""}
-                                    </Typography>
 
                                 </CardContent>
                             </Card>

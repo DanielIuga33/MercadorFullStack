@@ -1,190 +1,223 @@
 import React from 'react';
 import img1 from '../../images/img1.jpeg';
-import { Box, Typography, Button, Divider, Grid } from '@mui/material';
+import { Box, Typography, Button, Divider, Grid, Paper, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const Account = ({ userData }) => {
   const navigate = useNavigate();
 
+  // Culori și stiluri comune
+  const themeColors = {
+    primary: 'hsl(0, 90%, 30%)', // Roșu închis de bază
+    gradient: 'linear-gradient(135deg, hsl(0, 100%, 24%) 0%, hsl(0, 80%, 40%) 100%)',
+    glass: 'rgba(20, 20, 20, 0.75)', // Fundal semi-transparent întunecat
+    border: 'rgba(255, 255, 255, 0.1)',
+  };
+
+  const buttonStyle = {
+    background: themeColors.gradient,
+    color: 'white',
+    padding: '16px 24px',
+    borderRadius: '12px',
+    fontWeight: 'bold',
+    textTransform: 'none',
+    fontSize: '1rem',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    transition: 'all 0.3s ease-in-out',
+    '&:hover': {
+      background: 'linear-gradient(135deg, hsl(0, 100%, 30%) 0%, hsl(0, 90%, 50%) 100%)',
+      transform: 'translateY(-3px)',
+      boxShadow: '0 8px 25px rgba(200, 0, 0, 0.4)',
+    },
+  };
+
   const viewCars = () => {
     if ((userData.carIds || []).length === 0) {
-      return;
+      return; // Opțional: Poți adăuga o notificare aici (Snackbar)
     } else {
       navigate('/account/cars');
     }
   };
 
-  const NoAccountView = () => (
+  // Wrapper pentru fundalul general (se aplică la ambele view-uri)
+  const BackgroundWrapper = ({ children }) => (
     <Box
       sx={{
+        minHeight: '100vh',
+        width: '100%',
+        backgroundImage: `url(${img1})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        position: 'relative',
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
-        backgroundColor: '#2B2B2B',
-        color: 'white',
-        textAlign: 'center',
-        px: 2,
-        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.5)',
       }}
     >
-      <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold' }}>
-        You are not logged in or registered!
-      </Typography>
-      <Box sx={{ display: 'flex', gap: 3, mt: 3 }}>
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: 'hsla(0, 93%, 28%, 1.00)',
-            color: 'white',
-            '&:hover': { backgroundColor: 'hsla(2, 96%, 32%, 1.00)' },
-            padding: '14px 28px',
-            borderRadius: '12px',
-            boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.4)',
-            transition: 'all 0.3s ease',
-          }}
-          onClick={() => window.location.href = '/login/account'}
-        >
-          Login
-        </Button>
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: 'hsla(0, 93%, 28%, 1.00)',
-            color: 'white',
-            '&:hover': { backgroundColor: 'hsla(2, 100%, 32%, 1.00)' },
-            padding: '14px 28px',
-            borderRadius: '12px',
-            boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.4)',
-            transition: 'all 0.3s ease',
-          }}
-          onClick={() => window.location.href = '/register/account'}
-        >
-          Register
-        </Button>
+      {/* Overlay întunecat pentru contrast */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.7)', // Întunecă imaginea cu 70%
+          zIndex: 1,
+        }}
+      />
+      
+      {/* Conținutul efectiv */}
+      <Box sx={{ position: 'relative', zIndex: 2, width: '100%', p: 2 }}>
+        {children}
       </Box>
     </Box>
+  );
+
+  const NoAccountView = () => (
+    <BackgroundWrapper>
+      <Container maxWidth="sm">
+        <Paper
+          elevation={24}
+          sx={{
+            backgroundColor: themeColors.glass,
+            backdropFilter: 'blur(12px)',
+            borderRadius: 4,
+            border: `1px solid ${themeColors.border}`,
+            p: 5,
+            textAlign: 'center',
+            color: 'white',
+          }}
+        >
+          <Typography variant="h4" sx={{ mb: 2, fontWeight: 700, letterSpacing: 1 }}>
+            Join the Community
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 4, color: 'rgba(255,255,255,0.7)' }}>
+            You are currently not logged in. Access your garage and settings by logging in below.
+          </Typography>
+
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Button
+              variant="contained"
+              sx={buttonStyle}
+              onClick={() => navigate('/login/account')}
+            >
+              Login
+            </Button>
+            <Button
+              variant="outlined"
+              sx={{
+                ...buttonStyle,
+                background: 'transparent',
+                border: '2px solid rgba(255,255,255,0.2)',
+                '&:hover': {
+                  background: 'rgba(255,255,255,0.1)',
+                  transform: 'translateY(-3px)',
+                  border: '2px solid white',
+                }
+              }}
+              onClick={() => navigate('/register/account')}
+            >
+              Register
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
+    </BackgroundWrapper>
   );
 
   const AccountView = () => (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        backgroundImage: `url(${img1})`,
-        backgroundSize: 'cover', // Ajustează dimensiunea imaginii
-        backgroundPosition: 'center', // Centrează imaginea
-        backgroundRepeat: 'no-repeat', // Evită repetarea imaginii
-        backgroundColor: '#2B2B2B', // Culoare de fundal fallback
-        color: 'white',
-        px: 3,
-      }}
-    >
-      <Box
-        sx={{
-          border: '5px solid hsl(0, 100%, 24%)',
-          borderRadius: 8,
-          backgroundColor: 'transparent',
-          padding: { xs: 5, md: 8 },
-          width: { xs: '90%', sm: '80%', md: '60%', lg: '50%' },
-          minWidth: 300,
-          boxShadow: '0px 10px 25px hsl(0, 96.30%, 31.60%)',
-        }}
-      >
-        <Typography variant="h3" sx={{ textAlign: 'center', mb: 4, fontWeight: 'bold' }}>
-          Welcome <em>{userData.username || userData.surname}</em>!
-        </Typography>
-        <Divider sx={{ my: 4, backgroundColor: 'hsl(0, 100%, 24%)', height: '2px' }} />
-        <Grid container spacing={4} sx={{ justifyContent: 'center' }}>
-          <Grid item xs={12} md={5}>
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{
-                backgroundColor: 'hsl(0, 100%, 24%)',
-                color: 'white',
-                '&:hover': { backgroundColor: 'hsl(0, 100%, 19%)' ,
-                  boxShadow: '0px 8px 15px hsla(0, 26.10%, 36.10%, 0.64)'},
-                padding: '18px 0',
-                borderRadius: '12px',
-                boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.4)',
-                transition: 'all 0.3s ease',
-              }}
-              onClick={() => navigate('/account/postACar')}
-            >
-              Post a Car
-            </Button>
+    <BackgroundWrapper>
+      <Container maxWidth="md">
+        <Paper
+          elevation={24}
+          sx={{
+            backgroundColor: themeColors.glass,
+            backdropFilter: 'blur(16px)', // Efect de sticlă
+            borderRadius: 6,
+            border: `1px solid ${themeColors.border}`,
+            padding: { xs: 4, md: 6 },
+            color: 'white',
+            boxShadow: '0px 20px 50px rgba(0, 0, 0, 0.5)',
+          }}
+        >
+          {/* Header Section */}
+          <Box sx={{ textAlign: 'center', mb: 5 }}>
+            <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 2, fontSize: '0.85rem' }}>
+              Member Dashboard
+            </Typography>
+            <Typography variant="h3" sx={{ fontWeight: 800, mt: 1 }}>
+              Welcome back, <br />
+              <Box component="span" sx={{ 
+                background: 'linear-gradient(45deg, #FF3333, #FF8888)', 
+                backgroundClip: 'text',
+                textFillColor: 'transparent',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
+                {userData.username || userData.surname}
+              </Box>
+            </Typography>
+          </Box>
+
+          <Divider sx={{ mb: 5, backgroundColor: 'rgba(255,255,255,0.1)' }} />
+
+          {/* Action Grid */}
+          <Grid container spacing={3} justifyContent="center">
+            <Grid item xs={12} sm={6}>
+              <Button
+                fullWidth
+                sx={buttonStyle}
+                onClick={() => navigate('/account/postACar')}
+              >
+                Post a Car
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Button
+                fullWidth
+                sx={buttonStyle}
+                onClick={viewCars}
+                disabled={(userData.carIds || []).length === 0}
+              >
+                My Garage ({(userData.carIds || []).length})
+              </Button>
+            </Grid>
+            
+            <Grid item xs={12} sm={6}>
+              <Button
+                fullWidth
+                sx={buttonStyle}
+              >
+                Notifications
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Button
+                fullWidth
+                sx={{
+                  ...buttonStyle,
+                  background: 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(5px)',
+                  '&:hover': {
+                    background: 'rgba(255,255,255,0.15)',
+                    transform: 'translateY(-3px)',
+                  }
+                }}
+                onClick={() => navigate('/account/details')}
+              >
+                Account Settings
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={5}>
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{
-                backgroundColor: 'hsl(0, 100%, 24%)',
-                color: 'white',
-                '&:hover': { backgroundColor: 'hsl(0, 100%, 19%)' ,
-                  boxShadow: '0px 8px 15px hsla(0, 26.10%, 36.10%, 0.64)'},
-                padding: '18px 0',
-                borderRadius: '12px',
-                boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.4)',
-                transition: 'all 0.3s ease',
-              }}
-              onClick={viewCars}
-            >
-              View your cars ({(userData.carIds || []).length > 0 ? userData.carIds.length : 'no'} cars posted)
-            </Button>
-          </Grid>
-        </Grid>
-        <Divider sx={{ my: 4, backgroundColor: 'hsl(0, 100%, 24%)', height: '2px' }} />
-        <Grid container spacing={4} sx={{ justifyContent: 'center' }}>
-          <Grid item xs={12} md={5}>
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{
-                backgroundColor: 'hsl(0, 100%, 24%)',
-                color: 'white',
-                '&:hover': { backgroundColor: 'hsl(0, 100%, 19%)' ,
-                  boxShadow: '0px 8px 15px hsla(0, 26.10%, 36.10%, 0.64)',
-                },
-                padding: '18px 0',
-                borderRadius: '12px',
-                boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.4)',
-                transition: 'all 0.3s ease',
-              }}
-            >
-              Notifications
-            </Button>
-          </Grid>
-          <Grid item xs={12} md={5}>
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{
-                backgroundColor: 'hsl(0, 100%, 24%)',
-                color: 'white',
-                '&:hover': { backgroundColor: 'hsl(0, 100%, 19%)' ,
-                  boxShadow: '0px 8px 15px hsla(0, 26.10%, 36.10%, 0.64)' },
-                padding: '18px 0',
-                borderRadius: '12px',
-                boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.4)',
-                transition: 'all 0.3s ease',
-              }}
-              onClick={() => navigate('/account/details')}
-            >
-              View/Edit account details
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
-    </Box>
+        </Paper>
+      </Container>
+    </BackgroundWrapper>
   );
 
-  return <div>{!userData.email ? <NoAccountView /> : <AccountView />}</div>;
+  return <>{!userData.email ? <NoAccountView /> : <AccountView />}</>;
 };
 
 export default Account;
