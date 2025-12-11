@@ -4,7 +4,7 @@ import { Grid, Box, Card, CardContent, CardMedia, Typography, CircularProgress, 
 import axios from 'axios';
 import API_URL from '../..';
 
-const MainPage = ({ searchFilters, setCarData }) => {
+const MainPage = ({ searchFilters}) => {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -96,8 +96,7 @@ const MainPage = ({ searchFilters, setCarData }) => {
     const accesCar = (carId) => {
         const carDetails = cars.find(car => car.id === carId);
         if (carDetails) {
-            setCarData(carDetails);
-            navigate("/carDetails");
+            navigate(`/carDetails/${carId}`);
         }
     };
 
@@ -139,9 +138,9 @@ const MainPage = ({ searchFilters, setCarData }) => {
                                 sx={{
                                     cursor: 'pointer',
                                     width: '100%', 
-                                    maxWidth: '320px', // Limită puțin mai mare
-                                    bgcolor: '#1e1e1e', // Un gri mai "material design" decât 'rgb(35, 37, 40)'
-                                    borderRadius: '12px', // Colțuri mai rotunjite
+                                    maxWidth: '320px',
+                                    bgcolor: '#1e1e1e', 
+                                    borderRadius: '12px', 
                                     display: 'flex', 
                                     flexDirection: 'column',
                                     transition: 'transform 0.2s, box-shadow 0.2s',
@@ -246,7 +245,7 @@ const MainPage = ({ searchFilters, setCarData }) => {
                                             sx={{ 
                                                 fontSize: '1.1rem',
                                                 fontWeight: 'bold',
-                                                color: '#f5f5f5ff' // Accent roșu pentru preț
+                                                color: '#f5f5f5ff'
                                             }}
                                         >
                                             {parseInt(car.price).toLocaleString()} {car.currency}

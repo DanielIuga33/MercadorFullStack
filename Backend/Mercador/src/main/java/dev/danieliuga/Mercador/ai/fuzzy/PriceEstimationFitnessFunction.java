@@ -101,30 +101,13 @@ public class PriceEstimationFitnessFunction extends FitnessFunction {
         double startPrice = 20000; // Valoare default
 
         if (brand != null) {
-            switch (brand.toUpperCase()) {
-                case "BMW":
-                case "MERCEDES-BENZ":
-                case "AUDI":
-                case "PORSCHE":
-                case "LAND ROVER":
-                    startPrice = 45000;
-                    break;
-                case "VOLKSWAGEN":
-                case "VOLVO":
-                case "TOYOTA":
-                    startPrice = 28000;
-                    break;
-                case "FORD":
-                case "SKODA":
-                case "RENAULT":
-                case "OPEL":
-                    startPrice = 19000;
-                    break;
-                case "DACIA":
-                case "FIAT":
-                    startPrice = 13000;
-                    break;
-            }
+            startPrice = switch (brand.toUpperCase()) {
+                case "BMW", "MERCEDES-BENZ", "AUDI", "PORSCHE", "LAND ROVER" -> 45000;
+                case "VOLKSWAGEN", "VOLVO", "TOYOTA" -> 28000;
+                case "FORD", "SKODA", "RENAULT", "OPEL" -> 19000;
+                case "DACIA", "FIAT" -> 13000;
+                default -> startPrice;
+            };
         }
 
         // Calculăm deprecierea standard (fără a ține cont de KM sau stare, de aia se ocupă Fuzzy)

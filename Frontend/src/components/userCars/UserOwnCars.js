@@ -5,12 +5,11 @@ import API_URL from '../..';
 import img1 from '../../images/img1.jpeg'; // Asigură-te de calea corectă
 import { 
     Grid, Box, Card, CardContent, CardMedia, Typography, 
-    CircularProgress, Button, IconButton, Chip, Paper, Container 
+    CircularProgress, Button, Container 
 } from '@mui/material';
 import { 
     Edit, 
     Delete, 
-    Visibility, 
     DirectionsCar 
 } from '@mui/icons-material';
 
@@ -45,12 +44,12 @@ const BackgroundWrapper = ({ children }) => (
 );
 
 const UserOwnCars = ({ userData }) => {
-    const carIds = userData.carIds || [];
     const [loading, setLoading] = useState(true);
     const [cars, setCars] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
+        const carIds = userData.carIds || [];
         const getCarData = async () => {
             if (!carIds.length) {
                 setLoading(false);
@@ -63,7 +62,6 @@ const UserOwnCars = ({ userData }) => {
                 const validCars = responses
                     .map(res => res.data)
                     .filter(car => car !== null);
-                
                 setCars(validCars);
             } catch (error) {
                 console.error("Error fetching cars: ", error);
@@ -71,9 +69,8 @@ const UserOwnCars = ({ userData }) => {
                 setLoading(false);
             }
         };
-
         getCarData();
-    }, [carIds]);
+    }, [userData.carIds]);
 
     const handleViewModify = (carId) => {
         // Navighează către pagina de editare/vizualizare

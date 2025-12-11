@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useRef} from 'react'
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import API_URL from '../..';
 import Slider from 'react-slick';
@@ -14,7 +14,8 @@ import {
 } from '@mui/icons-material';
 import { IconButton, Tooltip } from '@mui/material';
 
-const CarDetails = ({userData, carDataId}) => {
+const CarDetails = ({userData}) => {
+  const { id } = useParams();
   const [car, setCar] = useState({});
   const [carImages, setCarImages] = useState([]); 
   const [loading, setLoading] = useState(true); 
@@ -28,14 +29,20 @@ const CarDetails = ({userData, carDataId}) => {
   const [info1, setInfo1] = useState("");
   const [hadMessage, setHadMessage] = useState(false);
 
+
+  
   useEffect(() => {
     const fetchData = async () => {
+        // Verificăm dacă avem un ID valid
+        if (!id) return; 
         try {
-            const response = await axios.get(`${API_URL}/cars/${carDataId}`);
+            const response = await axios.get(`${API_URL}/cars/${id}`); // Folosim "id"
             setCar(response.data);
             setCarImages(response.data.images || []); 
-            let carOwnerId = await axios.get(`${API_URL}/cars/owner/${carDataId}`);
-            setCarOwnerId(carOwnerId.data);
+            
+            let ownerRes = await axios.get(`${API_URL}/cars/owner/${id}`); // Folosim "id"
+            setCarOwnerId(ownerRes.data);
+            
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -44,7 +51,7 @@ const CarDetails = ({userData, carDataId}) => {
     };
 
     fetchData();
-  },[carDataId]);
+  }, [id]);
 
   // Cleanup timer
   useEffect(() => {
@@ -68,7 +75,7 @@ const CarDetails = ({userData, carDataId}) => {
         setInfo1("You need to login or register first!");
         return;
     } else {
-        let ownerId = await axios.get(`${API_URL}/cars/owner/${carDataId}`)
+        let ownerId = await axios.get(`${API_URL}/cars/owner/${id}`)
         let conv = {user1: userData.id, user2: ownerId.data}
         try{
             await axios.post(`${API_URL}/conversations/create/`, conv);
@@ -93,7 +100,7 @@ const CarDetails = ({userData, carDataId}) => {
         return;
     }
     setHadMessage(false);
-    let ownerId = await axios.get(`${API_URL}/cars/owner/${carDataId}`)
+    let ownerId = await axios.get(`${API_URL}/cars/owner/${id}`)
     let conv = {sender: userData.id, receiver: ownerId.data, message: message}
     await axios.post(`${API_URL}/conversations/conversation/message/`, conv);
     setHadMessage(true);
@@ -354,7 +361,7 @@ const CarDetails = ({userData, carDataId}) => {
                 </div>
                 
                 <div style={{marginTop: '30px', borderTop: '1px solid #333', paddingTop: '10px', textAlign: 'center', color: '#666', fontSize: '0.8rem'}}>
-                   <p>Ad ID: {carDataId} • Views: {car.views || 0} • Posted by UserID: {carOwnerId}</p>
+                   <p>Ad ID: {id} • Views: {car.views || 0} • Posted by UserID: {carOwnerId}</p>
                 </div>
 
             </div>

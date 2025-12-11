@@ -43,31 +43,6 @@ function App() {
     carIds: []
   });
 
-  const [carData, setCarData] = useSessionStorage('carData', {
-    id: '',
-    title: '',
-    brand: '',
-    model: '',
-    body: '',
-    vin: '',
-    year: '',
-    cm3: '',
-    hp: '',
-    mileage: '',
-    price: '',
-    currency: '',
-    color: '',
-    fuelType: '',
-    numberOfDoors: '',
-    transmission: '',
-    condition: '',
-    registrationDate: '',
-    description: '',
-    steeringwheel: '',
-    ownerEmail: userData.email,
-    images: []
-  });
-
   const [searchFilters, setSearchFilters] = useState({
     title: '',
     brand: '',
@@ -110,7 +85,7 @@ function App() {
         <div className='App.js'>
           <Header userData={userData} setUserData={setUserData} unreadMessages={unreadMessages} setUnreadMessages={setUnreadMessages}/>
           <Routes>
-            <Route path="/" element={<Home searchFilters={searchFilters} setSearchFilters={setSearchFilters} setCarData={setCarData}/>} />
+            <Route path="/" element={<Home searchFilters={searchFilters} setSearchFilters={setSearchFilters}/>} />
 
             <Route path="/account" element={<Account userData={userData}/>} />
             <Route path="/account/details" element={<AccountDetails userData={userData} setUserData={setUserData}/>} />
@@ -123,8 +98,7 @@ function App() {
       
             <Route path="/register" element={<RegisterPage userData={userData} setUserData={setUserData} returning={0}/>} />
             <Route path="/register/account" element={<RegisterPage userData={userData} setUserData={setUserData} returning={1}/>} />
-
-            <Route path="/carDetails" element={<CarDetails userData={userData} carDataId={carData.id}/>} />
+            <Route path="/carDetails/:id" element={<CarDetails userData={userData} />} />
             <Route path="/conversations" element={<ConversationTab userData={userData} unreadMessages={unreadMessages} setUnreadMessages={setUnreadMessages}/>} />
           </Routes>
         </div>

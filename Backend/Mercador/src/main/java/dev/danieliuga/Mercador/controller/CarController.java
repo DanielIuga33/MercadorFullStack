@@ -6,7 +6,6 @@ import dev.danieliuga.Mercador.mapper.CarMapper;
 import dev.danieliuga.Mercador.model.Car;
 import dev.danieliuga.Mercador.service.CarService;
 import dev.danieliuga.Mercador.service.PriceEstimationService;
-import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,11 +57,13 @@ public class CarController {
         ObjectId objectId = new ObjectId(id);
         return new ResponseEntity<Optional<Car>>(carService.singleCar(objectId), HttpStatus.OK);
     }
+
     @GetMapping("/owner/{id}")
     public ResponseEntity<Optional<String>> getOwnerId(@PathVariable String id){
         ObjectId objectId = new ObjectId(id);
         return new ResponseEntity<>(Optional.of(carService.getIdOwner(objectId).toHexString()), HttpStatus.OK);
     }
+
 
     @GetMapping("dto/{id}")
     public ResponseEntity<Optional<CarDTO>> getSingleDTOCar(@PathVariable String id){
