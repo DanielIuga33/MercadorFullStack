@@ -15,6 +15,7 @@ import axios from 'axios';
 import API_URL from '../src/index'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import CarEditing from './components/carEditing/CarEdtiting';
 
 const darkTheme = createTheme({
   palette: {
@@ -98,7 +99,8 @@ function App() {
       
             <Route path="/register" element={<RegisterPage userData={userData} setUserData={setUserData} returning={0}/>} />
             <Route path="/register/account" element={<RegisterPage userData={userData} setUserData={setUserData} returning={1}/>} />
-            <Route path="/carDetails/:id" element={<CarDetails userData={userData} />} />
+            <Route path="/carDetails/:id" element={<CarDetails userData={userData}/>} />
+            <Route path="/account/cars/:id" element={<CarEditing userData={userData}/>}/>
             <Route path="/conversations" element={<ConversationTab userData={userData} unreadMessages={unreadMessages} setUnreadMessages={setUnreadMessages}/>} />
           </Routes>
         </div>

@@ -35,6 +35,7 @@ const CarDetails = ({userData}) => {
     const fetchData = async () => {
         // Verificăm dacă avem un ID valid
         if (!id) return; 
+        if (!userData) navigate("/");
         try {
             const response = await axios.get(`${API_URL}/cars/${id}`); // Folosim "id"
             setCar(response.data);
@@ -51,7 +52,7 @@ const CarDetails = ({userData}) => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, navigate, userData]);
 
   // Cleanup timer
   useEffect(() => {

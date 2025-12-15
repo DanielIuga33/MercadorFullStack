@@ -74,7 +74,8 @@ const UserOwnCars = ({ userData }) => {
 
     const handleViewModify = (carId) => {
         // Navighează către pagina de editare/vizualizare
-        // Exemplu: navigate(`/account/cars/${carId}`);
+        // Exemplu: 
+        navigate(`/account/cars/${carId}`); 
         console.log("View/Modify", carId);
     };
 
