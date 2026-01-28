@@ -50,8 +50,14 @@ public class CarController {
         }
     }
 
-//    @PutMapping("/{car}")
-//    public ResponseEntity<Car> updateCar(@)
+    @PutMapping("/{id}")
+    public ResponseEntity<Car> updateCar(@PathVariable ObjectId id, @RequestBody Car updatedCarData) throws Exception {
+        updatedCarData.setId(id);
+        updatedCarData.setOwnerId(carService.singleCar(id).get().getOwnerId());
+        Car savedCar = carService.update(updatedCarData);
+        return new ResponseEntity<>(savedCar, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Car>> getSingleCar(@PathVariable String id){
         ObjectId objectId = new ObjectId(id);

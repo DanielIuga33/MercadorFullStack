@@ -23,6 +23,19 @@ const themeColors = {
     textSecondary: 'rgba(255, 255, 255, 0.6)'
 };
 
+const buttonStyle = {
+    background: themeColors.gradient,
+    color: 'white',
+    padding: '12px 30px',
+    borderRadius: '12px',
+    fontWeight: 'bold',
+    textTransform: 'none',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+    '&:hover': {
+        background: 'linear-gradient(135deg, hsl(0, 100%, 30%) 0%, hsl(0, 90%, 50%) 100%)',
+    }
+};
+
 const BackgroundWrapper = ({ children }) => (
     <Box sx={{
         minHeight: '100vh',
@@ -76,7 +89,6 @@ const UserOwnCars = ({ userData }) => {
         // Navighează către pagina de editare/vizualizare
         // Exemplu: 
         navigate(`/account/cars/${carId}`); 
-        console.log("View/Modify", carId);
     };
 
     const handleDelete = async (carId) => {
@@ -105,6 +117,7 @@ const UserOwnCars = ({ userData }) => {
     return (
         <BackgroundWrapper>
             <Container maxWidth="xl" sx={{ py: 4 }}>
+                <Button sx={buttonStyle} onClick={() => navigate('/account')}>Back</Button>
                 <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold', mb: 1, textAlign: 'center' }}>
                     My Garage
                 </Typography>

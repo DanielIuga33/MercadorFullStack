@@ -255,6 +255,7 @@ const AccountDetails = ({ userData, setUserData }) => {
                     color: 'white',
                     p: { xs: 2, md: 4 }
                 }}>
+                    <Button sx={buttonStyle} onClick={() => navigate('/')}>Back</Button>
                     <Typography variant="h4" sx={{ textAlign: 'center', mb: 1, fontWeight: 'bold' }}>
                         Account Settings
                     </Typography>

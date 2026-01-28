@@ -143,6 +143,7 @@ const Account = ({ userData }) => {
             boxShadow: '0px 20px 50px rgba(0, 0, 0, 0.5)',
           }}
         >
+          <Button sx={buttonStyle} onClick={() => navigate('/')}>Back</Button>
           {/* Header Section */}
           <Box sx={{ textAlign: 'center', mb: 5 }}>
             <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 2, fontSize: '0.85rem' }}>

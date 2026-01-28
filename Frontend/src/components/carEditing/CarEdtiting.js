@@ -133,17 +133,25 @@ const CarEditing = ({userData}) => {
     useEffect(() => {
         const fetchData = async () => {
             if (!id) return; 
-            // Nu verificam userData aici pentru a evita redirect loop in caz de delay la auth
             
             try {
                 const response = await axios.get(`${API_URL}/cars/${id}`);
-                setCarData(response.data);
-                setImages(response.data.images || []); 
-                setSelectedBrand(response.data.brand); // Setam si brandul selectat initial
-                
-                // Optional: Verificare owner
-                // let ownerRes = await axios.get(`${API_URL}/cars/owner/${id}`);
-                // setCarOwnerId(ownerRes.data);
+                let data = response.data;
+
+                // --- FIX 1: Curățăm Moneda (scoatem spațiile goale) ---
+                if (data.currency) {
+                    data.currency = data.currency.trim(); 
+                }
+
+                // --- FIX 2: Pre-populăm lista de modele imediat ---
+                // Nu așteptăm după celălalt useEffect, o facem direct aici
+                if (data.brand && modelsByBrand[data.brand]) {
+                    setFilteredModels(modelsByBrand[data.brand]);
+                }
+
+                setCarData(data);
+                setImages(data.images || []); 
+                setSelectedBrand(data.brand);
                 
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -310,6 +318,7 @@ const CarEditing = ({userData}) => {
                     padding: { xs: 3, md: 5 },
                     color: 'white'
                 }}>
+                    <Button sx={buttonStyle} onClick={()=> navigate(`/account/cars`)}>Back</Button>
                     <Box sx={{ textAlign: 'center', mb: 5 }}>
                         <Typography variant="h3" fontWeight="bold" sx={{ fontSize: { xs: '2rem', md: '3rem' } }}>
                             Edit Your <span style={{ color: '#ff4d4d' }}>Car</span>

@@ -29,6 +29,8 @@ public class CarService {
     public Car addCar(Car car) throws Exception {
         Car savedCar = carRepository.save(car);
         User user = userService.singleUser((car.getOwnerId()));
+        System.out.println(car);
+        System.out.println(user);
         List<ObjectId> newCarIds = user.getCarIds();
         if (!newCarIds.contains(savedCar.getId())){
             newCarIds.add(savedCar.getId());
