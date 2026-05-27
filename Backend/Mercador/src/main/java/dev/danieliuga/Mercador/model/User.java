@@ -1,6 +1,5 @@
 package dev.danieliuga.Mercador.model;
 
-import dev.danieliuga.Mercador.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -38,5 +37,6 @@ public class User {
     private String street;
     private Role role;
     private List<ObjectId> carIds;    // Lista de ID-uri ale mașinilor deținute de utilizator
+    private List<ObjectId> favoriteCars;
 
 }

@@ -3,7 +3,6 @@ package dev.danieliuga.Mercador.model;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -29,6 +28,9 @@ public class Conversation {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public Boolean hasThisMessage(ObjectId idMessage){
+        if (messages == null){
+            return false;
+        }
         for (Message mess : messages){
             if (mess.getId().compareTo(idMessage) == 0)
                 return true;

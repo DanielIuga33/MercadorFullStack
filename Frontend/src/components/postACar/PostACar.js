@@ -38,27 +38,24 @@ const availableFeatures = [
 // --- STILURI ---
 const themeColors = {
     gradient: 'linear-gradient(135deg, hsl(0, 100%, 24%) 0%, hsl(0, 80%, 40%) 100%)',
-    glass: 'rgba(20, 20, 20, 0.75)',
+    glass: 'rgba(20, 20, 20, 0.8)',
     border: 'rgba(255, 255, 255, 0.1)',
-    textSecondary: 'rgba(255, 255, 255, 0.7)',
-    error: '#f44336',
+    accent: '#ff4d4d',
     success: '#4caf50'
 };
 
 const inputStyle = {
     '& .MuiOutlinedInput-root': {
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-        color: 'white',
-        borderRadius: '12px',
-        '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-        '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.5)' },
-        '&.Mui-focused fieldset': { borderColor: '#ff4d4d' },
+        backgroundColor: 'rgba(255, 255, 255, 0.03)',
+        borderRadius: '14px',
+        transition: 'all 0.2s',
+        '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
+        '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.3)' },
+        '&.Mui-focused fieldset': { borderColor: themeColors.accent },
     },
-    '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.6)' },
-    '& .MuiInputLabel-root.Mui-focused': { color: '#ff4d4d' },
-    '& .MuiSvgIcon-root': { color: 'rgba(255,255,255,0.6)' },
-    '& .MuiSelect-icon': { color: 'rgba(255,255,255,0.6)' },
-    marginBottom: 2
+    '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.5)' },
+    '& .MuiInputLabel-root.Mui-focused': { color: themeColors.accent },
+    mb: 2.5
 };
 
 const menuProps = {

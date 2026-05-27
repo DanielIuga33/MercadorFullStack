@@ -22,4 +22,5 @@ public class UserDTO {
     private String street;
     private String role; // Poate fi util să fie un String pentru a simplifica expunerea
     private List<String> carIds; // Convertim ObjectId la String
+    private List<String> favoriteCars;
 }

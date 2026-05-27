@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -89,8 +88,13 @@ public class UserService {
             existingUser.setCarIds(user.getCarIds());
         }
 
+        if (!user.getFavoriteCars().equals(existingUser.getFavoriteCars())){
+            existingUser.setFavoriteCars(user.getFavoriteCars());
+        }
+
         // Salvăm modificările în baza de date
         return userRepository.save(existingUser);
     }
+
 
 }

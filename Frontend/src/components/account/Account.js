@@ -1,46 +1,48 @@
 import React from 'react';
 import img1 from '../../images/img1.jpeg';
-import { Box, Typography, Button, Divider, Grid, Paper, Container } from '@mui/material';
+import { 
+  Box, Typography, Button, Divider, Grid, Paper, Container, Avatar 
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+
+// Importuri Iconițe
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import PersonIcon from '@mui/icons-material/Person';
 
 const Account = ({ userData }) => {
   const navigate = useNavigate();
 
-  // Culori și stiluri comune
   const themeColors = {
-    primary: 'hsl(0, 90%, 30%)', // Roșu închis de bază
+    primary: 'hsl(0, 90%, 30%)',
     gradient: 'linear-gradient(135deg, hsl(0, 100%, 24%) 0%, hsl(0, 80%, 40%) 100%)',
-    glass: 'rgba(20, 20, 20, 0.75)', // Fundal semi-transparent întunecat
+    glass: 'rgba(20, 20, 20, 0.7)', 
     border: 'rgba(255, 255, 255, 0.1)',
+    accent: '#FF3333'
   };
 
-  const buttonStyle = {
-    background: themeColors.gradient,
-    color: 'white',
-    padding: '16px 24px',
-    borderRadius: '12px',
+  const commonButtonStyle = {
+    padding: '20px',
+    borderRadius: '16px',
     fontWeight: 'bold',
     textTransform: 'none',
     fontSize: '1rem',
-    boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    transition: 'all 0.3s ease-in-out',
-    '&:hover': {
-      background: 'linear-gradient(135deg, hsl(0, 100%, 30%) 0%, hsl(0, 90%, 50%) 100%)',
-      transform: 'translateY(-3px)',
-      boxShadow: '0 8px 25px rgba(200, 0, 0, 0.4)',
-    },
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1.5,
+    border: `1px solid ${themeColors.border}`,
   };
 
   const viewCars = () => {
-    if ((userData.carIds || []).length === 0) {
-      return; // Opțional: Poți adăuga o notificare aici (Snackbar)
-    } else {
+    if ((userData.carIds || []).length > 0) {
       navigate('/account/cars');
     }
   };
 
-  // Wrapper pentru fundalul general (se aplică la ambele view-uri)
   const BackgroundWrapper = ({ children }) => (
     <Box
       sx={{
@@ -49,28 +51,22 @@ const Account = ({ userData }) => {
         backgroundImage: `url(${img1})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
       }}
     >
-      {/* Overlay întunecat pentru contrast */}
       <Box
         sx={{
           position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)', // Întunecă imaginea cu 70%
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
           zIndex: 1,
         }}
       />
-      
-      {/* Conținutul efectiv */}
-      <Box sx={{ position: 'relative', zIndex: 2, width: '100%', p: 2 }}>
+      <Box sx={{ position: 'relative', zIndex: 2, width: '100%', py: 4 }}>
         {children}
       </Box>
     </Box>
@@ -80,45 +76,46 @@ const Account = ({ userData }) => {
     <BackgroundWrapper>
       <Container maxWidth="sm">
         <Paper
-          elevation={24}
+          elevation={0}
           sx={{
             backgroundColor: themeColors.glass,
-            backdropFilter: 'blur(12px)',
-            borderRadius: 4,
+            backdropFilter: 'blur(20px) saturate(160%)',
+            borderRadius: 6,
             border: `1px solid ${themeColors.border}`,
-            p: 5,
+            p: 6,
             textAlign: 'center',
             color: 'white',
           }}
         >
-          <Typography variant="h4" sx={{ mb: 2, fontWeight: 700, letterSpacing: 1 }}>
+          <Avatar sx={{ width: 70, height: 70, bgcolor: themeColors.accent, margin: '0 auto 20px' }}>
+            <PersonIcon sx={{ fontSize: 40 }} />
+          </Avatar>
+          <Typography variant="h4" sx={{ mb: 2, fontWeight: 800 }}>
             Join the Community
           </Typography>
-          <Typography variant="body1" sx={{ mb: 4, color: 'rgba(255,255,255,0.7)' }}>
-            You are currently not logged in. Access your garage and settings by logging in below.
+          <Typography variant="body1" sx={{ mb: 5, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
+            Log in to access your private garage, track notifications, and manage your listings.
           </Typography>
 
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
             <Button
               variant="contained"
-              sx={buttonStyle}
               onClick={() => navigate('/login/account')}
+              sx={{ 
+                background: themeColors.gradient, 
+                px: 4, py: 1.5, borderRadius: '12px', fontWeight: 'bold' 
+              }}
             >
               Login
             </Button>
             <Button
               variant="outlined"
-              sx={{
-                ...buttonStyle,
-                background: 'transparent',
-                border: '2px solid rgba(255,255,255,0.2)',
-                '&:hover': {
-                  background: 'rgba(255,255,255,0.1)',
-                  transform: 'translateY(-3px)',
-                  border: '2px solid white',
-                }
-              }}
               onClick={() => navigate('/register/account')}
+              sx={{ 
+                color: 'white', borderColor: 'rgba(255,255,255,0.3)', 
+                px: 4, py: 1.5, borderRadius: '12px', fontWeight: 'bold',
+                '&:hover': { borderColor: 'white', background: 'rgba(255,255,255,0.05)' }
+              }}
             >
               Register
             </Button>
@@ -132,83 +129,118 @@ const Account = ({ userData }) => {
     <BackgroundWrapper>
       <Container maxWidth="md">
         <Paper
-          elevation={24}
+          elevation={0}
           sx={{
             backgroundColor: themeColors.glass,
-            backdropFilter: 'blur(16px)', // Efect de sticlă
-            borderRadius: 6,
+            backdropFilter: 'blur(25px) saturate(180%)',
+            borderRadius: 8,
             border: `1px solid ${themeColors.border}`,
-            padding: { xs: 4, md: 6 },
+            padding: { xs: 4, md: 8 },
             color: 'white',
-            boxShadow: '0px 20px 50px rgba(0, 0, 0, 0.5)',
+            position: 'relative',
+            overflow: 'hidden'
           }}
         >
-          <Button sx={buttonStyle} onClick={() => navigate('/')}>Back</Button>
-          {/* Header Section */}
-          <Box sx={{ textAlign: 'center', mb: 5 }}>
-            <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 2, fontSize: '0.85rem' }}>
+          {/* Back Button */}
+          <Button 
+            startIcon={<ArrowBackIosNewIcon sx={{ fontSize: 14 }} />}
+            onClick={() => navigate('/')}
+            sx={{ 
+              position: 'absolute', top: 24, left: 24, 
+              color: 'rgba(255,255,255,0.5)',
+              textTransform: 'none',
+              '&:hover': { color: 'white', background: 'transparent' }
+            }}
+          >
+            Back to Home
+          </Button>
+
+          {/* Header */}
+          <Box sx={{ textAlign: 'center', mb: 6 }}>
+            <Typography variant="overline" sx={{ color: themeColors.accent, fontWeight: 700, letterSpacing: 3 }}>
               Member Dashboard
             </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 800, mt: 1 }}>
+            <Typography variant="h3" sx={{ fontWeight: 900, mt: 1, letterSpacing: -1 }}>
               Welcome back, <br />
               <Box component="span" sx={{ 
                 background: 'linear-gradient(45deg, #FF3333, #FF8888)', 
-                backgroundClip: 'text',
-                textFillColor: 'transparent',
                 WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
+                WebkitTextFillColor: 'transparent',
               }}>
                 {userData.username || userData.surname}
               </Box>
             </Typography>
           </Box>
 
-          <Divider sx={{ mb: 5, backgroundColor: 'rgba(255,255,255,0.1)' }} />
+          <Divider sx={{ mb: 6, opacity: 0.1 }} />
 
-          {/* Action Grid */}
-          <Grid container spacing={3} justifyContent="center">
-            <Grid item xs={12} sm={6}>
-              <Button
-                fullWidth
-                sx={buttonStyle}
-                onClick={() => navigate('/account/postACar')}
-              >
-                Post a Car
-              </Button>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Button
-                fullWidth
-                sx={buttonStyle}
-                onClick={viewCars}
-                disabled={(userData.carIds || []).length === 0}
-              >
-                My Garage ({(userData.carIds || []).length})
-              </Button>
-            </Grid>
-            
-            <Grid item xs={12} sm={6}>
-              <Button
-                fullWidth
-                sx={buttonStyle}
-              >
-                Notifications
-              </Button>
-            </Grid>
+          {/* Tiles Grid */}
+          <Grid container spacing={3}>
+            {/* Post a Car */}
             <Grid item xs={12} sm={6}>
               <Button
                 fullWidth
                 sx={{
-                  ...buttonStyle,
+                  ...commonButtonStyle,
+                  background: themeColors.gradient,
+                  color: 'white',
+                  '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 30px rgba(255,0,0,0.3)' }
+                }}
+                onClick={() => navigate('/account/postACar')}
+              >
+                <AddBoxIcon sx={{ fontSize: 32 }} />
+                Post a Car
+              </Button>
+            </Grid>
+
+            {/* My Garage */}
+            <Grid item xs={12} sm={6}>
+              <Button
+                fullWidth
+                disabled={(userData.carIds || []).length === 0}
+                sx={{
+                  ...commonButtonStyle,
                   background: 'rgba(255,255,255,0.05)',
-                  backdropFilter: 'blur(5px)',
-                  '&:hover': {
-                    background: 'rgba(255,255,255,0.15)',
-                    transform: 'translateY(-3px)',
-                  }
+                  color: 'white',
+                  '&:hover': { background: 'rgba(255,255,255,0.1)', transform: 'translateY(-5px)' },
+                  '&.Mui-disabled': { color: 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.02)' }
+                }}
+                onClick={viewCars}
+              >
+                <DirectionsCarIcon sx={{ fontSize: 32 }} />
+                My Garage ({(userData.carIds || []).length})
+              </Button>
+            </Grid>
+
+            {/* Notifications */}
+            <Grid item xs={12} sm={6}>
+              <Button
+                fullWidth
+                sx={{
+                  ...commonButtonStyle,
+                  background: 'rgba(255,255,255,0.05)',
+                  color: 'white',
+                  '&:hover': { background: 'rgba(255,255,255,0.1)', transform: 'translateY(-5px)' }
+                }}
+              >
+                <NotificationsIcon sx={{ fontSize: 32 }} />
+                Notifications
+              </Button>
+            </Grid>
+
+            {/* Account Settings */}
+            <Grid item xs={12} sm={6}>
+              <Button
+                fullWidth
+                sx={{
+                  ...commonButtonStyle,
+                  background: 'rgba(255,255,255,0.05)',
+                  color: 'white',
+                  '&:hover': { background: 'rgba(255,255,255,0.1)', transform: 'translateY(-5px)' }
                 }}
                 onClick={() => navigate('/account/details')}
               >
+                <SettingsIcon sx={{ fontSize: 32 }} />
                 Account Settings
               </Button>
             </Grid>

@@ -73,30 +73,23 @@ const SearchBar = ({ searchFilters, setSearchFilters }) => {
 
     return (
         <Box
-            sx={{
-                position: 'sticky',
-                top: 0,
-                width: '100%',
-                maxWidth: 350,
-                maxHeight: '90vh', // Limitează înălțimea la dimensiunea vizibilă a paginii
-                padding: 2,
-                backgroundColor: 'hsl(0, 100%, 24%)',
-                transition: 'background-color 0.3s',
-                '&:hover': {
-                    backgroundColor: 'hsl(0, 100%, 25%)', // O nuanță puțin mai deschisă
-                },
-                color: 'white',
-                overflowY: 'auto', // Permite scroll vertical
-                boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)',
-                '&::-webkit-scrollbar': {
-                    width: '8px',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                    backgroundColor: 'hsla(0, 0%, 100%, 0.30)',
-                    borderRadius: '10px',
-                },
-
-            }}
+           sx={{
+    position: 'sticky',
+    top: 20,
+    width: '100%',
+    maxWidth: 350,
+    maxHeight: '92vh',
+    padding: 3,
+    backgroundColor: 'rgba(24, 22, 22, 0.9)', // Roșu aproape negru, transparent
+    backdropFilter: 'blur(15px)',
+    borderRadius: '24px', // Colțuri mai rotunjite
+    color: 'white',
+    overflowY: 'auto',
+    border: '1px solid rgba(255, 255, 255, 0.05)',
+    boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
+    '&::-webkit-scrollbar': { width: '5px' },
+    '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: '10px' },
+}}
 
         >
             <Typography variant="h5" align="center" sx={{ marginBottom: 2, border: '1px solid gray' }}>

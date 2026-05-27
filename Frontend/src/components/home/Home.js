@@ -5,7 +5,7 @@ import '../searchbar/SearchBar';
 import SearchBar from '../searchbar/SearchBar';
 import MainPage from '../mainPage/MainPage';
 
-const Home = ({searchFilters, setSearchFilters, setCarData}) => {
+const Home = ({searchFilters, setSearchFilters, userData}) => {
   const [shown , setShown] = useState(false);
 
   return (
@@ -88,8 +88,7 @@ const Home = ({searchFilters, setSearchFilters, setCarData}) => {
             width: {xs:'60%'}
             }}>
             <MainPage 
-              searchFilters={searchFilters} 
-              setCarData={setCarData} 
+              searchFilters={searchFilters} userData={userData}
             />
         </Box>
   </Box>

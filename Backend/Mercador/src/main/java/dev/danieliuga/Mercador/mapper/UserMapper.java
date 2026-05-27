@@ -1,7 +1,6 @@
 package dev.danieliuga.Mercador.mapper;
 
 import dev.danieliuga.Mercador.dto.UserDTO;
-import dev.danieliuga.Mercador.model.Role;
 import dev.danieliuga.Mercador.model.User;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
@@ -25,7 +24,8 @@ public class UserMapper {
                 user.getCity(),
                 user.getStreet(),
                 user.getRole().name(), // Convertim enum-ul Role la string
-                user.getCarIds().stream().map(ObjectId::toHexString).collect(Collectors.toList()) // Convertim ObjectId-uri la String
+                user.getCarIds().stream().map(ObjectId::toHexString).collect(Collectors.toList()), // Convertim ObjectId-uri la String
+                user.getFavoriteCars().stream().map(ObjectId::toHexString).collect(Collectors.toList())
         );
     }
 

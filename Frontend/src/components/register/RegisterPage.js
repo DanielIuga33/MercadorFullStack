@@ -19,7 +19,8 @@ const RegisterPage = ({ setUserData, returning}) => {
     city: '',
     street: '',
     role: "USER",
-    carIds: []
+    carIds: [],
+    favoriteCars: []
   });
 
   const [step, setStep] = useState(1);

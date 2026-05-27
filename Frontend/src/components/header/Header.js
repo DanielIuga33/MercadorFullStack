@@ -12,13 +12,16 @@ import {
   Menu,
   MenuItem,
   Typography,
-  SvgIcon
+  SvgIcon,
+  Tooltip
 } from '@mui/material';
+import { FavoriteBorder } from '@mui/icons-material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import NotificationPopover from './NotificationPopover';
+import FavoritePopover from './FavoritePopover';
 
 const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) => {
   const navigate = useNavigate();
@@ -26,14 +29,25 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [notifAnchor, setNotifAnchor] = useState(null);
+  const [favoriteAnchor, setFavoriteAnchor] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const isNotifOpen = Boolean(notifAnchor);
+  const isFavoriteOpen = Boolean(favoriteAnchor);
 
-  // ✅ Fetch notificări din backend
+  const handleRefreshFavorites = (carId) => {
+    if (!userData || !userData.favoriteCars) return;
+    
+    setUserData({
+        ...userData,
+        favoriteCars: userData.favoriteCars.filter(id => id !== carId)
+    });
+    console.log(userData)
+  };
+
   useEffect(() => {
     if (!userData?.id) {
       setNotifications([]);
@@ -52,36 +66,42 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
 
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`${API_URL}/conversations/unreadMessages/${userData.id}`)
+        const response = await axios.get(`${API_URL}/conversations/unreadMessages/${userData.id}`);
         if (response.data > 0) setUnreadMessages(response.data);
         else setUnreadMessages(0);
       } catch (error) {
-        console.error('Error fetching unread messages: ', error)
+        console.error('Error fetching unread messages: ', error);
       }
     };
 
-
     fetchNotifications();
     fetchMessages();
-    const interval = setInterval(fetchNotifications, 3000); // refresh la 10 secunde
+    
+    const interval = setInterval(fetchNotifications, 3000); 
     const interval1 = setInterval(fetchMessages, 3000);
-    return () => {clearInterval(interval); clearInterval(interval1)};
-  }, [userData, setUnreadMessages]);
+    
+    return () => {
+      clearInterval(interval); 
+      clearInterval(interval1);
+    };
+  }, [userData?.id, setUnreadMessages]); 
 
   useEffect(() => {
       const count = notifications.filter((notif) => !notif.read).length;
       setUnreadNotifications(count);
   }, [notifications]);
 
-  // Navigare spre conversații
   const goToConversations = () => {
-    if (userData.id) navigate('/conversations');
+    if (userData?.id) navigate('/conversations');
   };
 
   // Deschidere / închidere meniuri
   const handleNotifOpen = (event) => setNotifAnchor(event.currentTarget);
   const handleNotifClose = () => setNotifAnchor(null);
+  const handleFavoriteOpen = (event) => setFavoriteAnchor(event.currentTarget);
+  const handleFavoriteClose = () => setFavoriteAnchor(null);
   const handleProfileMenuOpen = (event) => setAnchorEl(event.currentTarget);
+  
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
@@ -91,31 +111,15 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
 
   const logout = () => {
     setUserData({
-      id: '',
-      name: '',
-      surname: '',
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      birthDate: '',
-      country: '',
-      city: '',
-      street: '',
-      role: '',
-      carIds: []
+      id: '', name: '', surname: '', username: '', email: '',
+      password: '', confirmPassword: '', birthDate: '', country: '',
+      city: '', street: '', role: '', carIds: [], favoriteCars: []
     });
   };
 
   const headerTitleStyles = {
     margin: '0 auto',
-    // AICI E MODIFICAREA:
-    width: { 
-        xs: '95%', // Telefon (0-600px) -> Vrei să fie lat, să se vadă bine
-        sm: '85%', // Tabletă (600-900px)
-        md: '70%', // Laptop (900-1200px) - Cum aveai tu
-        lg: '60%'  // Desktop mare (1200px+) - Cum aveai tu
-    }, 
+    width: { xs: '95%', sm: '85%', md: '70%', lg: '60%' }, 
     textAlign: 'center',
     border: '1px solid hsl(0, 0%, 2.7%)',
     borderRadius: '10px',
@@ -125,12 +129,9 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
-    // Clamp-ul e ok, dar dacă vrei control total și aici:
-    // fontSize: { xs: '16px', md: '20px', lg: '30px' } 
     fontSize: 'clamp(16px, 2vw, 30px)' 
-};
+  };
 
-  // ✅ FIX: fără <></>, folosim array cu key-uri
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -140,59 +141,16 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      {userData.email
+      {userData?.email
         ? [
-            <MenuItem
-              key="profile"
-              component={Link}
-              to="/account"
-              onClick={handleMenuClose}
-            >
-              Profile
-            </MenuItem>,
-             <MenuItem
-              key="post"
-              component={Link}
-              to="/account/postACar"
-              onClick={handleMenuClose}
-            >
-              Sell Your Car
-            </MenuItem>,
-            <MenuItem
-              key="details"
-              component={Link}
-              to="/account/details"
-              onClick={handleMenuClose}
-            >
-              My account
-            </MenuItem>,
-            <MenuItem
-              key="logout"
-              onClick={() => {
-                logout();
-                handleMenuClose();
-              }}
-            >
-              Logout
-            </MenuItem>
+            <MenuItem key="profile" component={Link} to="/account" onClick={handleMenuClose}>Profile</MenuItem>,
+            <MenuItem key="post" component={Link} to="/account/postACar" onClick={handleMenuClose}>Sell Your Car</MenuItem>,
+            <MenuItem key="details" component={Link} to="/account/details" onClick={handleMenuClose}>My account</MenuItem>,
+            <MenuItem key="logout" onClick={() => { logout(); handleMenuClose(); }}>Logout</MenuItem>
           ]
         : [
-            <MenuItem
-              key="login"
-              component={Link}
-              to="/login"
-              onClick={handleMenuClose}
-            >
-              Login
-            </MenuItem>,
-            <MenuItem
-              key="register"
-              component={Link}
-              to="/register"
-              onClick={handleMenuClose}
-            >
-              Register
-            </MenuItem>
+            <MenuItem key="login" component={Link} to="/login" onClick={handleMenuClose}>Login</MenuItem>,
+            <MenuItem key="register" component={Link} to="/register" onClick={handleMenuClose}>Register</MenuItem>
           ]}
     </Menu>
   );
@@ -252,44 +210,36 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
           <Box sx={{ flexGrow: 1 }} />
 
           {/* Desktop icons */}
-          <Box
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              alignItems: 'center',
-              gap: 1.5
-            }}
-          >
-            <IconButton color="inherit" onClick={goToConversations}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5 }}>
+            <IconButton title={"Go to Conversations"} color="inherit" onClick={goToConversations}>
               <Badge badgeContent={unreadMessages} color="error">
                 <MailIcon fontSize="medium" />
               </Badge>
             </IconButton>
 
-            <IconButton color="inherit" onClick={handleNotifOpen}>
+            <IconButton title={"Unread Notifications"} color="inherit" onClick={handleNotifOpen}>
               <Badge badgeContent={unreadNotifications} color="error">
                 <NotificationsIcon fontSize="medium" />
               </Badge>
             </IconButton>
 
-            <IconButton
-              edge="end"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
+            <Tooltip title={"See Favorite Cars"}>
+                <IconButton onClick={handleFavoriteOpen} color="inherit">    
+                  {/* <Badge badgeContent={userData?.favoriteCars?.length || 0} color="error">
+                    <FavoriteBorder fontSize="medium" />                
+                  </Badge> */}
+                  <FavoriteBorder fontSize="medium" /> 
+                </IconButton>
+            </Tooltip>
+
+            <IconButton edge="end" onClick={handleProfileMenuOpen} color="inherit">
               <AccountCircle fontSize="medium" />
             </IconButton>
           </Box>
 
           {/* Mobile icons */}
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
+            <IconButton size="large" onClick={handleMobileMenuOpen} color="inherit">
               <MoreIcon />
             </IconButton>
           </Box>
@@ -306,13 +256,21 @@ const Header = ({ userData, setUserData, unreadMessages, setUnreadMessages }) =>
         notifications={notifications}
         unreadNotifications={unreadNotifications}
         setUnreadNotifications={setUnreadNotifications}
-        id={userData.id}
+        id={userData?.id}
         refreshNotifications={() => {
           axios
             .get(`${API_URL}/notifications/${userData.id}`)
             .then((res) => setNotifications(res.data))
             .catch((err) => console.error(err));
         }}
+      />
+      
+      <FavoritePopover
+        anchorEl={favoriteAnchor}
+        open={isFavoriteOpen}
+        onClose={handleFavoriteClose} 
+        id={userData?.id}
+        refreshFavorites={handleRefreshFavorites}
       />
     </Box>
   );

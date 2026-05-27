@@ -1,8 +1,8 @@
 package dev.danieliuga.Mercador.controller;
 
+import dev.danieliuga.Mercador.dto.FavoriteRequest;
 import dev.danieliuga.Mercador.dto.UserDTO;
 import dev.danieliuga.Mercador.mapper.UserMapper;
-import dev.danieliuga.Mercador.model.Role;
 import dev.danieliuga.Mercador.model.User;
 import dev.danieliuga.Mercador.service.UserService;
 import org.bson.types.ObjectId;
@@ -11,12 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.sound.midi.Soundbank;
-import java.sql.SQLOutput;
-import java.time.LocalDate;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -66,6 +62,74 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @PostMapping("/favorites/add")
+    public ResponseEntity<Void> addToFavorite(@RequestBody FavoriteRequest request) {
+        try {
+            // 1. Găsim utilizatorul folosind userId-ul primit din JSON
+            User user = userService.singleUser(new ObjectId(request.getUserId()));
+
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // 2. Luăm lista actuală de favorite
+            List<ObjectId> favouriteCars = user.getFavoriteCars();
+
+            // Protecție: dacă lista e null (de exemplu la utilizatori noi), o inițializăm
+            if (favouriteCars == null) {
+                favouriteCars = new ArrayList<>();
+            }
+
+            ObjectId carObjectId = new ObjectId(request.getCarId());
+
+            // Protecție: adăugăm mașina doar dacă nu este deja în listă (să nu avem duplicate)
+            if (!favouriteCars.contains(carObjectId)) {
+                favouriteCars.add(carObjectId);
+                user.setFavoriteCars(favouriteCars);
+                userService.updateUser(user.getId(), user);
+            }
+            System.out.println(user);
+            return ResponseEntity.ok().build();
+
+        } catch (Exception e) {
+            System.out.println("Error adding to favorites: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("/favorites/remove")
+    public ResponseEntity<Void> removeFromFavorites(@RequestBody FavoriteRequest request) {
+        try {
+            User user = userService.singleUser(new ObjectId(request.getUserId()));
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+            List<ObjectId> favouriteCars = user.getFavoriteCars();
+
+            if (favouriteCars == null) {
+                favouriteCars = new ArrayList<>();
+            }
+            ObjectId carObjectId = new ObjectId(request.getCarId());
+
+            if (favouriteCars.contains(carObjectId)) {
+                favouriteCars.remove(carObjectId);
+                user.setFavoriteCars(favouriteCars);
+                userService.updateUser(user.getId(), user);
+            }
+            } catch (Exception e) {
+            System.out.println("Error adding to favorites: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/favoriteCars/{id}")
+    public ResponseEntity<List<ObjectId>> getFavoriteCars(@PathVariable String id) {
+        if (!ObjectId.isValid(id)) {
+            return ResponseEntity.badRequest().build(); // Returnăm un răspuns 400 Bad Request dacă ID-ul nu este valid
+        }
+        return new ResponseEntity<>(userService.singleUser(new ObjectId(id)).getFavoriteCars(), HttpStatus.OK);
+    }
 
     @GetMapping("/check-email")
     public boolean checkEmailExists(@RequestParam String email) {

@@ -41,7 +41,8 @@ function App() {
     city: '',
     street: '',
     role: '',
-    carIds: []
+    carIds: [],
+    favoriteCars: []
   });
 
   const [searchFilters, setSearchFilters] = useState({
@@ -86,7 +87,7 @@ function App() {
         <div className='App.js'>
           <Header userData={userData} setUserData={setUserData} unreadMessages={unreadMessages} setUnreadMessages={setUnreadMessages}/>
           <Routes>
-            <Route path="/" element={<Home searchFilters={searchFilters} setSearchFilters={setSearchFilters}/>} />
+            <Route path="/" element={<Home searchFilters={searchFilters} setSearchFilters={setSearchFilters} userData={userData}/>} />
 
             <Route path="/account" element={<Account userData={userData}/>} />
             <Route path="/account/details" element={<AccountDetails userData={userData} setUserData={setUserData}/>} />

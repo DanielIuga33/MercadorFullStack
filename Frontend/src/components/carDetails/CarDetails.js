@@ -10,7 +10,8 @@ import './CarDetails.css';
 // --- IMPORTURI NOI PENTRU ICONIȚE ---
 import { 
     CalendarToday, Speed, Settings, LocalGasStation, 
-    Palette, Engineering, VpnKey, Share, LocationOn // Am adaugat LocationOn
+    Palette, Engineering, VpnKey, Share, LocationOn, 
+    Favorite, FavoriteBorder // Am adaugat LocationOn
 } from '@mui/icons-material';
 import { IconButton, Tooltip } from '@mui/material';
 
@@ -28,6 +29,7 @@ const CarDetails = ({userData}) => {
   const [info, setInfo] = useState("");
   const [info1, setInfo1] = useState("");
   const [hadMessage, setHadMessage] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
 
   
@@ -39,10 +41,12 @@ const CarDetails = ({userData}) => {
         try {
             const response = await axios.get(`${API_URL}/cars/${id}`); // Folosim "id"
             setCar(response.data);
-            setCarImages(response.data.images || []); 
-            
+            setCarImages(response.data.images || []);
             let ownerRes = await axios.get(`${API_URL}/cars/owner/${id}`); // Folosim "id"
             setCarOwnerId(ownerRes.data);
+            if (userData.favoriteCars.includes(id)){
+                setIsFavorite(true);
+            }
             
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -53,6 +57,60 @@ const CarDetails = ({userData}) => {
 
     fetchData();
   }, [id, navigate, userData]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+        if (!id) return; 
+        if (!userData) navigate("/");
+        try {
+            const response = await axios.get(`${API_URL}/cars/${id}`);
+            setCar(response.data);
+            setCarImages(response.data.images || []); 
+            
+            let ownerRes = await axios.get(`${API_URL}/cars/owner/${id}`);
+            setCarOwnerId(ownerRes.data);
+
+            // EXEMPLU: Dacă ai o rută care verifică dacă e salvată:
+            // if (userData?.id) {
+            //    const favRes = await axios.get(`${API_URL}/favorites/check/${userData.id}/${id}`);
+            //    setIsFavorite(favRes.data.isFavorite);
+            // }
+            
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false); 
+        }
+    };
+    fetchData();
+}, [id, navigate, userData]);
+
+// 2. FUNCTIA PENTRU CLICK PE INIMĂ
+const toggleFavorite = async () => {
+    if (!userData || !userData.id) {
+        setInfo1("You need to login to add to favorites! 🔑");
+        return;
+    }
+
+    try {
+        if (isFavorite) {
+            // Șterge de la favorite
+            await axios.delete(`${API_URL}/users/favorites/remove`, { data: { userId: userData.id, carId: id } });
+            setIsFavorite(false);
+            userData.favoriteCars = userData.favoriteCars.filter(carId => carId !== id)
+            setInfo("Removed from favorites! ❌");
+        } else {
+            // Adaugă la favorite
+            await axios.post(`${API_URL}/users/favorites/add`, { userId: userData.id, carId: id });
+            setIsFavorite(true);
+            userData.favoriteCars.push(id)
+            setInfo("Added to favorites! ❤️");
+        }
+    } catch (error) {
+        console.error("Error updating favorites:", error);
+        setInfo1("Could not update favorites. Try again.");
+    }
+};
 
   // Cleanup timer
   useEffect(() => {
@@ -218,11 +276,25 @@ const CarDetails = ({userData}) => {
                         </div>
 
                         {/* Buton Share (Dreapta sus) */}
-                        <Tooltip title="Copy Link">
-                            <IconButton onClick={copyLink} sx={{color: 'white'}}>
-                                <Share />
-                            </IconButton>
-                        </Tooltip>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            {/* Buton Favorite (Inimă) */}
+                            {carOwnerId !== userData.id &&
+                            <Tooltip title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}>
+                                <IconButton onClick={toggleFavorite} sx={{backgroundColor:"#272727", color: isFavorite ? '#a10707' : 'white' }}>
+                                    {//"#e91e63"
+                                    }
+                                    {isFavorite ? <Favorite sx={{ fontSize: '1.8rem' }} /> : <FavoriteBorder sx={{ fontSize: '1.8rem' }} />}
+                                </IconButton>
+                            </Tooltip>
+                            }
+
+                            {/* Buton Share */}
+                            <Tooltip title="Copy Link">
+                                <IconButton onClick={copyLink} sx={{ color: 'white' }}>
+                                    <Share />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
                     </div>
 
                     {carOwnerId !== userData.id &&
